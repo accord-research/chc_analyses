@@ -1,0 +1,5 @@
+zone,mean_lat,annual_mm,regime,peak_months,bimodality,proposed_window,window_months,rain_frac_captured
+0,6.01,416.0,bimodal,Apr;Oct,5.466,MAMJJA,Mar;Apr;May;Jun;Jul;Aug,0.57
+1,7.69,978.0,bimodal,May;Aug,0.718,AMJJAS,Apr;May;Jun;Jul;Aug;Sep,0.69
+2,10.79,1164.0,unimodal,Aug,0.36,JJAS,Jun;Jul;Aug;Sep,0.72
+3,12.32,458.0,bimodal,Apr;Aug,1.133,AMJJAS,Apr;May;Jun;Jul;Aug;Sep,0.75

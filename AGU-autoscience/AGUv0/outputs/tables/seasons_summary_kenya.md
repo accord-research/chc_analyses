@@ -1,0 +1,6 @@
+| zone | mean_lat | annual_mm | regime | peak_months | bimodality | proposed_window | window_months | rain_frac_captured |
+|---|---|---|---|---|---|---|---|---|
+| 0 | -2.37 | 721.0 | bimodal | Mar;Dec | 0.442 | DJFMA | Dec;Jan;Feb;Mar;Apr | 0.71 |
+| 1 | -0.63 | 609.0 | bimodal | Apr;Nov | 1.53 | NDJFMA | Nov;Dec;Jan;Feb;Mar;Apr | 0.78 |
+| 2 | 0.73 | 1047.0 | bimodal | May;Jul;Nov | 0.814 | MAMJJA | Mar;Apr;May;Jun;Jul;Aug | 0.67 |
+| 3 | 2.05 | 640.0 | bimodal | Apr;Nov | 3.817 | NDJFMA | Nov;Dec;Jan;Feb;Mar;Apr | 0.61 |

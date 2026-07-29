@@ -1,0 +1,149 @@
+# AGU Autoscience — Nigeria experiment matrix
+#
+# Single source of truth for the config-driven hindcast search. Mirrors the pattern of
+# forecast-replication/seasonal-hindcasting-gha/config.yml, but every block here is an
+# AXIS of the search space (see docs/04_experiment_design.md), not a single forecast.
+#
+# A "configuration" = one choice on each axis. src/hindcast.py takes a key under
+# `experiments:` (or a season key + overrides) and returns a cross-validated skill record.
+
+# ----------------------------------------------------------------------------- regions
+region:
+  country: Nigeria
+  # predictand (rainfall) national bbox [lat_s, lat_n, lon_w, lon_e]
+  predictand_extent: {south: 4.0, north: 14.0, west: 2.5, east: 15.0}
+  # homogeneous zones (proxy latitude bands; refined by src/seasons.py clustering)
+  zones:
+    guinea_coast: {south: 4.0, north: 8.0}     # bimodal south
+    middle_belt:  {south: 8.0, north: 11.0}    # transitional
+    sudano_sahel: {south: 11.0, north: 14.0}   # unimodal monsoon core
+  # candidate SST predictor domains (swept in E3); lon in -180..180
+  predictor_domains:
+    global_tropical: {south: -40, north: 40, west: -180, east: 180}
+    atlantic:        {south: -30, north: 30, west: -70,  east: 20}
+    pacific:         {south: -30, north: 30, west: 120,  east: -70}
+    indian:          {south: -30, north: 30, west: 30,   east: 120}
+  dry_mask_threshold_mm: 50
+
+# ----------------------------------------------------------------------------- data
+observations: obs/chirps-v3-monthly          # predictand truth
+sst_obs:      obs/ersst-v5                     # index + CCA predictor training
+hindcast_period: [1993, 2016]                 # shared CV/tercile window (extensible)
+
+models:                                        # axis H (MME members)
+  - nmme/spear
+  - nmme/ccsm4
+  - nmme/geoss2s
+  - nmme/cansipsic4
+  # nmme/cfsv2 is NOT fetched by this workflow (cfsv2 hindcast is IRI-only; the autoscience runs
+  # stay IRI-free). Listed for reference only — the models: list is read solely by hindcast.py,
+  # which raises NotImplementedError before any fetch. Use nmme/cesm1 for a CCSR alternative.
+  - nmme/cfsv2
+  - c3s/ecmwf
+  - c3s/meteofrance
+  - c3s/dwd
+  - c3s/cmcc
+  - c3s/ukmo
+
+# ----------------------------------------------------------------------------- candidate features (axis G)
+# Predictor choice is SEARCHED, not assumed (docs/06). This is a POOL of candidates ranked by
+# honest LOYO cross-validated skill per season x subgeography; nothing is privileged. The
+# textbook SST indices below are one part of the pool; the data-driven and non-SST features
+# that follow are the "discover other teleconnections/covariates" part.
+indices:                                    # textbook SST indices (fixed boxes)
+  nino34:   {kind: box, boxes: {nino34: [-5, 5, 190, 240]}}
+  atl3:     {kind: box, boxes: {atl3: [-3, 3, 340, 360]}}          # Atlantic Nino
+  tna:      {kind: box, boxes: {tna: [5.5, 23.5, 302.5, 345]}}
+  tsa:      {kind: box, boxes: {tsa: [-20, 0, 330, 370]}}
+  atl_grad: {kind: diff, a: tna, b: tsa}                            # interhemispheric gradient
+  iod_dmi:  {kind: diff, a: iod_w, b: iod_e}
+  wvg2:     {kind: named, name: wvg}                                # Funk 2-box (E Africa origin) — ONE candidate
+  wvg3:     {kind: named, name: wvg2}                               # Funk 3-box variant
+
+candidate_features:                         # the full searchable pool (extensible)
+  textbook_indices: [nino34, atl3, tna, tsa, atl_grad, iod_dmi, wvg2, wvg3]
+  data_driven:
+    sst_projection:                         # pre-season SST covariance pattern, refit in-fold
+      field: sst_obs
+      lead_months: 3
+    # eof_pcs: leading principal components of the pre-season SST field  (roadmap)
+  non_sst_covariates:
+    persistence:                            # antecedent zone rainfall over the pre-season months
+      source: observations
+      lead_months: 3
+    # soil_moisture, geopotential/wind indices, prior-season onset  (roadmap)
+  selection:
+    metric: loyo_cv_corr                    # honest LOYO CV correlation (discovery inside the fold)
+    cross_validate_discovery: true          # data-driven patterns are refit per fold (no snooping)
+
+# ----------------------------------------------------------------------------- calibration (axes E, I)
+cpt_args:
+  transform_predictand: Gamma          # {none, Gamma, empirical}
+  tailoring: Anomaly                    # {Anomaly, none}
+  cca_modes: [1, 3]
+  x_eof_modes: [1, 8]
+  y_eof_modes: [1, 6]
+  crossvalidation_window: 5
+
+calibration_methods: [cca, ereg, logit, objective_avg]   # axis I
+mme_strategies: [uniform, skill_weighted, drop_worst, bma] # axis J
+
+# ----------------------------------------------------------------------------- downscaling (axes K, L)
+downscaling:
+  methods: [bcsd, qm, dqm, delta, cca, rank-analog, corrdiff]
+  target_resolutions_deg: [1.0, 0.25, 0.1, 0.05]   # coarse -> CHIRPS grid
+
+# ----------------------------------------------------------------------------- scoring
+skill:
+  metrics: [rpss, roc, groc, pearson, spearman, 2afc, heidke, reliability, spread_error]
+  cv: loyo
+  conditional_terciles: [below]        # also score below-normal-only (drought tail)
+  skill_floor_metric: groc
+  skill_floor_value: 0.5
+  reliability_slope_bounds: [0.8, 1.2]
+
+# =========================================================================
+# Experiment configurations — each is one point (or a slice) in the matrix.
+# Seasons come from src/seasons.py; the set below is the working hypothesis.
+# =========================================================================
+experiments:
+
+  # --- E1 seed: the discovered candidate seasons per zone ---
+  jas_sahel_may:
+    label: "JAS Sudano-Sahel, May init (lead 2)"
+    zone: sudano_sahel
+    season: {name: JAS, months: [7, 8, 9]}
+    init_month: 5
+    lead_low: 2.5
+    lead_high: 4.5
+
+  jjas_national_may:
+    label: "JJAS national, May init"
+    zone: national
+    season: {name: JJAS, months: [6, 7, 8, 9]}
+    init_month: 5
+    lead_low: 1.5
+    lead_high: 4.5
+
+  amj_guinea_feb:
+    label: "AMJ Guinea coast (long rains onset), Feb init"
+    zone: guinea_coast
+    season: {name: AMJ, months: [4, 5, 6]}
+    init_month: 2
+    lead_low: 1.5
+    lead_high: 3.5
+
+  ond_guinea_aug:
+    label: "OND Guinea coast (second rains), Aug init"
+    zone: guinea_coast
+    season: {name: OND, months: [10, 11, 12]}
+    init_month: 8
+    lead_low: 1.5
+    lead_high: 3.5
+
+  # --- E6: lead sweep — same target season, marching init dates ---
+  jas_sahel_leadsweep:
+    label: "JAS Sudano-Sahel lead sweep (init Feb..Jun)"
+    zone: sudano_sahel
+    season: {name: JAS, months: [7, 8, 9]}
+    init_month_sweep: [2, 3, 4, 5, 6]

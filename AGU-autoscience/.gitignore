@@ -1,0 +1,9 @@
+# cached raw data (rebuild with src/fetch_data.py)
+data/*.nc
+data/_*.nc
+data/*.log
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store

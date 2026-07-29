@@ -1,0 +1,4 @@
+target,index,sst_fcst_skill,lead_predictability,ceiling_concurrent,hybrid,pure_mme_r
+OND National,iod_dmi,0.901,0.545,0.863,0.716,nan
+MAM National,nino34,nan,-0.236,-0.259,nan,nan
+OND South,iod_dmi,0.901,0.505,0.858,0.663,nan

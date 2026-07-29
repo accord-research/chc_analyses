@@ -1,0 +1,34 @@
+| season | band | best predictor | CV corr | runner-up | CV corr |
+|---|---|---|---|---|---|
+| MAM | National | atl3 | 0.07 | tsa | -0.06 |
+| MAM | South | sst_projection | 0.12 | atl3 | 0.12 |
+| MAM | Middle | sst_projection | -0.01 | wvg2 | -0.04 |
+| MAM | North | wvg2 | 0.19 | wvg3 | 0.17 |
+| AMJ | National | iod_dmi | 0.20 | combo_top2 | -0.01 |
+| AMJ | South | nino34 | 0.20 | sst_projection | 0.19 |
+| AMJ | Middle | iod_dmi | 0.19 | combo_top2 | -0.10 |
+| AMJ | North | nino34 | 0.12 | sst_projection | 0.08 |
+| JJA | National | sst_projection | 0.34 | atl3 | 0.29 |
+| JJA | South | sst_projection | -0.03 | iod_dmi | -0.05 |
+| JJA | Middle | sst_projection | 0.38 | atl3 | 0.36 |
+| JJA | North | sst_projection | 0.42 | tsa | 0.11 |
+| JAS | National | atl3 | 0.29 | atl_grad | 0.24 |
+| JAS | South | atl3 | 0.17 | atl_grad | 0.01 |
+| JAS | Middle | atl_grad | 0.36 | combo_top2 | 0.32 |
+| JAS | North | sst_projection | 0.23 | wvg2 | 0.21 |
+| JJAS | National | sst_projection | 0.37 | atl3 | 0.32 |
+| JJAS | South | sst_projection | 0.08 | atl3 | -0.00 |
+| JJAS | Middle | sst_projection | 0.46 | atl3 | 0.37 |
+| JJAS | North | sst_projection | 0.33 | persistence | 0.17 |
+| ASO | National | atl_grad | 0.26 | atl3 | 0.25 |
+| ASO | South | atl3 | 0.30 | combo_top2 | 0.20 |
+| ASO | Middle | atl_grad | 0.35 | combo_top2 | 0.25 |
+| ASO | North | wvg2 | 0.18 | sst_projection | 0.17 |
+| SON | National | persistence | 0.11 | combo_top2 | 0.02 |
+| SON | South | iod_dmi | 0.04 | persistence | -0.09 |
+| SON | Middle | iod_dmi | -0.15 | persistence | -0.17 |
+| SON | North | persistence | 0.41 | combo_top2 | 0.36 |
+| OND | National | combo_top2 | 0.24 | persistence | 0.17 |
+| OND | South | iod_dmi | 0.10 | combo_top2 | 0.03 |
+| OND | Middle | iod_dmi | 0.07 | combo_top2 | 0.05 |
+| OND | North | combo_top2 | 0.29 | persistence | 0.18 |

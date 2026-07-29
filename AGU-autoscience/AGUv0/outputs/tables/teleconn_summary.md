@@ -1,0 +1,34 @@
+| season | band | top driver | corr | 2nd | corr |
+|---|---|---|---|---|---|
+| MAM | National | atl3 | -0.26 | tsa | -0.20 |
+| MAM | South | atl3 | -0.29 | tsa | -0.26 |
+| MAM | Middle | wvg2 | 0.22 | wvg3 | 0.21 |
+| MAM | North | wvg2 | 0.33 | wvg3 | 0.32 |
+| AMJ | National | iod_dmi | 0.34 | tsa | -0.13 |
+| AMJ | South | nino34 | -0.33 | iod_dmi | 0.32 |
+| AMJ | Middle | iod_dmi | 0.33 | nino34 | 0.08 |
+| AMJ | North | nino34 | 0.29 | wvg2 | 0.28 |
+| JJA | National | atl3 | 0.43 | tsa | 0.40 |
+| JJA | South | iod_dmi | 0.22 | atl3 | 0.21 |
+| JJA | Middle | atl3 | 0.46 | tsa | 0.41 |
+| JJA | North | tsa | 0.31 | atl3 | 0.28 |
+| JAS | National | atl3 | 0.42 | atl_grad | -0.39 |
+| JAS | South | atl3 | 0.32 | atl_grad | -0.24 |
+| JAS | Middle | atl_grad | -0.47 | atl3 | 0.41 |
+| JAS | North | wvg2 | -0.38 | wvg3 | -0.35 |
+| JJAS | National | atl3 | 0.44 | tsa | 0.41 |
+| JJAS | South | atl3 | 0.24 | tsa | 0.19 |
+| JJAS | Middle | atl3 | 0.47 | tsa | 0.43 |
+| JJAS | North | tsa | 0.32 | atl3 | 0.31 |
+| ASO | National | atl_grad | -0.39 | atl3 | 0.38 |
+| ASO | South | atl3 | 0.42 | atl_grad | -0.31 |
+| ASO | Middle | atl_grad | -0.45 | tsa | 0.32 |
+| ASO | North | wvg2 | -0.35 | wvg3 | -0.33 |
+| SON | National | iod_dmi | 0.27 | wvg3 | -0.15 |
+| SON | South | iod_dmi | 0.28 | atl3 | 0.19 |
+| SON | Middle | iod_dmi | 0.26 | atl_grad | -0.13 |
+| SON | North | wvg2 | -0.23 | wvg3 | -0.22 |
+| OND | National | iod_dmi | 0.38 | tsa | 0.07 |
+| OND | South | iod_dmi | 0.31 | tna | 0.13 |
+| OND | Middle | iod_dmi | 0.35 | atl_grad | -0.09 |
+| OND | North | iod_dmi | 0.39 | atl_grad | -0.14 |

@@ -1,0 +1,10 @@
+country,level,m,surv_q05,surv_q10,flagship,flag_q
+Nigeria,L1 original,144,0,0,JJA National·atl3,0.202
+Nigeria,L2 de-duplicated,84,0,0,JJA Middle·atl3,0.118
+Ethiopia,L1 original,208,10,12,OND South·iod_dmi,0.017
+Ethiopia,L2 de-duplicated,114,4,5,OND South·iod_dmi,0.011
+Kenya,L1 original,160,27,35,OND National·iod_dmi,0.006
+Kenya,L2 de-duplicated,96,12,13,OND South·iod_dmi,0.005
+Nigeria,independent_signals,,,0,—,
+Ethiopia,independent_signals,,,3,SON·enso_iod; OND·enso_iod; JAS·enso_iod,
+Kenya,independent_signals,,,3,OND·enso_iod; SON·enso_iod; ASO·enso_iod,

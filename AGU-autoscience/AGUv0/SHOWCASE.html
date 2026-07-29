@@ -1,0 +1,728 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Seasonal forecast design as a search problem</title><style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+:root{
+  /* Jataware brand navy, sampled from the logo (#1D365B), with matching tints. */
+  --ink:#12171f; --muted:#5b6675; --rule:#dfe4ec;
+  --accent:#1D365B; --accent-mid:#5c7196; --accent-soft:#eef1f5;
+  --code-bg:#f7f9fc; --good:#0f7b4f; --warn:#9a5b00;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Charter","Iowan Old Style","Palatino",Georgia,serif;
+  color:var(--ink); line-height:1.56; font-size:10.3pt; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:none}
+
+/* ---- Jataware branded masthead ---- */
+.masthead{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:.55em; margin-bottom:1.5em;
+  border-bottom:2.2px solid var(--accent);
+}
+.masthead img{height:30px; width:auto; display:block}
+.masthead .kicker{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.4pt; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent-mid);
+}
+
+h1{
+  font-size:23pt; line-height:1.18; letter-spacing:-.015em; margin:0 0 .25em;
+  font-weight:700; color:var(--accent);
+}
+h1 + h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:500; color:var(--muted); line-height:1.45;
+  margin:0 0 1.1em; letter-spacing:.005em;
+}
+h2{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:14pt; font-weight:650; letter-spacing:-.01em; color:var(--accent);
+  margin:1.5em 0 .6em; padding-bottom:.3em; border-bottom:2px solid var(--accent);
+  break-after:avoid;
+}
+h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:650; color:var(--accent); margin:1.5em 0 .5em;
+  break-after:avoid;
+}
+p{margin:.62em 0}
+strong{font-weight:700}
+em{color:var(--muted)}
+
+/* lede blockquote under the title, and pull-quote cautions */
+blockquote{
+  margin:1.1em 0; padding:.85em 1.1em; background:var(--accent-soft);
+  border-left:3px solid var(--accent); border-radius:0 5px 5px 0;
+  font-size:10.1pt; color:#243044;
+}
+blockquote p{margin:.3em 0}
+blockquote strong{color:#0d1b2e}
+
+hr{border:0; border-top:1px solid var(--rule); margin:1.5em 0}
+
+/* ---- code ---- */
+code{
+  font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  font-size:8.9pt; background:#eef1f6; padding:.1em .36em; border-radius:3px;
+  color:#243044;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--rule); border-radius:6px;
+  padding:.85em 1em; margin:.85em 0;
+  break-inside:avoid; font-size:8.6pt; line-height:1.5;
+  /* print has no scrollbars: wrap long lines instead of clipping them */
+  white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
+}
+pre code{background:none;padding:0;font-size:inherit}
+.hl{background:none}
+
+/* ---- tables ---- */
+table{
+  border-collapse:collapse; width:100%; margin:1em 0; font-size:9.3pt;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif; break-inside:avoid;
+}
+th{
+  text-align:left; font-weight:650; font-size:8.5pt; letter-spacing:.04em;
+  text-transform:uppercase; color:#fff; background:var(--accent);
+  padding:.55em .6em;
+}
+th:first-child{border-top-left-radius:4px}
+th:last-child{border-top-right-radius:4px}
+td{padding:.46em .6em; border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:1.5px solid var(--accent)}
+th[align=right],td[align=right]{text-align:right; font-variant-numeric:tabular-nums}
+table strong{color:var(--accent)}
+
+ul,ol{margin:.6em 0 .6em 1.15em; padding:0}
+li{margin:.3em 0}
+
+/* ---- figures ---- */
+figure{
+  margin:1.15em 0 1.25em; padding:0; break-inside:avoid; page-break-inside:avoid;
+}
+figure img{
+  display:block; width:100%; height:auto;
+  border:1px solid var(--rule); border-radius:6px; background:#fff;
+}
+figcaption{
+  margin-top:.5em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.3pt; line-height:1.45; color:var(--muted);
+  padding-left:.15em; border-left:2px solid var(--rule); padding-left:.6em;
+}
+figcaption code{font-size:7.8pt; background:#eef1f6}
+figcaption em{color:var(--muted)}
+
+.footer-note{
+  margin-top:.9em; padding-top:.55em; border-top:1px solid var(--rule);
+  font-size:8.6pt; color:var(--muted); line-height:1.5;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+}
+.footer-note code{font-size:8pt}
+
+/* ---- formal abstract block ---- */
+.abstract{
+  background:var(--accent-soft); border:1px solid var(--rule); border-radius:6px;
+  padding:1em 1.2em .6em; margin:1em 0; break-inside:avoid;
+}
+.abstract p{margin:.55em 0; font-size:9.8pt; line-height:1.55}
+.abstract p:first-child{margin-top:0}
+.abstract code{font-size:8.4pt}
+.abstract-meta{
+  display:block; margin-top:.4em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:7.8pt; color:var(--muted); letter-spacing:.01em;
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f8f8f8; }
+.hl .c { color: #3D7B7B; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #008000; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #9C6500 } /* Comment.Preproc */
+.hl .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.hl .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #E40000 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #008400 } /* Generic.Inserted */
+.hl .go { color: #717171 } /* Generic.Output */
+.hl .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #008000 } /* Keyword.Pseudo */
+.hl .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #B00040 } /* Keyword.Type */
+.hl .m { color: #666 } /* Literal.Number */
+.hl .s { color: #BA2121 } /* Literal.String */
+.hl .na { color: #687822 } /* Name.Attribute */
+.hl .nb { color: #008000 } /* Name.Builtin */
+.hl .nc { color: #00F; font-weight: bold } /* Name.Class */
+.hl .no { color: #800 } /* Name.Constant */
+.hl .nd { color: #A2F } /* Name.Decorator */
+.hl .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.hl .nf { color: #00F } /* Name.Function */
+.hl .nl { color: #767600 } /* Name.Label */
+.hl .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #19177C } /* Name.Variable */
+.hl .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #666 } /* Literal.Number.Bin */
+.hl .mf { color: #666 } /* Literal.Number.Float */
+.hl .mh { color: #666 } /* Literal.Number.Hex */
+.hl .mi { color: #666 } /* Literal.Number.Integer */
+.hl .mo { color: #666 } /* Literal.Number.Oct */
+.hl .sa { color: #BA2121 } /* Literal.String.Affix */
+.hl .sb { color: #BA2121 } /* Literal.String.Backtick */
+.hl .sc { color: #BA2121 } /* Literal.String.Char */
+.hl .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.hl .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #BA2121 } /* Literal.String.Double */
+.hl .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.hl .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.hl .sx { color: #008000 } /* Literal.String.Other */
+.hl .sr { color: #A45A77 } /* Literal.String.Regex */
+.hl .s1 { color: #BA2121 } /* Literal.String.Single */
+.hl .ss { color: #19177C } /* Literal.String.Symbol */
+.hl .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #00F } /* Name.Function.Magic */
+.hl .vc { color: #19177C } /* Name.Variable.Class */
+.hl .vg { color: #19177C } /* Name.Variable.Global */
+.hl .vi { color: #19177C } /* Name.Variable.Instance */
+.hl .vm { color: #19177C } /* Name.Variable.Magic */
+.hl .il { color: #666 } /* Literal.Number.Integer.Long */</style></head><body><div class='wrap'><div class='masthead'><img src='file:///Users/emmettculhane/Desktop/JATAWARE/style-resources/jataware_logo_blue_full%20%282%29.png' alt='Jataware'><span class='kicker'>Rosetta &nbsp;·&nbsp; DeepScale</span></div><h1>Seasonal forecast design as a search problem</h1>
+<h3>A modular data-and-downscaling stack, re-pointed by one config entry — demonstrated over Nigeria, Ethiopia &amp; Kenya</h3>
+<blockquote>
+<p>Building a seasonal forecast normally means a bespoke study per region: pick a season, pick a
+predictor, pick a domain, pick a method, defend each choice. <strong>Rosetta</strong> (data access) and
+<strong>DeepScale</strong> (calibration, ensembling, verification) collapse each of those choices into a
+parameter — which turns forecast <em>design</em> into something you can search, cross-validate, and
+subject to multiplicity control.</p>
+</blockquote>
+<hr />
+<h2>Abstract (AGU draft)</h2>
+<div class="abstract">
+<p>Seasonal precipitation forecasts embed dozens of design choices — target season, predictor domain,
+raw SST fields versus teleconnection indices, calibration method, model ensemble, downscaling
+technique, resolution, and lead time — usually fixed by convention and rarely re-optimized per
+region and season. We recast forecast design as a searchable space, enabled by two modular,
+xarray-native libraries: <strong>Rosetta</strong>, a federated data layer exposing NMME, C3S, CHIRPS, ERA5, and
+ERSST through one normalized <code>fetch()</code> interface, and <strong>DeepScale</strong>, a method-agnostic layer for
+calibration (CCA), multi-model combination, downscaling, and cross-validated verification. A shared
+contract lets one driver build, run, and identically score any configuration under
+leave-one-year-out CV — the precondition for automated, agent-driven search.</p>
+<p>We demonstrate over <strong>Nigeria, Ethiopia, and Kenya</strong>, each re-pointed by one config entry. From
+observations the framework discovers each country's seasons, searches — rather than assumes —
+candidate predictors per season and subregion, and composites the drought-versus-flood ocean state;
+a config-driven harness then runs real NMME/C3S forecasts. Critically, we subject the discovered
+skill to multiplicity control — permutation FDR over all observed predictors, including data-driven
+ones — and a genuine out-of-sample block. The East African October–December short rains carry real
+IOD/ENSO-driven skill: an observed teleconnection that survives FDR and holds out of sample,
+realized by a live NMME forecast near generalized ROC 0.70 with positive RPSS. No West-African
+predictor survives FDR, textbook or data-driven; the East African March–May long rains stay
+persistently low-skill. Realized skill shows no systematic lead decay to six months, though a
+long-lead claim is tempered by the Indian Ocean's summer predictability barrier; downscaling holds
+skill to ~5 km.</p>
+<p>We present this as an automatically computed, per-region diagnostic of where SST-based seasonal
+skill exists and why, with verification (FDR, out-of-sample) as the deliverable that separates real
+signal from best-of-search noise. A modular, uniformly scored search over a purpose-built,
+config-portable stack is a template for agentic autoscience toward regionally optimal,
+high-resolution climate services.</p>
+<p><span class="abstract-meta">300 words · 1,991 characters excluding spaces · within the AGU 2,000-character limit</span></p>
+</div>
+<hr />
+<h2>1 · The whole stack, in five calls</h2>
+<p>Every analysis in this report is assembled from the same handful of primitives.</p>
+<h3>Fetch any product through one signature</h3>
+<p><code>rosetta.fetch</code> normalises ~40 products — NMME, C3S, CHIRPS, ERSST, CMAP — behind a single call.
+Regridding, calendar alignment, seasonal aggregation and on-disk memoisation happen underneath.</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rosetta</span>
+
+<span class="c1"># A 24-year NMME precip hindcast for the OND season, initialised in September,</span>
+<span class="c1"># subset to Kenya, indexed by year — one call, ~40 products share this signature.</span>
+<span class="n">gcm</span> <span class="o">=</span> <span class="n">rosetta</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span>
+    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;nmme/geoss2s&quot;</span><span class="p">,</span>
+    <span class="n">variable</span><span class="o">=</span><span class="s2">&quot;precip&quot;</span><span class="p">,</span>
+    <span class="n">init</span><span class="o">=</span><span class="s2">&quot;2016-09&quot;</span><span class="p">,</span>            <span class="c1"># initialisation month -&gt; defines the lead</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;OND&quot;</span><span class="p">,</span>              <span class="c1"># 3-month target season</span>
+    <span class="n">region</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span>    <span class="c1"># [lat_s, lat_n, lon_w, lon_e]</span>
+    <span class="n">hindcast</span><span class="o">=</span><span class="p">(</span><span class="mi">1993</span><span class="p">,</span> <span class="mi">2016</span><span class="p">),</span>
+    <span class="n">year_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</code></pre>
+<h3>Run a real multi-model ensemble with cross-validated skill</h3>
+<p><code>deepscale.seasonal_mme</code> takes predictor <em>tracks</em>, fits CCA-MOS per model, pools the members, and
+returns a verified skill report — leave-one-year-out by default.</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">deepscale</span>
+
+<span class="n">tracks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;PRCP&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">hcst</span><span class="p">,</span> <span class="n">fcst</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">hcst</span><span class="p">,</span> <span class="n">fcst</span><span class="p">)</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">deepscale</span><span class="o">.</span><span class="n">seasonal_mme</span><span class="p">(</span>
+    <span class="n">tracks</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cca&quot;</span><span class="p">,</span>              <span class="c1"># CPT-compatible canonical correlation analysis</span>
+    <span class="n">cv</span><span class="o">=</span><span class="s2">&quot;loyo&quot;</span><span class="p">,</span>                 <span class="c1"># leave-one-year-out cross-validation</span>
+    <span class="n">forecast_year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">result</span><span class="o">.</span><span class="n">skill_report</span><span class="o">.</span><span class="n">scores</span>     <span class="c1"># {&#39;generalized_roc&#39;: 0.696, &#39;rpss&#39;: 0.168, ...}</span>
+<span class="n">result</span><span class="o">.</span><span class="n">tercile_cv</span>              <span class="c1"># (year, tercile, lat, lon) cross-validated probabilities</span>
+</pre></div>
+</code></pre>
+<h3>Search the method axis instead of guessing it</h3>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="n">best</span> <span class="o">=</span> <span class="n">deepscale</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+    <span class="n">gcm</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="s2">&quot;bcsd&quot;</span><span class="p">,</span> <span class="s2">&quot;qm&quot;</span><span class="p">,</span> <span class="s2">&quot;cca&quot;</span><span class="p">,</span> <span class="s2">&quot;rank-analog&quot;</span><span class="p">],</span>
+    <span class="n">primary_metric</span><span class="o">=</span><span class="s2">&quot;generalized_roc&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">best</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">best</span><span class="o">.</span><span class="n">score</span>        <span class="c1"># (&#39;delta&#39;, 0.549)</span>
+</pre></div>
+</code></pre>
+<h3>Re-point the entire study at a new country with one entry</h3>
+<p>The portability claim, made concrete — a third country is a dict entry, not a rewrite:</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="c1"># src/areas.py</span>
+<span class="n">AREAS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;kenya&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span> <span class="n">chirps</span><span class="o">=</span><span class="s2">&quot;kenya_chirps_monthly.nc&quot;</span><span class="p">,</span>
+                  <span class="n">bands</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;National&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;North&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;South&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)}),</span>
+<span class="p">}</span>
+<span class="n">AREA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AREA&quot;</span><span class="p">,</span> <span class="s2">&quot;nigeria&quot;</span><span class="p">)</span>
+</pre></div>
+</code></pre>
+<pre><code class="language-bash"><div class="hl"><pre><span></span><span class="nv">AREA</span><span class="o">=</span>kenya<span class="w"> </span>python<span class="w"> </span>src/mme_search.py<span class="w">      </span><span class="c1"># same pipeline, new region</span>
+</pre></div>
+</code></pre>
+<hr />
+<h2>2 · What the search found</h2>
+<h3>Multiplicity control — which discovered signals survive?</h3>
+<p>Searching many axes at once inflates the best score. Every <strong>observed-predictor</strong> cell — the 8
+textbook indices <em>and</em> the discovered predictors (the data-driven <code>sst_projection</code> pattern, the
+<code>combo_top2</code> selector, rainfall <code>persistence</code>) — goes through a <strong>permutation test</strong> (5 000
+shuffles, with the in-fold pattern/selection refit <em>inside</em> each shuffle so the null carries the
+search's own optimism) and a single <strong>Benjamini–Hochberg FDR</strong> family per country. (The design axes
+— SST domain, method, lead, resolution, model set — are a separate GROC-based search, reported below
+with their sampling-noise floors, not folded into this FDR.)</p>
+<table>
+<thead>
+<tr>
+<th>Country</th>
+<th style="text-align:right">cells tested</th>
+<th style="text-align:right">survive <em>q</em> &lt; 0.05</th>
+<th style="text-align:right">independent signals</th>
+<th>strongest survivor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nigeria</strong></td>
+<td style="text-align:right">144</td>
+<td style="text-align:right"><strong>0</strong></td>
+<td style="text-align:right"><strong>0</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Ethiopia</strong></td>
+<td style="text-align:right">208</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right"><strong>~3</strong></td>
+<td>OND South · IOD (r = +0.56, q = 0.017)</td>
+</tr>
+<tr>
+<td><strong>Kenya</strong></td>
+<td style="text-align:right">160</td>
+<td style="text-align:right">27</td>
+<td style="text-align:right"><strong>~3</strong></td>
+<td>OND · IOD (r = +0.55, q ≈ 0.005)</td>
+</tr>
+</tbody>
+</table>
+<p>Two details make this test honest: the permutation null for a leave-one-out correlation is
+<strong>biased negative</strong> (a zero-signal predictor scores ≈ −0.36, not 0), so the test is one-sided
+against <em>that</em> null; and near-zero-rainfall dry-season cells are excluded because they manufacture
+spurious correlations.</p>
+<p><strong>But the survivor <em>counts</em> overstate the number of discoveries.</strong> The <code>National</code> band is the
+area-mean of its sub-bands, <code>wvg2</code>/<code>wvg3</code> are deterministic functions of Niño3.4, and Niño3.4/IOD
+co-vary in OND — so the East-African short-rains signal is <strong>~1 physical hypothesis counted a dozen
+ways</strong>. De-duplicated to physically distinct cells, Kenya's 27 and Ethiopia's 10 collapse to <strong>~3
+independent signals</strong> each (all the SON/OND ENSO-IOD short-rains teleconnection). The flagship q is
+<em>robust</em> to this de-duplication — removing pseudo-replicates changes the count, not the flagship's
+significance (Kenya OND·IOD sits at q ≈ 0.005, and the signal <em>strengthens</em>, not weakens, under
+in-fold detrending). East African OND survives as exactly the physically expected IOD/ENSO block —
+the signature of a real signal rather than a lucky cell.</p>
+<blockquote>
+<p><strong>IOD vs ENSO is not a clean statistical split.</strong> The OND &quot;winner&quot; alternates between the IOD and
+the ENSO indices on correlation gaps within sampling noise (indeed the blind training-block search
+above picked an ENSO-family index, not the IOD, for the same cells), and the wet-OND analog years
+(1997, 2019, 2023) are exactly when strong +IOD and El Niño co-occur. At <em>n</em> ≈ 24–33 the
+IOD-specific, ENSO-forced-via-IOD, and shared variance are not cleanly separable. We keep the
+IOD-primary framing the literature favors — but as a physically-motivated attribution, not a
+demonstrated statistical separation of one index over the other.</p>
+</blockquote>
+<p>Because the family now includes the <em>discovered</em> predictors, the West-African null is a <strong>real test,
+not an untested gap</strong>: Nigeria's best data-driven predictor (<code>sst_projection</code>, r = +0.46) <strong>also
+fails FDR</strong> — 0 survivors — so &quot;no West-African signal survives&quot; is now demonstrated rather than
+asserted for a cell that was never entered. Meanwhile the East-African OND cells survive under the
+adaptive predictors too (Ethiopia OND · <code>sst_projection</code> q = 0.025; Kenya OND · <code>combo_top2</code>
+q &lt; 0.02): the same short-rains signal, recovered three independent ways.</p>
+<h3>Out-of-sample confirmation — the search re-run on a training block</h3>
+<p>A stricter test than the earlier one (which scored <em>pre-picked</em> full-record winners): the <strong>entire
+search is re-run on 1991–2009 only</strong>, with a <strong>train-only SST climatology</strong> so nothing from the
+test block leaks into standardization, and the <em>train-discovered</em> winner of each cell is then scored
+out-of-sample on <strong>2010–2023</strong>, with a 95% bootstrap CI over the 14 test years:</p>
+<table>
+<thead>
+<tr>
+<th>Country</th>
+<th>Train-discovered winner</th>
+<th style="text-align:right">train <em>r</em></th>
+<th style="text-align:right"><strong>OOS <em>r</em></strong></th>
+<th>95% CI (OOS)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kenya</td>
+<td>OND · ENSO/IOD</td>
+<td style="text-align:right">+0.58</td>
+<td style="text-align:right"><strong>+0.50</strong></td>
+<td>[+0.17, +0.82]</td>
+</tr>
+<tr>
+<td>Ethiopia</td>
+<td>OND · ENSO/IOD</td>
+<td style="text-align:right">+0.47</td>
+<td style="text-align:right"><strong>+0.60</strong></td>
+<td>[+0.23, +0.85]</td>
+</tr>
+<tr>
+<td>Nigeria</td>
+<td>JJA · ATL3</td>
+<td style="text-align:right">+0.74</td>
+<td style="text-align:right">+0.12</td>
+<td>[−0.25, +0.67]</td>
+</tr>
+<tr>
+<td>Nigeria</td>
+<td>JAS · persistence</td>
+<td style="text-align:right">+0.52</td>
+<td style="text-align:right">−0.03</td>
+<td>[−0.39, +0.52]</td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img src="outputs/figures/showcase/heldout_block.png" alt="Dumbbell chart with error bars: train versus out-of-sample correlation for the top train-discovered cells. East African OND holds near +0.5 with a CI excluding zero; Nigeria's high-train ATL3 and persistence winners collapse toward zero with CIs spanning zero.">
+  <figcaption>Genuinely out-of-sample validation: the search is re-run blind on 1991–2009, its
+  discovered winners scored on 2010–2023, error bars are 95% CIs over the 14 test years. East
+  African OND holds (CI excludes zero); Nigeria's high-train winners collapse (CIs span zero).</figcaption>
+</figure>
+<p>The East-African OND signal is what the blind search re-discovers on the training block <strong>and</strong>
+confirms out of sample — its CI excludes zero. Nigeria's headline train winners (ATL3 at <em>r</em> = 0.74!)
+<strong>collapse</strong> out of sample with CIs spanning zero — the textbook winner's curse, caught by the
+procedure-level test. And the apparent in-sample→OOS <em>increase</em> for East Africa is <strong>not</strong> evidence
+of strengthening: at <em>n</em> = 14 each OOS CI is ±0.3 wide and overlaps the in-sample value. The honest
+claim is that the discovered East-African OND signal <strong>remains positive out of sample</strong>, not that it
+&quot;comes back stronger.&quot;</p>
+<h3>Real dynamical skill, by SST domain</h3>
+<p>Kenya OND National short rains, 4-model NMME (GEOSS2S + CESM1 + CCSM4 + CANSIPSIC4), CCA-MOS, LOYO:</p>
+<table>
+<thead>
+<tr>
+<th>SST domain</th>
+<th style="text-align:right">GROC</th>
+<th style="text-align:right">RPSS</th>
+<th style="text-align:right">corr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pacific</strong></td>
+<td style="text-align:right"><strong>0.696</strong></td>
+<td style="text-align:right"><strong>+0.168</strong></td>
+<td style="text-align:right">+0.455</td>
+</tr>
+<tr>
+<td>Indian</td>
+<td style="text-align:right">0.686</td>
+<td style="text-align:right">+0.160</td>
+<td style="text-align:right">+0.481</td>
+</tr>
+<tr>
+<td>Global tropical</td>
+<td style="text-align:right">0.673</td>
+<td style="text-align:right">+0.126</td>
+<td style="text-align:right">+0.417</td>
+</tr>
+<tr>
+<td>Atlantic</td>
+<td style="text-align:right">0.535</td>
+<td style="text-align:right">−0.026</td>
+<td style="text-align:right">+0.032</td>
+</tr>
+<tr>
+<td><em>precip-MOS baseline</em></td>
+<td style="text-align:right"><em>0.568</em></td>
+<td style="text-align:right"><em>−0.003</em></td>
+<td style="text-align:right"><em>+0.268</em></td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img src="outputs/figures/showcase/domain_skill.png" alt="Two diverging bar charts for Kenya OND by SST predictor domain. Left: GROC measured from 0.5, Pacific highest at 0.696 down to Gulf of Guinea at 0.510. Right: RPSS measured from 0, Pacific +0.168, Indian +0.160, global tropical +0.126, and three negative values.">
+  <figcaption>Skill by SST predictor domain, Kenya OND. Both panels are measured from their own
+  baseline — GROC from 0.5 (no skill), RPSS from 0 (climatology) — so bar length is distance from
+  "no better than climatology".</figcaption>
+</figure>
+<p>Positive RPSS means this is <strong>usable probabilistic skill</strong>, not merely discrimination. But the
+domain <em>ranking</em> is a weak preference, not a demonstrated separation: at <em>n</em> ≈ 24, GROC differences
+below ~0.1 are within sampling noise (<code>docs/14</code> §3). So the Pacific-vs-baseline gap (0.696 vs 0.568,
+≈0.13) only marginally clears that floor, and the Pacific-vs-Indian gap (0.696 vs 0.686) is noise —
+the two ocean domains are statistically indistinguishable here. The defensible statement, matching
+the internal caveat that &quot;SST-CCA barely beats the precip-MOS baseline,&quot; is that an SST predictor is
+<em>competitive with, and probably modestly above</em>, the precip baseline for Kenya OND — not that it
+wins by a clear margin. This GROC is also a <strong>dynamical-forecast</strong> score; it is not the quantity the
+observed-screen FDR test below certifies (see §2).</p>
+<blockquote>
+<p><strong>Caveat — pending data availability.</strong> Bootstrap 95% confidence intervals on these GROC/RPSS
+values (a year-block resample; <code>src/mme_ci.py</code>) are <strong>not yet attached</strong>: the NMME source server
+(CCSR/Columbia OPeNDAP) was unavailable at revision time and the hindcasts are not locally cached.
+The margin statements above rest on §3's ~0.1 sampling-noise floor in the interim; the CIs will be
+added when the data source is reachable.</p>
+</blockquote>
+<hr />
+<h2>3 · Skill vs. lead time — and a result that isn't textbook</h2>
+<p>GROC by lead time (months), real NMME MME:</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th style="text-align:right">1</th>
+<th style="text-align:right">2</th>
+<th style="text-align:right">3</th>
+<th style="text-align:right">4</th>
+<th style="text-align:right">5</th>
+<th style="text-align:right">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kenya OND</td>
+<td style="text-align:right">0.640</td>
+<td style="text-align:right">0.568</td>
+<td style="text-align:right">0.557</td>
+<td style="text-align:right">0.663</td>
+<td style="text-align:right">0.643</td>
+<td style="text-align:right">0.513</td>
+</tr>
+<tr>
+<td>Ethiopia OND (south)</td>
+<td style="text-align:right">0.624</td>
+<td style="text-align:right">0.571</td>
+<td style="text-align:right">0.554</td>
+<td style="text-align:right">0.608</td>
+<td style="text-align:right">0.588</td>
+<td style="text-align:right">0.637</td>
+</tr>
+<tr>
+<td>Nigeria JAS (Middle Belt)</td>
+<td style="text-align:right">0.485</td>
+<td style="text-align:right">0.478</td>
+<td style="text-align:right">0.478</td>
+<td style="text-align:right">0.490</td>
+<td style="text-align:right">0.473</td>
+<td style="text-align:right">0.487</td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img src="outputs/figures/showcase/lead_skill.png" alt="Line chart of GROC against forecast lead time 1 to 6 months for three regions. Kenya and Ethiopia scatter between 0.51 and 0.66 with no downward trend; Nigeria stays flat below the 0.5 no-skill line.">
+  <figcaption>Skill against lead time. The East African curves wander without trend; Nigeria never
+  crosses the no-skill line at any lead.</figcaption>
+</figure>
+<p><strong>East African OND skill shows no systematic decay with lead here.</strong> There is no monotone decline
+from 1 to 6 months — the MME's <em>realized</em> GROC scatters in a band (~0.51–0.66) with no trend. That
+is physically coherent: the short rains are driven by the IOD/ENSO state, which is slowly varying
+and partly predictable seasons ahead.</p>
+<blockquote>
+<p><strong>A specialist caveat, though:</strong> the Indian Ocean has a well-documented <strong>boreal-summer IOD
+predictability barrier</strong>, so a <em>June</em>-initialized OND-IOD forecast is materially harder than a
+September one. The flat GROC-vs-lead curve above is what the ensemble <em>realized</em> on n ≈ 24 years
+(itself noisy); the stronger mechanistic reading — &quot;a June forecast ≈ September&quot; — leans on the
+observed IOD's high <em>concurrent/mature-season</em> persistence and would need the IOD forecast skill
+decomposed <strong>by initialization month</strong> (Jun/Jul/Aug/Sep → OND, detrended) to be asserted. Read
+the lead result as &quot;no realized decay in this MME,&quot; not as long-lead driver predictability
+established.</p>
+</blockquote>
+<p><strong>Nigeria is a clean null at every lead</strong> (0.473–0.490, below the 0.5 no-skill line, RPSS negative
+throughout) — corroborating the FDR result by a completely independent route.</p>
+<blockquote>
+<p><strong>How much to trust the wiggles:</strong> not much, individually. Kenya and Ethiopia track each other to
+within ~0.02 at leads 1–3, but <em>disagree</em> at lead 6 (0.513 vs 0.637) — precisely where a single
+fold has least support at <em>n</em> ≈ 24. Read the <strong>band</strong>, not the points.</p>
+</blockquote>
+<hr />
+<h2>4 · How fine can we downscale before skill breaks?</h2>
+<p>Target grids from 1.0° to 0.05° (≈ 110 km → 5 km), skill re-verified against CHIRPS at each
+resolution. Best-preserving method (<code>delta</code>) shown:</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th style="text-align:right">111 km</th>
+<th style="text-align:right">56 km</th>
+<th style="text-align:right">28 km</th>
+<th style="text-align:right">11 km</th>
+<th style="text-align:right"><strong>5–6 km</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kenya OND</td>
+<td style="text-align:right">0.549</td>
+<td style="text-align:right">0.542</td>
+<td style="text-align:right">0.546</td>
+<td style="text-align:right">0.546</td>
+<td style="text-align:right"><strong>0.546</strong></td>
+</tr>
+<tr>
+<td>Ethiopia OND (south)</td>
+<td style="text-align:right">0.590</td>
+<td style="text-align:right">0.584</td>
+<td style="text-align:right">0.584</td>
+<td style="text-align:right">0.581</td>
+<td style="text-align:right"><strong>0.581</strong></td>
+</tr>
+<tr>
+<td>Nigeria JAS (Middle Belt)</td>
+<td style="text-align:right">0.564</td>
+<td style="text-align:right">0.553</td>
+<td style="text-align:right">0.550</td>
+<td style="text-align:right">0.550</td>
+<td style="text-align:right"><strong>0.550</strong></td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img src="outputs/figures/showcase/downscale_frontier.png" alt="Two panels of GROC against target resolution from 110 km down to 5.5 km. Left: three regions, all essentially flat. Right: five downscaling methods for Kenya, with delta highest and flat throughout and CCA lowest near the no-skill line.">
+  <figcaption>The resolution/skill frontier. Left — every region flat from 110 km to ~5 km. Right —
+  <code>delta</code> leads at every resolution, while <code>cca</code> (the MME's own MOS method)
+  is the weakest <em>downscaler</em> here, hugging the no-skill line.</figcaption>
+</figure>
+<p><strong>The frontier is a plateau, not a cliff.</strong> Within this range, resolution is not the limiting factor —
+coarse-scale predictability is. You can downscale to ~5 km without losing the skill you have, but you
+do not gain any either. <code>delta</code> (simple climatological scaling) preserves skill best, beating CCA,
+BCSD and quantile-mapping.</p>
+<blockquote>
+<p><strong>Read this panel as a scale-sensitivity diagnostic only.</strong> Nigeria was included as an intended
+null control and did <em>not</em> behave like one here (≈0.55, like Kenya), while the lead-time MME and the
+FDR test both call it null. The panels measure different things: this one asks whether a downscaling
+method <em>degrades</em> a signal as the grid refines, not whether the signal carries information. Where
+they conflict, the multiplicity-controlled results are the arbiter.</p>
+</blockquote>
+<hr />
+<h2>5 · Two bugs the verification caught</h2>
+<p>A pipeline that reports skill is only as trustworthy as its failure modes. Two were found and fixed
+while producing these numbers — both silent, both skill-distorting.</p>
+<h3>Bug 1 — a failed transfer that returned zeros instead of raising</h3>
+<p>Large <code>OPeNDAP</code> hindcast requests were failing mid-stream, and the DAP client <strong>substituted zeros
+rather than erroring</strong>. A zero-variance predictor makes CCA's covariance singular:</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="c1"># The tell: a predictor that is silently, entirely zero</span>
+<span class="n">gcm</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>      <span class="c1"># -&gt; 0.0   (should be ~5e5)</span>
+</pre></div>
+</code></pre>
+<p>Fixed by issuing small per-year requests, plus a validity gate at the call site:</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="c1"># src/safe_fetch.py — reject a corrupt response before it poisons the cache</span>
+<span class="k">if</span> <span class="n">finite</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">finite</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">finite</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">da</span>                     <span class="c1"># good data</span>
+<span class="n">_purge_zero_raw</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">region</span><span class="p">)</span>  <span class="c1"># corrupt: purge the memoised entry and retry</span>
+</pre></div>
+</code></pre>
+<h3>Bug 2 — degenerate modes that collapsed every probability</h3>
+<p>Once the data was clean, CCA still returned <strong>GROC of exactly 0.500</strong>. The cause: EOF projections
+were divided by singular values with no guard against near-zero (rank-deficient) modes, producing
+leverages of ~10⁹¹ — where statistical leverage is mathematically bounded in [0, 1].</p>
+<p>Because the ensemble <em>averages leverages across models</em>, one bad model inflated the predictive
+variance without bound and collapsed <strong>every</strong> tercile forecast to a constant:</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="n">tercile_cv</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># [0.5, 0.0, 0.5]  in every single year</span>
+<span class="n">tercile_cv</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>                  <span class="c1"># 0.00000  &lt;- a constant forecast cannot discriminate</span>
+</pre></div>
+</code></pre>
+<p>The fix applies the standard <code>pinv</code> rcond policy — drop modes that carry no real variance:</p>
+<pre><code class="language-python"><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_project_by_sv</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">sv</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divide EOF projections by singular values, dropping degenerate modes.&quot;&quot;&quot;</span>
+    <span class="n">smax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sv</span><span class="p">)))</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">smax</span> <span class="o">*</span> <span class="mf">1e-10</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span> <span class="o">/</span> <span class="n">sv</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</code></pre>
+<p><strong>Validation.</strong> Two independent aggregation paths that previously disagreed by 0.15 now converge:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:right">before</th>
+<th style="text-align:right">after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pooled aggregation</td>
+<td style="text-align:right">0.500</td>
+<td style="text-align:right"><strong>0.640</strong></td>
+</tr>
+<tr>
+<td>per-model aggregation</td>
+<td style="text-align:right">0.642</td>
+<td style="text-align:right"><strong>0.642</strong></td>
+</tr>
+<tr>
+<td>RPSS (pooled)</td>
+<td style="text-align:right">−0.125</td>
+<td style="text-align:right"><strong>+0.065</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Agreement to 0.002 between two independent routes — plus 765 passing tests — is stronger evidence
+than either path alone. <strong>This bug was suppressing RPSS</strong>, so the corrected East African OND result
+is materially <em>stronger</em> than previously reported.</p>
+<hr />
+<h2>6 · What this demonstrates</h2>
+<ul>
+<li><strong>Forecast design can be treated as a search.</strong> One modular stack, re-pointed by a config entry,
+discovered each country's seasons, ranked predictors, searched SST domains and methods, swept lead
+times, and mapped the resolution frontier.</li>
+<li><strong>The defensible result:</strong> an observed <strong>East African OND short-rains</strong> teleconnection that
+survives permutation-FDR (as <strong>~3 independent signals</strong>, not 27 pseudo-replicated cells) and
+<strong>holds out of sample</strong> under a genuine train/test split, realized by a real NMME forecast at
+GROC ≈ 0.70; <strong>no West-African predictor survives FDR</strong> (textbook or data-driven); low
+predictability for the <strong>MAM long rains</strong>. Lead-time and SST-domain rankings are reported with
+their sampling-noise floors, not over-read.</li>
+<li><strong>Verification is the product.</strong> Permutation-FDR (over a family that now includes the adaptive
+predictors), a de-duplicated survivor count, a trend-robust q, and a genuine out-of-sample block
+separate a discovered signal from a lucky cell — and the pipeline caught two silent,
+skill-distorting bugs.</li>
+</ul>
+<div class="footer-note">
+<p>GROC = generalized ROC (0.5 = no skill) · RPSS = ranked probability skill score (0 = climatology) ·
+all cross-validation leave-one-year-out, <em>n</em> ≈ 24 · full detail in <code>README.md</code>, <code>docs/01</code>–<code>14</code>, <code>EXPERIMENT_LOG.md</code>.</p>
+</div>
+</div></body></html>

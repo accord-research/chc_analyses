@@ -1,0 +1,6 @@
+# Library dependencies for this workflow. The distributions are accord-rosetta / accord-deepscale
+# (import names remain `rosetta` / `deepscale`); both are editable-installed in the shared
+# `accord-chc` conda env. This file is the contract, not an installer input — if the env resolves
+# libraries without this workflow's refactored API, its calls will not all exist.
+accord-rosetta
+accord-deepscale

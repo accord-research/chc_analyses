@@ -1,0 +1,5 @@
+target,recipe,generalized_roc,rpss,pearson_r,hit_rate,obs_sst_reference,cfg_predictor_source,cfg_predictor_domain,cfg_method,cfg_transform,cfg_eof_modes,cfg_lead
+Kenya:MAM,"NMME precip-MOS, QM, std_anom, lead 0",0.64,0.075,0.358,0.356,0.17,gcm_mos_precip,region,qm,std_anom,0,0
+Kenya:OND,"NMME forecast index, IOD index, lead 0",0.743,0.258,0.66,0.541,0.483,gcm_index,iod,regression,raw,0,0
+Somalia:MAM,"NMME precip-MOS, QM, std_anom, lead 3",0.58,0.004,0.324,0.347,0.14,gcm_mos_precip,region,qm,std_anom,0,3
+Somalia:SON,"NMME precip-MOS, CCA, 8 EOF modes, raw, lead 0",0.679,0.131,0.641,0.472,0.474,gcm_mos_precip,region,cca,raw,8,0

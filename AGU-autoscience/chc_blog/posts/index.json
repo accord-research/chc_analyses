@@ -1,0 +1,426 @@
+[
+  {
+    "order": 1,
+    "file": "01-june-to-september-2026-extended-early-estimates-document-and.md",
+    "id": "2049",
+    "title": "June to September 2026 \u2018Extended Early Estimates\u2019 document and anticipate extreme dryness in East Africa, India, and Central America",
+    "date": "July 27, 2026",
+    "iso_date": "2026-07-27",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=2049",
+    "words": 2198
+  },
+  {
+    "order": 2,
+    "file": "02-what-the-2026-el-ni\u00f1o-may-mean-for-ethiopias-june-september.md",
+    "id": "1982",
+    "title": "What the 2026 El Ni\u00f1o may mean for Ethiopia\u2019s June \u2013 September Kiremt Rainy Season",
+    "date": "June 3, 2026",
+    "iso_date": "2026-06-03",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1982",
+    "words": 2627
+  },
+  {
+    "order": 3,
+    "file": "03-ethiopia-is-likely-to-experience-very-poor-2026-kiremt-rains.md",
+    "id": "2013",
+    "title": "Ethiopia is Likely to Experience Very Poor 2026 Kiremt Rains",
+    "date": "July 8, 2026",
+    "iso_date": "2026-07-08",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=2013",
+    "words": 1538
+  },
+  {
+    "order": 4,
+    "file": "04-early-march-sub-seasonal-forecasts-indicate-bountiful-rains.md",
+    "id": "1923",
+    "title": "Early March Sub-Seasonal Forecasts Indicate Bountiful Rains and a Good Start of Season in Kenya",
+    "date": "March 5, 2026",
+    "iso_date": "2026-03-05",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1923",
+    "words": 2170
+  },
+  {
+    "order": 5,
+    "file": "05-pamoja-ni-bora-together-is-better-when-forecasting-in-kenya.md",
+    "id": "1968",
+    "title": "Pamoja Ni Bora: Together is Better When Forecasting in Kenya",
+    "date": "April 28, 2026",
+    "iso_date": "2026-04-28",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1968",
+    "words": 2270
+  },
+  {
+    "order": 6,
+    "file": "06-from-data-to-early-action-leveraging-3d-paws-weather-observa.md",
+    "id": "1840",
+    "title": "From Data to Early Action: Leveraging 3D-PAWS Weather Observations for Drought and other Severe Weather Monitoring and Prediction",
+    "date": "June 26, 2025",
+    "iso_date": "2025-06-26",
+    "author": "Daniella Alaso",
+    "categories": [
+      "monitoring"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1840",
+    "words": 1065
+  },
+  {
+    "order": 7,
+    "file": "07-looking-beyond-seasonal-rainfall-totals-how-east-africas-rai.md",
+    "id": "1997",
+    "title": "Looking Beyond Seasonal Rainfall Totals: How East Africa\u2019s Rainy Seasons Are Changing",
+    "date": "June 24, 2026",
+    "iso_date": "2026-06-24",
+    "author": "Daniella Alaso",
+    "categories": [
+      "monitoring"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1997",
+    "words": 920
+  },
+  {
+    "order": 8,
+    "file": "08-chirps3-and-station-data-for-october-and-november-2025-indic.md",
+    "id": "1905",
+    "title": "CHIRPS3 and Station Data For October and November 2025 indicate extremely severe drought conditions in Somalia and Central-Eastern Kenya",
+    "date": "December 12, 2025",
+    "iso_date": "2025-12-12",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1905",
+    "words": 2030
+  },
+  {
+    "order": 9,
+    "file": "09-september-nmme-iod-and-el-ni\u00f1o-forecasts-indicate-extreme-co.md",
+    "id": "1315",
+    "title": "September NMME IOD and El Ni\u00f1o forecasts indicate extreme conditions for late 2023 and early 2024",
+    "date": "September 13, 2023",
+    "iso_date": "2023-09-13",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1315",
+    "words": 2062
+  },
+  {
+    "order": 10,
+    "file": "10-exploring-potential-crop-water-satisfaction-implications-of.md",
+    "id": "1327",
+    "title": "Exploring potential crop water satisfaction implications of a very wet, likely two-times normal, 2023 short rainy season in central and eastern Kenya",
+    "date": "September 13, 2023",
+    "iso_date": "2023-09-13",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1327",
+    "words": 1339
+  },
+  {
+    "order": 11,
+    "file": "11-introducing-the-climate-hazards-infrared-precipitation-with.md",
+    "id": "1510",
+    "title": "Introducing the Climate Hazards Infrared Precipitation with Stations data (CHIRPS v3.0)",
+    "date": "February 12, 2025",
+    "iso_date": "2025-02-12",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1510",
+    "words": 1598
+  },
+  {
+    "order": 12,
+    "file": "12-field-assessments-strengthen-fews-net-early-warning-capabili.md",
+    "id": "1949",
+    "title": "Field Assessments Strengthen FEWS NET Early Warning Capabilities",
+    "date": "March 23, 2026",
+    "iso_date": "2026-03-23",
+    "author": "Daniella Alaso",
+    "categories": [
+      "monitoring"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1949",
+    "words": 1622
+  },
+  {
+    "order": 13,
+    "file": "13-forecast-below-normal-october-to-december-2025-rainfall-in-e.md",
+    "id": "1873",
+    "title": "Forecast Below-Normal October to December 2025 Rainfall in Eastern East Africa",
+    "date": "October 9, 2025",
+    "iso_date": "2025-10-09",
+    "author": "Laura Harrison",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1873",
+    "words": 2147
+  },
+  {
+    "order": 14,
+    "file": "14-exploring-and-anticipating-extreme-east-african-short-rains.md",
+    "id": "1418",
+    "title": "Exploring and Anticipating Extreme East African Short Rains in A Warming World with the Indo-Warm Pool Heating Gradient \u2013 with an OND 2024 outlook",
+    "date": "July 9, 2024",
+    "iso_date": "2024-07-09",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1418",
+    "words": 5941
+  },
+  {
+    "order": 15,
+    "file": "15-a-new-crop-area-mapping-approach-for-smallholder-farmers-in.md",
+    "id": "1829",
+    "title": "A New Crop Area Mapping Approach for Smallholder Farmers in Africa Using High Resolution Satellite Data and Cloud Computing",
+    "date": "May 21, 2025",
+    "iso_date": "2025-05-21",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1829",
+    "words": 1295
+  },
+  {
+    "order": 16,
+    "file": "16-march-to-may-2025-rainfall-season-update.md",
+    "id": "1648",
+    "title": "March to May 2025 Rainfall Season Update",
+    "date": "April 12, 2025",
+    "iso_date": "2025-04-12",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1648",
+    "words": 1433
+  },
+  {
+    "order": 17,
+    "file": "17-climate-conditions-border-closure-and-food-prices-in-afghani.md",
+    "id": "1590",
+    "title": "Climate Conditions, Border Closure and Food Prices in Afghanistan",
+    "date": "March 13, 2025",
+    "iso_date": "2025-03-13",
+    "author": "Fahim Zaheer",
+    "categories": [
+      "monitoring"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1590",
+    "words": 1248
+  },
+  {
+    "order": 18,
+    "file": "18-observations-and-models-converge-on-a-pessimistic-outlook-fo.md",
+    "id": "1566",
+    "title": "Observations and models converge on a pessimistic outlook for the upcoming eastern East Africa long rains",
+    "date": "February 17, 2025",
+    "iso_date": "2025-02-17",
+    "author": "chris",
+    "categories": [
+      "Forecasting",
+      "Precipitation",
+      "monitoring"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1566",
+    "words": 1077
+  },
+  {
+    "order": 19,
+    "file": "19-why-la-ni\u00f1a-and-western-v-climate-conditions-continue-to-app.md",
+    "id": "946",
+    "title": "Why La Ni\u00f1a and \u201cWestern V\u201d Climate Conditions Continue to Appear Conducive to Poor Eastern East Africa March-to-May 2021 Rains and Crop Production",
+    "date": "March 16, 2021",
+    "iso_date": "2021-03-16",
+    "author": "Juliet Way-Henthorne",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=946",
+    "words": 2378
+  },
+  {
+    "order": 20,
+    "file": "20-consistent-with-the-recent-ghacof69-outlook-a-february-forec.md",
+    "id": "1516",
+    "title": "Consistent with the recent GHACOF69 outlook, a February forecast of a negative March-April-May 2025 Western V Gradient indicates that below-normal Gu/Long rains are likely",
+    "date": "February 7, 2025",
+    "iso_date": "2025-02-07",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1516",
+    "words": 937
+  },
+  {
+    "order": 21,
+    "file": "21-from-el-ni\u00f1o-to-early-action-transforming-drought-preparedne.md",
+    "id": "1493",
+    "title": "From El Ni\u00f1o to Early Action: Transforming Drought Preparedness",
+    "date": "January 13, 2025",
+    "iso_date": "2025-01-13",
+    "author": "Daniella Alaso",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1493",
+    "words": 733
+  },
+  {
+    "order": 22,
+    "file": "22-converging-evidence-signals-likely-below-normal-ond-rainfall.md",
+    "id": "1464",
+    "title": "Converging Evidence Signals Likely Below-Normal OND Rainfall",
+    "date": "October 10, 2024",
+    "iso_date": "2024-10-10",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1464",
+    "words": 2635
+  },
+  {
+    "order": 23,
+    "file": "23-concerns-about-the-kenyasomalia-short-rains.md",
+    "id": "10",
+    "title": "Concerns about the Kenya/Somalia short rains",
+    "date": "October 19, 2016",
+    "iso_date": "2016-10-19",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=10",
+    "words": 1609
+  },
+  {
+    "order": 24,
+    "file": "24-september-nmme-outlook-continues-to-indicate-below-normal-ra.md",
+    "id": "1457",
+    "title": "September NMME outlook continues to indicate below-normal rains for the eastern Horn",
+    "date": "September 11, 2024",
+    "iso_date": "2024-09-11",
+    "author": "chris",
+    "categories": [
+      "Forecasting",
+      "Precipitation"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1457",
+    "words": 1502
+  },
+  {
+    "order": 25,
+    "file": "25-eastern-east-africa-outlook-for-october-november-december-re.md",
+    "id": "1444",
+    "title": "Eastern East Africa outlook for October-November-December remains pessimistic in August, but drought concerns diminish slightly",
+    "date": "August 12, 2024",
+    "iso_date": "2024-08-12",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1444",
+    "words": 1213
+  },
+  {
+    "order": 26,
+    "file": "26-southern-africa-hit-with-driest-february-on-record-in-centra.md",
+    "id": "1375",
+    "title": "Southern Africa hit with driest February on record in central areas",
+    "date": "March 24, 2024",
+    "iso_date": "2024-03-24",
+    "author": "Laura Harrison",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1375",
+    "words": 3090
+  },
+  {
+    "order": 27,
+    "file": "27-latest-forecasts-indicate-an-exceptionally-intense-iod-event.md",
+    "id": "1345",
+    "title": "Latest forecasts indicate an exceptionally intense IOD event and East African Rains",
+    "date": "October 17, 2023",
+    "iso_date": "2023-10-17",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1345",
+    "words": 1020
+  },
+  {
+    "order": 28,
+    "file": "28-a-rapid-transition-to-strong-el-ni\u00f1o-and-positive-iod-condit.md",
+    "id": "1272",
+    "title": "A rapid transition to strong El Ni\u00f1o and positive IOD conditions threatens Eastern and Southeastern Africa with Climate Extremes",
+    "date": "July 18, 2023",
+    "iso_date": "2023-07-18",
+    "author": "chris",
+    "categories": [
+      "Forecasting",
+      "Precipitation"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1272",
+    "words": 1976
+  },
+  {
+    "order": 29,
+    "file": "29-strong-el-ni\u00f1o-conditions-are-very-likely-to-persist-through.md",
+    "id": "1338",
+    "title": "Strong El Ni\u00f1o conditions are very likely to persist through late 2023",
+    "date": "October 17, 2023",
+    "iso_date": "2023-10-17",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1338",
+    "words": 1442
+  },
+  {
+    "order": 30,
+    "file": "30-a-warming-world-brings-costly-desiccation-and-inundation-but.md",
+    "id": "1300",
+    "title": "A Warming World Brings Costly Desiccation and Inundation, but Attribution can Inform Prediction",
+    "date": "August 23, 2023",
+    "iso_date": "2023-08-23",
+    "author": "chris",
+    "categories": [
+      "Forecasting"
+    ],
+    "url": "https://blog.chc.ucsb.edu/?p=1300",
+    "words": 1238
+  }
+]

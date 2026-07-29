@@ -1,0 +1,12 @@
+{
+  "config": "JAS Sudano-Sahel, logit on atl_grad, LOYO, 1991-2023",
+  "n_years": 33,
+  "grid": {
+    "year": 33,
+    "lat": 6,
+    "lon": 25
+  },
+  "rpss_mean": -0.024,
+  "rpss_frac_positive": 0.26,
+  "corr_below_mean": -0.072
+}

@@ -1,0 +1,4 @@
+metric,rank_agreement_vs_accuracy,realized_hit_rate_of_argmax
+generalized_roc,0.936,0.419
+rpss,0.784,0.421
+pearson_r,0.883,0.429

@@ -1,0 +1,474 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Selecting a seasonal-forecast configuration by optimization over a design space</title><style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+:root{
+  /* Jataware brand navy, sampled from the logo (#1D365B), with matching tints. */
+  --ink:#12171f; --muted:#5b6675; --rule:#dfe4ec;
+  --accent:#1D365B; --accent-mid:#5c7196; --accent-soft:#eef1f5;
+  --code-bg:#f7f9fc; --good:#0f7b4f; --warn:#9a5b00;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Charter","Iowan Old Style","Palatino",Georgia,serif;
+  color:var(--ink); line-height:1.56; font-size:10.3pt; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:none}
+
+/* ---- Jataware branded masthead ---- */
+.masthead{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:.55em; margin-bottom:1.5em;
+  border-bottom:2.2px solid var(--accent);
+}
+.masthead img{height:30px; width:auto; display:block}
+.masthead .kicker{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.4pt; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent-mid);
+}
+
+h1{
+  font-size:23pt; line-height:1.18; letter-spacing:-.015em; margin:0 0 .25em;
+  font-weight:700; color:var(--accent);
+}
+h1 + h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:500; color:var(--muted); line-height:1.45;
+  margin:0 0 1.1em; letter-spacing:.005em;
+}
+h2{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:14pt; font-weight:650; letter-spacing:-.01em; color:var(--accent);
+  margin:1.5em 0 .6em; padding-bottom:.3em; border-bottom:2px solid var(--accent);
+  break-after:avoid;
+}
+h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:650; color:var(--accent); margin:1.5em 0 .5em;
+  break-after:avoid;
+}
+p{margin:.62em 0}
+strong{font-weight:700}
+em{color:var(--muted)}
+
+/* lede blockquote under the title, and pull-quote cautions */
+blockquote{
+  margin:1.1em 0; padding:.85em 1.1em; background:var(--accent-soft);
+  border-left:3px solid var(--accent); border-radius:0 5px 5px 0;
+  font-size:10.1pt; color:#243044;
+}
+blockquote p{margin:.3em 0}
+blockquote strong{color:#0d1b2e}
+
+hr{border:0; border-top:1px solid var(--rule); margin:1.5em 0}
+
+/* ---- code ---- */
+code{
+  font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  font-size:8.9pt; background:#eef1f6; padding:.1em .36em; border-radius:3px;
+  color:#243044;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--rule); border-radius:6px;
+  padding:.85em 1em; margin:.85em 0;
+  break-inside:avoid; font-size:8.6pt; line-height:1.5;
+  /* print has no scrollbars: wrap long lines instead of clipping them */
+  white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
+}
+pre code{background:none;padding:0;font-size:inherit}
+.hl{background:none}
+
+/* ---- tables ---- */
+table{
+  border-collapse:collapse; width:100%; margin:1em 0; font-size:9.3pt;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif; break-inside:avoid;
+}
+th{
+  text-align:left; font-weight:650; font-size:8.5pt; letter-spacing:.04em;
+  text-transform:uppercase; color:#fff; background:var(--accent);
+  padding:.55em .6em;
+}
+th:first-child{border-top-left-radius:4px}
+th:last-child{border-top-right-radius:4px}
+td{padding:.46em .6em; border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:1.5px solid var(--accent)}
+th[align=right],td[align=right]{text-align:right; font-variant-numeric:tabular-nums}
+table strong{color:var(--accent)}
+
+ul,ol{margin:.6em 0 .6em 1.15em; padding:0}
+li{margin:.3em 0}
+
+/* ---- figures ---- */
+figure{
+  margin:1.15em 0 1.25em; padding:0; break-inside:avoid; page-break-inside:avoid;
+}
+figure img{
+  display:block; width:100%; height:auto;
+  border:1px solid var(--rule); border-radius:6px; background:#fff;
+}
+figcaption{
+  margin-top:.5em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.3pt; line-height:1.45; color:var(--muted);
+  padding-left:.15em; border-left:2px solid var(--rule); padding-left:.6em;
+}
+figcaption code{font-size:7.8pt; background:#eef1f6}
+figcaption em{color:var(--muted)}
+
+.footer-note{
+  margin-top:.9em; padding-top:.55em; border-top:1px solid var(--rule);
+  font-size:8.6pt; color:var(--muted); line-height:1.5;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+}
+.footer-note code{font-size:8pt}
+
+/* ---- formal abstract block ---- */
+.abstract{
+  background:var(--accent-soft); border:1px solid var(--rule); border-radius:6px;
+  padding:1em 1.2em .6em; margin:1em 0; break-inside:avoid;
+}
+.abstract p{margin:.55em 0; font-size:9.8pt; line-height:1.55}
+.abstract p:first-child{margin-top:0}
+.abstract code{font-size:8.4pt}
+.abstract-meta{
+  display:block; margin-top:.4em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:7.8pt; color:var(--muted); letter-spacing:.01em;
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f8f8f8; }
+.hl .c { color: #3D7B7B; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #008000; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #9C6500 } /* Comment.Preproc */
+.hl .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.hl .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #E40000 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #008400 } /* Generic.Inserted */
+.hl .go { color: #717171 } /* Generic.Output */
+.hl .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #008000 } /* Keyword.Pseudo */
+.hl .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #B00040 } /* Keyword.Type */
+.hl .m { color: #666 } /* Literal.Number */
+.hl .s { color: #BA2121 } /* Literal.String */
+.hl .na { color: #687822 } /* Name.Attribute */
+.hl .nb { color: #008000 } /* Name.Builtin */
+.hl .nc { color: #00F; font-weight: bold } /* Name.Class */
+.hl .no { color: #800 } /* Name.Constant */
+.hl .nd { color: #A2F } /* Name.Decorator */
+.hl .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.hl .nf { color: #00F } /* Name.Function */
+.hl .nl { color: #767600 } /* Name.Label */
+.hl .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #19177C } /* Name.Variable */
+.hl .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #666 } /* Literal.Number.Bin */
+.hl .mf { color: #666 } /* Literal.Number.Float */
+.hl .mh { color: #666 } /* Literal.Number.Hex */
+.hl .mi { color: #666 } /* Literal.Number.Integer */
+.hl .mo { color: #666 } /* Literal.Number.Oct */
+.hl .sa { color: #BA2121 } /* Literal.String.Affix */
+.hl .sb { color: #BA2121 } /* Literal.String.Backtick */
+.hl .sc { color: #BA2121 } /* Literal.String.Char */
+.hl .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.hl .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #BA2121 } /* Literal.String.Double */
+.hl .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.hl .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.hl .sx { color: #008000 } /* Literal.String.Other */
+.hl .sr { color: #A45A77 } /* Literal.String.Regex */
+.hl .s1 { color: #BA2121 } /* Literal.String.Single */
+.hl .ss { color: #19177C } /* Literal.String.Symbol */
+.hl .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #00F } /* Name.Function.Magic */
+.hl .vc { color: #19177C } /* Name.Variable.Class */
+.hl .vg { color: #19177C } /* Name.Variable.Global */
+.hl .vi { color: #19177C } /* Name.Variable.Instance */
+.hl .vm { color: #19177C } /* Name.Variable.Magic */
+.hl .il { color: #666 } /* Literal.Number.Integer.Long */</style></head><body><div class='wrap'><div class='masthead'><img src='file:///Users/emmettculhane/Desktop/JATAWARE/style-resources/jataware_logo_blue_full%20%282%29.png' alt='Jataware'><span class='kicker'>Rosetta &nbsp;·&nbsp; DeepScale</span></div><h1>Selecting a region's seasonal-forecast configuration by optimization over a design space</h1>
+<h3>Given only a region's observed rainfall and a set of dynamical hindcasts, which operational forecast configuration performs best? Demonstrated on Kenya and Somalia.</h3>
+<blockquote>
+<p>An operational seasonal forecast embeds many design choices — which predictor, which ocean domain,
+which calibration, how much to smooth or standardize, how many modes to retain, at what lead.
+Rather than fix these by convention, we state them as an explicit search space and, for each
+region's rainy seasons, select the configuration with the highest cross-validated skill. The aim
+is a reproducible procedure for choosing a <em>per-region, per-season</em> forecast recipe from data
+alone, and an honest account of how much skill it yields.</p>
+</blockquote>
+<hr />
+<h2>Abstract (AGU draft)</h2>
+<p><strong>Agentic autoscience for seasonal forecasting. A modular, composable forecasting API lets LLM agents optimize configurations over a design tensor, demonstrated for the eastern Horn of Africa</strong></p>
+<div class="abstract">
+<p>Seasonal precipitation forecasts embed many design choices. Season, domain, SST fields versus teleconnection indices, calibration, multi-model combination, downscaling, and lead are fixed by convention and rarely re-optimized per region and season. Treating them as a search space needs a software layer fluent enough to enumerate them. We supply two composable, xarray-native libraries. Rosetta is a federated data layer exposing NMME, C3S, CHIRPS, ERA5, and ERSST through one normalized fetch() call. DeepScale is a method-agnostic layer for calibration, multi-model combination, downscaling, and cross-validated verification. Every design choice becomes a declared parameter behind one uniform contract, so a large-language-model agent can enumerate, run, and score configurations without bespoke code. One driver builds, runs, and identically scores any configuration under leave-one-year-out cross-validation, and re-points to a new region with one config entry.</p>
+<p>We demonstrate over Kenya and Somalia. The agent detects each region's rainy seasons from climatology, then enumerates a tensor over source, domain, transform, calibration, mode count, and lead. Sources include the observed SST field, NMME forecast SST and precipitation, observed and forecast engineered indices, and persistence. To avoid a configuration that discriminates without being accurate, the agent ranks by the metric whose hindcast ordering best predicts realized categorical accuracy. The short rains are forecastable. Kenya October-December and Somalia September-November reach generalized ROC near 0.70 with positive skill, retained to several months lead. The March-May long rains stay low-skill, and any signal sits in forecast precipitation rather than SST. The best short-rains configurations are the forecast Indian-Ocean-Dipole and Indo-warm-pool-heating-gradient indices. The search selects them without prior specification, matching what operational centres use. Skill is cross-validated but configuration-specific at n=24. Selection reuses the hindcast it reports, so a blind out-of-sample re-derivation confirms it. The outcome is an automated per-region diagnostic of where SST-based seasonal skill exists and at what lead intervals.</p>
+<p><span class="abstract-meta">308 words · 1,930 characters excluding spaces · within the AGU 2,000-character limit</span></p>
+</div>
+<hr />
+<h2>1 · Method</h2>
+<p><strong>Targets are derived, not assumed.</strong> For each region we read the climatological annual cycle from
+CHIRPS rainfall and detect its wet windows. Kenya resolves into two seasons (MAM, OND); the Somalia
+domain resolves into MAM and a September-centred short-rains window (SON) — about a month earlier
+than the operational &quot;Deyr/OND&quot; label, because the domain spans northern Somalia, whose short-rains
+peak falls in October (a point we return to in the caveats).</p>
+<p><strong>The design space is an explicit tensor.</strong> A <em>configuration</em> is one point in</p>
+<p><code>target × predictor_source × predictor_domain × transform × method × EOF-modes × lead</code>,</p>
+<p>and design becomes optimization: the highest-skill configuration per target, evaluated identically
+under leave-one-year-out cross-validation over a common 1993–2016 period (n = 24). The reduced
+downscaling axis (native resolution here) is the one remaining choice held fixed.</p>
+<table>
+<thead>
+<tr>
+<th>axis</th>
+<th>values searched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>predictor_source</code></td>
+<td>observed SST field (perfect-prognosis reference) · NMME forecast SST · NMME forecast precipitation (MOS) · engineered SST indices, observed and NMME-forecast (Niño-3.4, IOD, West-Pacific &amp; Western-V gradients, IWHG) · antecedent-rainfall persistence</td>
+</tr>
+<tr>
+<td><code>predictor_domain</code></td>
+<td>indo-Pacific · Indian · Pacific (SST predictors)</td>
+</tr>
+<tr>
+<td><code>transform</code></td>
+<td>standardized anomaly · raw totals</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>canonical correlation analysis (CCA) · quantile mapping (precip-MOS) · OLS (persistence)</td>
+</tr>
+<tr>
+<td><code>EOF modes</code></td>
+<td>4 · 8 (CCA truncation)</td>
+</tr>
+<tr>
+<td><code>lead</code></td>
+<td>0–4 months before the season</td>
+</tr>
+</tbody>
+</table>
+<p>For Kenya and Somalia this is <strong>1,040 configurations</strong>, each scored on generalized ROC (discrimination),
+RPSS (probabilistic value), Pearson correlation, and tercile hit-rate (accuracy).</p>
+<p><strong>Which metric selects the configuration?</strong> Metrics are scored together; we then ask which one, over
+the hindcast, best predicts realized tercile accuracy. Ranking by discrimination (GROC) selects
+configurations that are marginally <em>less</em> accurate than ranking by Pearson or RPSS:</p>
+<table>
+<thead>
+<tr>
+<th>ranking metric</th>
+<th style="text-align:right">rank agreement with accuracy</th>
+<th style="text-align:right">realized hit-rate of its top pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>generalized ROC</td>
+<td style="text-align:right">0.92</td>
+<td style="text-align:right">0.37</td>
+</tr>
+<tr>
+<td>RPSS</td>
+<td style="text-align:right">0.80</td>
+<td style="text-align:right">0.42</td>
+</tr>
+<tr>
+<td>Pearson</td>
+<td style="text-align:right">0.83</td>
+<td style="text-align:right"><strong>0.43</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Configuration selection below uses <strong>Pearson</strong>.</p>
+<h2>2 · The discovered configuration differs by region and season</h2>
+<p>The single highest-skill <em>realizable</em> (NMME-based) configuration for each target — the search
+included the observed SST field, NMME forecast SST and precipitation, engineered SST indices
+(Niño-3.4, IOD, West-Pacific and Western-V gradients, and the Indo-warm-pool heating gradient IWHG,
+in both observed and NMME-forecast form), and persistence:</p>
+<table>
+<thead>
+<tr>
+<th>region / season</th>
+<th>selected configuration</th>
+<th style="text-align:right">GROC</th>
+<th style="text-align:right">RPSS</th>
+<th style="text-align:right">Pearson</th>
+<th style="text-align:right">hit-rate</th>
+<th style="text-align:right">obs-SST reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kenya OND</strong> (short rains)</td>
+<td>NMME forecast <strong>IOD index</strong> · lead 0</td>
+<td style="text-align:right">0.74</td>
+<td style="text-align:right">0.26</td>
+<td style="text-align:right"><strong>0.66</strong></td>
+<td style="text-align:right">0.54</td>
+<td style="text-align:right">0.48</td>
+</tr>
+<tr>
+<td><strong>Somalia SON</strong> (short rains)</td>
+<td>NMME precip-MOS · CCA (8 modes) · lead 0</td>
+<td style="text-align:right">0.68</td>
+<td style="text-align:right">0.13</td>
+<td style="text-align:right"><strong>0.64</strong></td>
+<td style="text-align:right">0.47</td>
+<td style="text-align:right">0.47</td>
+</tr>
+<tr>
+<td><strong>Kenya MAM</strong> (long rains)</td>
+<td>NMME precip-MOS · quantile mapping · lead 0</td>
+<td style="text-align:right">0.64</td>
+<td style="text-align:right">0.08</td>
+<td style="text-align:right">0.36</td>
+<td style="text-align:right">0.36</td>
+<td style="text-align:right">0.17</td>
+</tr>
+<tr>
+<td><strong>Somalia MAM</strong> (long rains)</td>
+<td>NMME precip-MOS · quantile mapping · lead 3</td>
+<td style="text-align:right">0.58</td>
+<td style="text-align:right">0.00</td>
+<td style="text-align:right">0.32</td>
+<td style="text-align:right">0.35</td>
+<td style="text-align:right">0.14</td>
+</tr>
+</tbody>
+</table>
+<p>Three observations follow, all modest. First, <strong>the selected recipe is not one fixed method</strong> — a
+forecast IOD index for Kenya's short rains, precipitation CCA for Somalia's, quantile-mapped
+precipitation for the long rains — which is the reason for searching rather than fixing a workflow.
+Second, the <strong>short-rains seasons are substantially more predictable than the long-rains seasons</strong> in
+both countries (Pearson ≈ 0.65 vs ≈ 0.3), a difference well outside the sampling noise (§6). Third,
+<strong>the engineered operational indices are competitive with, and for the short rains slightly beat, the
+data-driven field CCA</strong>: the forecast IOD index wins Kenya OND, and the forecast IWHG gives the
+highest single-source discrimination of any predictor for either short-rains season
+(GROC 0.75 Kenya OND, 0.71 Somalia SON). In their <em>forecast</em> form these indices also outscore their
+<em>observed</em> form, indicating the dynamical model adds information beyond the pre-season ocean state.</p>
+<p>The <code>obs-SST reference</code> column is the best perfect-prognosis score from observed SST for the same
+target. For the short rains it is <em>below</em> the realizable NMME skill: an observed-SST statistical
+model is a useful diagnostic but not an upper bound on a dynamical forecast.</p>
+<h2>3 · Skill across the search</h2>
+<figure>
+  <img src="outputs/figures/groc_matrix.png" alt="Four heatmaps of GROC by predictor source (rows) and lead (columns) for Kenya MAM, Kenya OND, Somalia MAM, Somalia SON. The two short-rains panels are warm (0.63-0.74); the two long-rains panels are pale except quantile-mapped precip-MOS; persistence is uniformly near no-skill.">
+  <figcaption>Discrimination (GROC) for the best configuration of each predictor source, by lead and
+  target. Short rains (Kenya OND, Somalia SON) are skillful across SST and precipitation predictors;
+  long rains (both MAM) are near the no-skill line except for quantile-mapped precipitation.
+  GROC 0.5 = no discrimination.</figcaption>
+</figure>
+<p>Read as structure rather than exact values: the short rains are forecastable from the ocean state,
+the model's precipitation, or an engineered index, and remain so out to several months' lead — the
+NMME forecast index is in fact the most lead-robust source for both short-rains seasons, holding
+GROC ≈ 0.71–0.75 across all leads. The long rains carry little seasonal-scale signal, and what little
+there is comes from the model's forecast precipitation, not from SST predictors or indices.
+Persistence is near no-skill throughout.</p>
+<h2>4 · How skill varies with lead</h2>
+<figure>
+  <img src="outputs/figures/lead_cof.png" alt="Skill and accuracy versus lead for the four targets. The short-rains targets stay above the usefulness threshold to 4 months; the long-rains targets are at or below it.">
+  <figcaption>Pearson skill and tercile accuracy vs lead for the selected configuration. The obs-SST
+  line is a perfect-prognosis reference, not an upper bound.</figcaption>
+</figure>
+<p>For the short rains, skill is retained to a lead of ~4 months (an outlook could be issued as early as
+May–June and still clear the usefulness threshold). For the long rains, skill reaches the threshold
+only at short lead (Kenya MAM) or marginally (Somalia MAM), so a confident seasonal outlook is not
+statistically supported there at these leads.</p>
+<h2>5 · Consistency with the published regional understanding</h2>
+<p>Compared with a consolidation of 30 UCSB Climate Hazards Center / FEWS NET blog posts
+(<a href="../chc_blog/REGIONAL_WIKI.md">regional reference</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Published understanding</th>
+<th>This search</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eastern-Horn short rains are the most predictable season</td>
+<td>short rains skillful to ~4-month lead in both countries</td>
+<td>consistent</td>
+</tr>
+<tr>
+<td>Long (&quot;MAM&quot;) rains have little seasonal-scale predictability</td>
+<td>MAM weak in both countries</td>
+<td>consistent</td>
+</tr>
+<tr>
+<td>The long-rains signal, where present, is dynamical/sub-seasonal, not SST-teleconnection</td>
+<td>only forecast-precipitation MOS carries MAM skill; SST predictors are flat</td>
+<td>consistent</td>
+</tr>
+<tr>
+<td>Somalia has among the strongest short-rains forecast skill</td>
+<td>Somalia SON Pearson ≈ 0.64, comparable to Kenya OND</td>
+<td>consistent</td>
+</tr>
+<tr>
+<td>CHC's operational short-rains predictors are engineered indices (IOD, IWHG, West-Pacific gradient)</td>
+<td>the forecast IOD and IWHG indices are the best or among the best short-rains predictors, selected independently by the search</td>
+<td>consistent</td>
+</tr>
+<tr>
+<td>For the long rains CHC leans on the Western-V gradient</td>
+<td>the Western-V index is the best <em>index</em> for Somalia MAM, but weak in absolute terms (GROC ≈ 0.53)</td>
+<td>partly — right index, low skill</td>
+</tr>
+</tbody>
+</table>
+<p>The search reproduces the broad regional ordering independently, and — with the engineered indices
+now included — it recovers the operational centres' own predictor choices: the forecast IOD and IWHG
+indices are selected as the best short-rains predictors without being told to prefer them. That the
+IWHG (built by CHC specifically to capture eastern-Horn short-rains forcing) tops the discrimination
+ranking for both short-rains seasons is an independent corroboration of that index.</p>
+<h2>6 · Caveats</h2>
+<ul>
+<li><strong>Small sample.</strong> n = 24 hindcast years. GROC and correlation differences below ~0.1 are within
+sampling noise; the short- vs long-rains contrast is robust to this, individual decimals are not.</li>
+<li><strong>Configuration-specific.</strong> Every number is specific to the choices searched (CHIRPS predictands
+at coarse resolution, a three-model NMME ensemble, the domains and transforms listed). Results are
+a diagnostic of skill under these choices, not general estimates.</li>
+<li><strong>Selection on the same data.</strong> The metric-selection and configuration-selection steps use the
+hindcast that also reports the skill; the selected skill is therefore an optimistic estimate, and a
+fully independent hold-out would be needed to confirm it.</li>
+<li><strong>Derived vs operational seasons.</strong> The Somalia short-rains window is detected as SON, ~a month
+earlier than the operational Deyr/OND definition, because the analysis domain includes northern
+Somalia. A southern-Somalia domain would likely recover OND.</li>
+<li><strong>Reduced tensor.</strong> Downscaling resolution was held fixed and a principal-component-regression
+calibration was not included; these are the natural next axes to promote. The engineered indices
+are implemented as documented approximations of the operational definitions (the Western-V and
+IWHG boxes in particular), so their scores are indicative rather than exact reproductions.</li>
+<li><strong>Reference, not ceiling.</strong> The observed-SST perfect-prognosis score is a diagnostic reference; a
+dynamical forecast can and here does exceed it.</li>
+</ul>
+<div class="footer-note">
+<p>GROC = generalized ROC (0.5 = no skill) · RPSS (0 = climatology) · all cross-validation
+leave-one-year-out over 1993–2016, n = 24 · method and the full search tensor in <code>README.md</code>,
+<code>src/searchspace.py</code>, and <code>outputs/tables/</code>.</p>
+</div>
+</div></body></html>

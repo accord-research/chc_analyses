@@ -1,0 +1,76 @@
+region,method,res_deg,res_km,groc
+Kenya OND,delta,1.0,111.3,0.549
+Kenya OND,bcsd,1.0,111.3,0.523
+Kenya OND,qm,1.0,111.3,0.523
+Kenya OND,cca,1.0,111.3,0.473
+Kenya OND,rank-analog,1.0,111.3,0.533
+Kenya OND,delta,0.5,55.7,0.542
+Kenya OND,bcsd,0.5,55.7,0.521
+Kenya OND,qm,0.5,55.7,0.522
+Kenya OND,cca,0.5,55.7,0.492
+Kenya OND,rank-analog,0.5,55.7,0.532
+Kenya OND,delta,0.25,27.8,0.546
+Kenya OND,bcsd,0.25,27.8,0.522
+Kenya OND,qm,0.25,27.8,0.523
+Kenya OND,cca,0.25,27.8,0.481
+Kenya OND,rank-analog,0.25,27.8,0.526
+Kenya OND,delta,0.1,11.1,0.546
+Kenya OND,bcsd,0.1,11.1,0.522
+Kenya OND,qm,0.1,11.1,0.523
+Kenya OND,cca,0.1,11.1,0.492
+Kenya OND,rank-analog,0.1,11.1,0.533
+Kenya OND,delta,0.05,5.6,0.546
+Kenya OND,bcsd,0.05,5.6,0.522
+Kenya OND,qm,0.05,5.6,0.523
+Kenya OND,cca,0.05,5.6,0.5
+Kenya OND,rank-analog,0.05,5.6,0.544
+Ethiopia OND (south),delta,1.0,110.9,0.59
+Ethiopia OND (south),bcsd,1.0,110.9,0.52
+Ethiopia OND (south),qm,1.0,110.9,0.525
+Ethiopia OND (south),cca,1.0,110.9,0.439
+Ethiopia OND (south),rank-analog,1.0,110.9,0.589
+Ethiopia OND (south),delta,0.5,55.4,0.584
+Ethiopia OND (south),bcsd,0.5,55.4,0.52
+Ethiopia OND (south),qm,0.5,55.4,0.52
+Ethiopia OND (south),cca,0.5,55.4,0.489
+Ethiopia OND (south),rank-analog,0.5,55.4,0.59
+Ethiopia OND (south),delta,0.25,27.7,0.584
+Ethiopia OND (south),bcsd,0.25,27.7,0.52
+Ethiopia OND (south),qm,0.25,27.7,0.52
+Ethiopia OND (south),cca,0.25,27.7,0.513
+Ethiopia OND (south),rank-analog,0.25,27.7,0.574
+Ethiopia OND (south),delta,0.1,11.1,0.581
+Ethiopia OND (south),bcsd,0.1,11.1,0.519
+Ethiopia OND (south),qm,0.1,11.1,0.52
+Ethiopia OND (south),cca,0.1,11.1,0.509
+Ethiopia OND (south),rank-analog,0.1,11.1,0.571
+Ethiopia OND (south),delta,0.05,5.5,0.581
+Ethiopia OND (south),bcsd,0.05,5.5,0.519
+Ethiopia OND (south),qm,0.05,5.5,0.519
+Ethiopia OND (south),cca,0.05,5.5,0.505
+Ethiopia OND (south),rank-analog,0.05,5.5,0.574
+Nigeria JAS (Middle Belt),delta,1.0,109.8,0.564
+Nigeria JAS (Middle Belt),bcsd,1.0,109.8,0.506
+Nigeria JAS (Middle Belt),qm,1.0,109.8,0.504
+Nigeria JAS (Middle Belt),cca,1.0,109.8,0.542
+Nigeria JAS (Middle Belt),rank-analog,1.0,109.8,0.503
+Nigeria JAS (Middle Belt),delta,0.5,54.9,0.553
+Nigeria JAS (Middle Belt),bcsd,0.5,54.9,0.506
+Nigeria JAS (Middle Belt),qm,0.5,54.9,0.506
+Nigeria JAS (Middle Belt),cca,0.5,54.9,0.531
+Nigeria JAS (Middle Belt),rank-analog,0.5,54.9,0.51
+Nigeria JAS (Middle Belt),delta,0.25,27.4,0.55
+Nigeria JAS (Middle Belt),bcsd,0.25,27.4,0.506
+Nigeria JAS (Middle Belt),qm,0.25,27.4,0.506
+Nigeria JAS (Middle Belt),cca,0.25,27.4,0.53
+Nigeria JAS (Middle Belt),rank-analog,0.25,27.4,0.528
+Nigeria JAS (Middle Belt),delta,0.1,11.0,0.55
+Nigeria JAS (Middle Belt),bcsd,0.1,11.0,0.505
+Nigeria JAS (Middle Belt),qm,0.1,11.0,0.505
+Nigeria JAS (Middle Belt),cca,0.1,11.0,0.529
+Nigeria JAS (Middle Belt),rank-analog,0.1,11.0,0.533
+Nigeria JAS (Middle Belt),delta,0.05,5.5,0.55
+Nigeria JAS (Middle Belt),bcsd,0.05,5.5,0.505
+Nigeria JAS (Middle Belt),qm,0.05,5.5,0.505
+Nigeria JAS (Middle Belt),cca,0.05,5.5,0.527
+Nigeria JAS (Middle Belt),rank-analog,0.05,5.5,0.528
