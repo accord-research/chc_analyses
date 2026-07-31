@@ -183,8 +183,6 @@ perfect-prognosis predictor rather than a forecast of the WVG, and the condition
 — so read them as consistent-with-operational, not as a reproduction of your forecast skill, which is
 higher. Full method and figures are in the re-analysis we can share.)
 
-Thank you for the generous close — I'll take you up on the call.
-
 ---
 
 ### Citations — verified vs. to-check
