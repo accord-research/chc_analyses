@@ -1,0 +1,502 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Autoscience discovery of an operational seasonal-forecast process</title><style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+:root{
+  /* Jataware brand navy, sampled from the logo (#1D365B), with matching tints. */
+  --ink:#12171f; --muted:#5b6675; --rule:#dfe4ec;
+  --accent:#1D365B; --accent-mid:#5c7196; --accent-soft:#eef1f5;
+  --code-bg:#f7f9fc; --good:#0f7b4f; --warn:#9a5b00;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Charter","Iowan Old Style","Palatino",Georgia,serif;
+  color:var(--ink); line-height:1.56; font-size:10.3pt; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:none}
+
+/* ---- Jataware branded masthead ---- */
+.masthead{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:.55em; margin-bottom:1.5em;
+  border-bottom:2.2px solid var(--accent);
+}
+.masthead img{height:30px; width:auto; display:block}
+.masthead .kicker{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.4pt; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent-mid);
+}
+
+h1{
+  font-size:23pt; line-height:1.18; letter-spacing:-.015em; margin:0 0 .25em;
+  font-weight:700; color:var(--accent);
+}
+h1 + h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:500; color:var(--muted); line-height:1.45;
+  margin:0 0 1.1em; letter-spacing:.005em;
+}
+h2{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:14pt; font-weight:650; letter-spacing:-.01em; color:var(--accent);
+  margin:1.5em 0 .6em; padding-bottom:.3em; border-bottom:2px solid var(--accent);
+  break-after:avoid;
+}
+h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:650; color:var(--accent); margin:1.5em 0 .5em;
+  break-after:avoid;
+}
+p{margin:.62em 0}
+strong{font-weight:700}
+em{color:var(--muted)}
+
+/* lede blockquote under the title, and pull-quote cautions */
+blockquote{
+  margin:1.1em 0; padding:.85em 1.1em; background:var(--accent-soft);
+  border-left:3px solid var(--accent); border-radius:0 5px 5px 0;
+  font-size:10.1pt; color:#243044;
+}
+blockquote p{margin:.3em 0}
+blockquote strong{color:#0d1b2e}
+
+hr{border:0; border-top:1px solid var(--rule); margin:1.5em 0}
+
+/* ---- code ---- */
+code{
+  font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  font-size:8.9pt; background:#eef1f6; padding:.1em .36em; border-radius:3px;
+  color:#243044;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--rule); border-radius:6px;
+  padding:.85em 1em; margin:.85em 0;
+  break-inside:avoid; font-size:8.6pt; line-height:1.5;
+  /* print has no scrollbars: wrap long lines instead of clipping them */
+  white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
+}
+pre code{background:none;padding:0;font-size:inherit}
+.hl{background:none}
+
+/* ---- tables ---- */
+table{
+  border-collapse:collapse; width:100%; margin:1em 0; font-size:9.3pt;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif; break-inside:avoid;
+}
+th{
+  text-align:left; font-weight:650; font-size:8.5pt; letter-spacing:.04em;
+  text-transform:uppercase; color:#fff; background:var(--accent);
+  padding:.55em .6em;
+}
+th:first-child{border-top-left-radius:4px}
+th:last-child{border-top-right-radius:4px}
+td{padding:.46em .6em; border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:1.5px solid var(--accent)}
+th[align=right],td[align=right]{text-align:right; font-variant-numeric:tabular-nums}
+table strong{color:var(--accent)}
+
+ul,ol{margin:.6em 0 .6em 1.15em; padding:0}
+li{margin:.3em 0}
+
+/* ---- figures ---- */
+figure{
+  margin:1.15em 0 1.25em; padding:0; break-inside:avoid; page-break-inside:avoid;
+}
+figure img{
+  display:block; width:100%; height:auto;
+  border:1px solid var(--rule); border-radius:6px; background:#fff;
+}
+figcaption{
+  margin-top:.5em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.3pt; line-height:1.45; color:var(--muted);
+  padding-left:.15em; border-left:2px solid var(--rule); padding-left:.6em;
+}
+figcaption code{font-size:7.8pt; background:#eef1f6}
+figcaption em{color:var(--muted)}
+
+.footer-note{
+  margin-top:.9em; padding-top:.55em; border-top:1px solid var(--rule);
+  font-size:8.6pt; color:var(--muted); line-height:1.5;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+}
+.footer-note code{font-size:8pt}
+
+/* ---- formal abstract block ---- */
+.abstract{
+  background:var(--accent-soft); border:1px solid var(--rule); border-radius:6px;
+  padding:1em 1.2em .6em; margin:1em 0; break-inside:avoid;
+}
+.abstract p{margin:.55em 0; font-size:9.8pt; line-height:1.55}
+.abstract p:first-child{margin-top:0}
+.abstract code{font-size:8.4pt}
+.abstract-meta{
+  display:block; margin-top:.4em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:7.8pt; color:var(--muted); letter-spacing:.01em;
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f8f8f8; }
+.hl .c { color: #3D7B7B; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #008000; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #9C6500 } /* Comment.Preproc */
+.hl .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.hl .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #E40000 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #008400 } /* Generic.Inserted */
+.hl .go { color: #717171 } /* Generic.Output */
+.hl .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #008000 } /* Keyword.Pseudo */
+.hl .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #B00040 } /* Keyword.Type */
+.hl .m { color: #666 } /* Literal.Number */
+.hl .s { color: #BA2121 } /* Literal.String */
+.hl .na { color: #687822 } /* Name.Attribute */
+.hl .nb { color: #008000 } /* Name.Builtin */
+.hl .nc { color: #00F; font-weight: bold } /* Name.Class */
+.hl .no { color: #800 } /* Name.Constant */
+.hl .nd { color: #A2F } /* Name.Decorator */
+.hl .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.hl .nf { color: #00F } /* Name.Function */
+.hl .nl { color: #767600 } /* Name.Label */
+.hl .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #19177C } /* Name.Variable */
+.hl .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #666 } /* Literal.Number.Bin */
+.hl .mf { color: #666 } /* Literal.Number.Float */
+.hl .mh { color: #666 } /* Literal.Number.Hex */
+.hl .mi { color: #666 } /* Literal.Number.Integer */
+.hl .mo { color: #666 } /* Literal.Number.Oct */
+.hl .sa { color: #BA2121 } /* Literal.String.Affix */
+.hl .sb { color: #BA2121 } /* Literal.String.Backtick */
+.hl .sc { color: #BA2121 } /* Literal.String.Char */
+.hl .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.hl .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #BA2121 } /* Literal.String.Double */
+.hl .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.hl .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.hl .sx { color: #008000 } /* Literal.String.Other */
+.hl .sr { color: #A45A77 } /* Literal.String.Regex */
+.hl .s1 { color: #BA2121 } /* Literal.String.Single */
+.hl .ss { color: #19177C } /* Literal.String.Symbol */
+.hl .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #00F } /* Name.Function.Magic */
+.hl .vc { color: #19177C } /* Name.Variable.Class */
+.hl .vg { color: #19177C } /* Name.Variable.Global */
+.hl .vi { color: #19177C } /* Name.Variable.Instance */
+.hl .vm { color: #19177C } /* Name.Variable.Magic */
+.hl .il { color: #666 } /* Literal.Number.Integer.Long */</style></head><body><div class='wrap'><div class='masthead'><img src='file:///Users/emmettculhane/Desktop/JATAWARE/style-resources/jataware_logo_blue_full%20%282%29.png' alt='Jataware'><span class='kicker'>Rosetta &nbsp;·&nbsp; DeepScale</span></div><h1>Autoscience discovery of an operational seasonal-forecast process</h1>
+<h3>Forecast zones, season windows, teleconnections, lead intervals, and evaluation design for the eastern Horn, learned from data against acceptance criteria stated in advance</h3>
+<blockquote>
+<p>A prior correction (AGUv2) recovered the eastern-Horn MAM long-rains predictability that a
+whole-domain, symmetric search had averaged away — but it did so with a domain drawn by hand
+from the operational literature. This analysis asks whether the operational design itself is
+<em>discoverable</em>: whether clustering rainfall structure reproduces the expert-chosen domain, its
+season windows, and its conditional skill (four acceptance criteria stated in advance — three
+pass, the Somalia boundary partially), and whether a formal FDR-controlled search over the
+discovered zones then recovers each zone's documented teleconnection recipe and lead structure.
+It does — with one instructive exception that makes evaluation design itself a search axis.</p>
+</blockquote>
+<hr />
+<h2>1 · Design</h2>
+<p><strong>Region as output.</strong> Cells of a two-country CHIRPS v3 field (33–52°E, 5°S–12°N, 1981–2023,
+coarsened to 0.25°) are clustered on two standardized feature blocks: (i) the <strong>shape</strong> of the
+12-month mean annual cycle (timing, not amount), and (ii) the cell's loadings on the leading five
+EOFs of monthly anomalies — the <strong>interannual co-variability</strong> structure, so that cells with
+similar climatologies but decoupled year-to-year behavior separate. Zones are intended as
+forecast units, not climate-atlas units.</p>
+<p><strong>Cluster count by stability, not choice.</strong> k is selected by year-bootstrap re-clustering
+(20 resamples; adjusted Rand index against the full-data labels). k = 2 maximizes ARI (0.95);
+k = 3 is nearly as stable (0.90); stability drops beyond. Because max-ARI is biased toward
+coarse partitions, the k = 3 and k = 4 levels are reported as a hierarchy alongside the
+pre-stated k = 2 selection.</p>
+<p><strong>Falsifiable targets, stated in advance.</strong> The two documented sub-national gradients are
+orthogonal: Kenya's regime boundary is <strong>meridional</strong> (~38°E; Lake Victoria basin and highlands
+vs eastern drylands) while Somalia's is <strong>zonal</strong> (~6–8°N; Golis-mountain north vs south-central).
+A method that merely bands by latitude — the fallback geometry of our earliest pass — cannot pass
+both. Acceptance criteria: (1) a meridional Kenya split near 38°E; (2) a zonal Somalia split near
+6–8°N; (3) the discovered eastern zone reproduces the hand-drawn domain's MAM dry-tail rates
+(0.79 / 0.77); (4) the western/central-Kenya zone shows a weaker MAM signal.</p>
+<h2>2 · The discovered zonation</h2>
+<p>The first, most-stable split (k = 2) is essentially the operational &quot;eastern East Africa&quot;
+boundary: a bimodal MAM+OND dryland zone (eastern Kenya, south-eastern Ethiopia, most of Somalia)
+against the highland regimes — and within Kenya that boundary is longitude-organized
+(eta² lon = 0.10 vs lat = 0.01). At k = 4 the remaining structure resolves: the Ethiopian
+highlands separate into Belg+Kiremt regimes, northern Somalia's mountain strip splits from the
+south (Somalia eta² lat = 0.21 &gt; lon = 0.10), and Kenya's longitude organization sharpens
+(eta² lon = 0.52 vs lat = 0.12). The discovered Kenya dryland boundary is not a straight
+meridian: it runs diagonally, crossing ~38°E in the north and lying east of it in the south —
+a geometry closer to the operational &quot;east and south of ~38°E, ~8°N&quot; corner than to the
+straight line the acceptance criterion posited.</p>
+<figure>
+  <img src="outputs/figures/zone_map_k4.png" alt="Discovered zonation at k=4 over Kenya, Somalia and southern Ethiopia, with the expected 38E meridional and 7N zonal boundaries overlaid as dotted lines. The eastern dryland zone covers eastern Kenya, south-eastern Ethiopia and most of Somalia; the Kenya boundary is meridional near 38E and northern Somalia separates from the south.">
+  <figcaption>Zonation at k = 4. The dotted red lines are the literature's approximate ~38°E /
+  ~7°N reference marks, not the discovered boundaries. The eastern dryland zone emerges without
+  administrative or expert input. Within Kenya the zonation is longitude-organized (eta² lon 0.52
+  vs lat 0.12) but the discovered dryland boundary is <em>diagonal</em> — it crosses ~38°E in
+  northern Kenya and lies east of it in the south — closer to the operational domain's "east and
+  south of ~38°E, ~8°N" corner definition than to a strict meridian. In Somalia only the northern
+  highland strip separates (see §5).</figcaption>
+</figure>
+<figure>
+  <img src="outputs/figures/annual_cycles.png" alt="Mean annual rainfall cycle for each discovered zone, showing a bimodal MAM plus OND cycle in the eastern zone and unimodal or Belg-Kiremt cycles in the highland zones.">
+  <figcaption>Per-zone mean annual cycles at the k = 2 level, with discovered rainy-season
+  windows (one window per detected harmonic peak). The eastern zone yields the bimodal MAM + OND
+  calendar from data alone (MAM + SON at the k = 3 level); the highland zone yields the
+  Belg/Kiremt structure.</figcaption>
+</figure>
+<h2>3 · Zone → season → teleconnection</h2>
+<p>For each zone and discovered window (plus MAM and OND as common candidates), the pre-season
+Western-V Gradient is evaluated both symmetrically (all-years leave-one-year-out correlation)
+and on the dry tail, as in AGUv2. Selected rows at k = 3:</p>
+<p><em>Columns: <code>sym</code> = symmetric all-years LOYO correlation; <code>dry base</code> = climatological below-median
+rate; <code>dry, -WVG</code> = below-median rate after a strong-negative pre-season WVG (most-negative
+third); <code>+ La Nina</code> = additionally conditioned on pre-season Nino3.4 &lt; -0.5 sigma.</em></p>
+<table>
+<thead>
+<tr>
+<th>zone (discovered)</th>
+<th>window</th>
+<th style="text-align:right">sym</th>
+<th style="text-align:right">dry base</th>
+<th style="text-align:right">dry, -WVG</th>
+<th style="text-align:right">+ La Nina</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eastern Horn (5.5N, 43.9E)</td>
+<td><strong>MAM</strong></td>
+<td style="text-align:right">-0.20</td>
+<td style="text-align:right">0.55</td>
+<td style="text-align:right"><strong>0.79</strong></td>
+<td style="text-align:right"><strong>0.77</strong> (n=13)</td>
+</tr>
+<tr>
+<td>eastern Horn</td>
+<td>SON</td>
+<td style="text-align:right">+0.17</td>
+<td style="text-align:right">0.60</td>
+<td style="text-align:right">0.71</td>
+<td style="text-align:right">1.00 (n=9)</td>
+</tr>
+<tr>
+<td>central/southern Kenya (0.3S, 37.1E)</td>
+<td>MAM</td>
+<td style="text-align:right">-0.54</td>
+<td style="text-align:right">0.55</td>
+<td style="text-align:right">0.71</td>
+<td style="text-align:right">0.69 (n=13)</td>
+</tr>
+<tr>
+<td>central/southern Kenya</td>
+<td>OND</td>
+<td style="text-align:right">+0.27</td>
+<td style="text-align:right">0.60</td>
+<td style="text-align:right"><strong>0.86</strong></td>
+<td style="text-align:right">0.89 (n=9)</td>
+</tr>
+<tr>
+<td>Ethiopian highlands (7.8N, 37.3E)</td>
+<td>JAS</td>
+<td style="text-align:right">+0.47</td>
+<td style="text-align:right">0.50</td>
+<td style="text-align:right">0.21</td>
+<td style="text-align:right">0.25 (n=12)</td>
+</tr>
+</tbody>
+</table>
+<p>Three results. <strong>First</strong>, the discovered eastern-Horn zone reproduces the hand-drawn domain's MAM
+dry-tail rates exactly — P(below-median | strong-negative WVG) = 0.79, and 0.77 with the La Niña
+condition — while its symmetric correlation remains near zero, the same one-sided structure the
+prior search's metric averaged away. At k = 4 the central-Kenya zone weakens to 0.64 / 0.62,
+the expected contrast with the eastern zone. <strong>Second</strong>, the zone windows are discovered, not
+imposed: the eastern zone yields the MAM + SON (Gu/Deyr) calendar, the highlands yield
+Belg + Kiremt. <strong>Third</strong>, the Ethiopian-highlands zone shows the <em>sign-reversed</em> Kiremt
+teleconnection — a strong-negative WVG (La Niña side) makes a dry JAS <em>less</em> likely (0.21
+against a 0.50 base; equivalently, the dry risk sits on the El Niño side). Pooling this regime
+with the eastern Horn would not merely dilute the dry-tail signal; the two would partially
+cancel. This is the strongest mechanical account yet of how a whole-domain evaluation can
+mislabel a predictable region as unpredictable.</p>
+<h2>4 · The searchable tensor, with the corrections as axes</h2>
+<p>The targeted validation above uses one predictor. The general question is the AGUv1 one — a
+formal search over forecast-design space — re-posed with the v2/v3 corrections wired in as axes
+rather than post-hoc fixes:</p>
+<pre><code><div class="hl"><pre><span></span>zone (discovered, k=4) x window (discovered per zone, + MAM/OND) x index (nino34, iod, wpg,
+wvg, iwhg) x lead (0-3 months) x evaluation mode (symmetric Pearson | dry-tail AUC)
+</pre></div>
+</code></pre>
+<p>520 cells, one shared permutation null (1,000 year-shuffles), one Benjamini–Hochberg family at
+alpha = 0.10 — so the zonation, windows, leads, and both evaluation modes are all inside the
+multiplicity correction. This is the perfect-prognosis (observed-index) slice of the v1 tensor;
+the GCM-forecast-index, MOS, and CCA-field axes are deferred pending the data-provider
+restoration. <strong>79 of 520 cells survive FDR.</strong> The surviving structure:</p>
+<table>
+<thead>
+<tr>
+<th>zone</th>
+<th>best surviving recipe</th>
+<th style="text-align:right">stat</th>
+<th style="text-align:right">q</th>
+<th>lead persistence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>central/southern Kenya</td>
+<td>OND short rains — IOD</td>
+<td style="text-align:right">r = 0.60</td>
+<td style="text-align:right">0.025</td>
+<td>to lead 2</td>
+</tr>
+<tr>
+<td>eastern Horn</td>
+<td>OND Deyr — Nino3.4 / IWHG</td>
+<td style="text-align:right">r = 0.59–0.63, dry AUC 0.79–0.80</td>
+<td style="text-align:right">0.025</td>
+<td>to lead 3</td>
+</tr>
+<tr>
+<td>Ethiopian highlands</td>
+<td>JAS Kiremt — WPG (sign-reversed)</td>
+<td style="text-align:right">r = 0.57, dry AUC 0.78</td>
+<td style="text-align:right">0.025</td>
+<td>to lead 1</td>
+</tr>
+<tr>
+<td>Ethiopian highlands</td>
+<td>MJJ Belg — IOD</td>
+<td style="text-align:right">r = 0.51</td>
+<td style="text-align:right">0.031</td>
+<td>at lead 3</td>
+</tr>
+</tbody>
+</table>
+<p>Each surviving recipe matches the operationally documented driver for that zone and season — the
+IOD for the equatorial short rains, ENSO/IWHG for the Deyr, the sign-reversed Pacific gradient
+for the Kiremt — none of which was supplied to the search.</p>
+<p><strong>And one instructive absence.</strong> No MAM cell survives the family-wide correction, under either
+evaluation mode. The long-rains dry-tail signal — recovered in §3 at 0.79/0.77 — is a
+<em>conditional</em> phenomenon, visible in the strong-negative-WVG and La-Niña subsets, and an
+unconditional AUC over all 42 years dilutes it below the FDR bar. A search whose evaluation-mode
+axis stops at unconditional metrics will still miss it. Conditional, subset-based evaluation is
+not a refinement of the search space; for this signal it is the difference between detection and
+non-detection.</p>
+<h2>5 · Acceptance</h2>
+<table>
+<thead>
+<tr>
+<th>criterion (pre-stated)</th>
+<th>outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kenya meridional split near 38E</td>
+<td>pass, with a caveat — longitude-organized at every level (eta2 lon 0.52 vs lat 0.12 at k=4), but the boundary is diagonal (crosses ~38E in the north, east of it in the south), matching the EEA &quot;east and south of&quot; corner rather than a strict meridian</td>
+</tr>
+<tr>
+<td>Somalia zonal split near 6-8N</td>
+<td>partial — a highland strip at ~9-10N splits (eta2 lat 0.21 vs lon 0.10), but ~2/3 of the north stays with the south; see the note below</td>
+</tr>
+<tr>
+<td>eastern zone matches hand-drawn MAM rates (0.79/0.77)</td>
+<td>pass — exact, at k=3 and k=4</td>
+</tr>
+<tr>
+<td>weaker central/western-Kenya MAM signal</td>
+<td>pass — 0.64/0.62 vs 0.79/0.77 (moderate, not null)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>On the Somalia criterion.</strong> Somalia is visibly near-uniform in the zone maps, and that is what
+the data say: at k = 4 southern Somalia is 98% one zone and even north of 8°N two-thirds of cells
+remain in it (stable at k = 5–6). The distinction the clustering does find is confined to the
+Golis-highland strip near 9–10°N. There is a climatological basis for the uniformity — north and
+south Somalia monthly rainfall anomalies co-vary at r = 0.73, and the standardized cycle shapes
+are similar — so on these features most of Somalia is one regime. Two readings are possible:
+the feature set under-separates (standardizing the cycle discards the north's much lower rainfall
+amount, and very arid cells have noisy shapes), or the operational ~8°N cut is a conservative
+simplification stricter than the rainfall structure requires. The skill evidence is consistent
+with the second for forecast purposes — the full eastern-Horn domain (which includes the
+north-east plateau) and the south-central-Somalia box give identical MAM dry-tail rates
+(0.79/0.77) — but the criterion is scored <em>partial</em>, not pass, because the pre-stated boundary
+was not cleanly recovered.</p>
+<h2>6 · Caveats</h2>
+<ul>
+<li><strong>Shared conditioning years.</strong> The conditional rates across zones rest on the same 13
+strong-negative-WVG La-Niña years; zones are not independent tests, and adjacent zones co-vary,
+so the 79 FDR survivors overstate the number of independent findings.</li>
+<li><strong>§3 is validation, §4 is search.</strong> The targeted WVG validation is protected by four
+pre-stated criteria, not by the FDR family; the tensor search is FDR-controlled but its
+conditional-evaluation axis is absent by construction — adding conditional metrics <em>because</em>
+MAM failed would be a forking path, so that extension must be specified before it is run.</li>
+<li><strong>Selection-rule bias.</strong> Max-ARI favors coarse k; the hierarchy is reported rather than a
+single level, with the pre-stated selection unchanged.</li>
+<li><strong>Perfect prognosis.</strong> All predictors are observed pre-season indices; the operational
+question additionally requires their NMME forecasts (the deferred <code>gcm_index</code> axis), and the
+WVG is an approximation of the operational index.</li>
+</ul>
+<h2>7 · AGU abstract (draft)</h2>
+<div class="abstract">
+<p><strong>Agentic search over forecast-design space recovers an operational seasonal-forecast
+process for the eastern Horn of Africa</strong></p>
+<p>Operational seasonal forecasting encodes substantial domain knowledge. Forecast regions are
+drawn around homogeneous rainfall regimes. Season windows follow local calendars. Predictors and
+lead times come from documented teleconnections. Evaluation is often conditional and
+tail-focused. We ask how much of this design is recoverable from data by automated search. The
+testbed is Rosetta and DeepScale, two open Python libraries giving a uniform interface to
+observational archives, NMME and C3S hindcasts, and CCA-based forecast methods, and because the
+interface is modular and uniform, a large-language-model agent can enumerate, run, and score
+design configurations without bespoke code.</p>
+<p>An initial search over whole-country predictands with symmetric metrics reproduced the
+documented short-rains predictability of the Kenya–Somalia region but labeled the March–May long
+rains unpredictable. Expert review identified this as an artifact of two defaults. The domain
+pooled distinct rainfall regimes. The metric averaged a one-sided dry-tail signal toward zero.
+We rebuilt the search with region as an output. Clustering on seasonal-cycle shape and
+interannual co-variability, with cluster count set by bootstrap stability, recovers the
+operational eastern-Horn domain, the meridional Kenya regime boundary, part of the northern
+Somalia boundary, and each zone's rainy-season calendar. The discovered eastern zone reproduces published conditional
+statistics. The probability of a below-median season after a strong-negative Western-V gradient
+reaches 0.79 against a 0.55 base rate. A 520-cell search over zone, season window, five SST
+indices, lead, and evaluation mode, under one permutation null with Benjamini–Hochberg control,
+confirms short-rains skill persisting two to three months of lead and a sign-reversed highland
+Kiremt teleconnection. The long-rains signal survives only under La-Niña-conditional evaluation,
+so evaluation design is itself a search axis. Automated search recovers operational forecast
+design when regionalization and conditional evaluation are inside the searched space, and it
+documents where SST-based seasonal skill exists, for which seasons, and at what lead
+intervals.</p>
+<p><span class="abstract-meta">Draft for AGU. All numbers from this analysis (CHIRPS v3 / ERSSTv5,
+1981–2023); v1 search and expert-review history in the version log.</span></p>
+</div>
+<div class="footer-note">
+<p>CHIRPS v3 monthly, 33–52°E, 5°S–12°N, 1981–2023, coarsened to 0.25°; ERSSTv5 for SST indices.
+WVG = z(Niño3.4) − z(Western-V box) over the two pre-season months; below-median = SPI &lt; 0;
+La Niña = pre-season Niño3.4 &lt; −0.5σ. Clustering: k-means on standardized cycle-shape +
+anomaly-EOF-loading blocks; k by 20-resample year-bootstrap ARI. Method in <code>src/zones.py</code>,
+<code>src/wvg_by_zone.py</code>, <code>src/hierarchy.py</code>; hierarchy tables in <code>outputs/tables/</code>.</p>
+</div>
+</div></body></html>

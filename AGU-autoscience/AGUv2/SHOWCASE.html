@@ -1,0 +1,321 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Selecting a seasonal-forecast configuration by optimization over a design space</title><style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+:root{
+  /* Jataware brand navy, sampled from the logo (#1D365B), with matching tints. */
+  --ink:#12171f; --muted:#5b6675; --rule:#dfe4ec;
+  --accent:#1D365B; --accent-mid:#5c7196; --accent-soft:#eef1f5;
+  --code-bg:#f7f9fc; --good:#0f7b4f; --warn:#9a5b00;
+}
+*{box-sizing:border-box}
+body{
+  font-family:"Charter","Iowan Old Style","Palatino",Georgia,serif;
+  color:var(--ink); line-height:1.56; font-size:10.3pt; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:none}
+
+/* ---- Jataware branded masthead ---- */
+.masthead{
+  display:flex; align-items:center; justify-content:space-between;
+  padding-bottom:.55em; margin-bottom:1.5em;
+  border-bottom:2.2px solid var(--accent);
+}
+.masthead img{height:30px; width:auto; display:block}
+.masthead .kicker{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.4pt; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--accent-mid);
+}
+
+h1{
+  font-size:23pt; line-height:1.18; letter-spacing:-.015em; margin:0 0 .25em;
+  font-weight:700; color:var(--accent);
+}
+h1 + h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:500; color:var(--muted); line-height:1.45;
+  margin:0 0 1.1em; letter-spacing:.005em;
+}
+h2{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:14pt; font-weight:650; letter-spacing:-.01em; color:var(--accent);
+  margin:1.5em 0 .6em; padding-bottom:.3em; border-bottom:2px solid var(--accent);
+  break-after:avoid;
+}
+h3{
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:11.2pt; font-weight:650; color:var(--accent); margin:1.5em 0 .5em;
+  break-after:avoid;
+}
+p{margin:.62em 0}
+strong{font-weight:700}
+em{color:var(--muted)}
+
+/* lede blockquote under the title, and pull-quote cautions */
+blockquote{
+  margin:1.1em 0; padding:.85em 1.1em; background:var(--accent-soft);
+  border-left:3px solid var(--accent); border-radius:0 5px 5px 0;
+  font-size:10.1pt; color:#243044;
+}
+blockquote p{margin:.3em 0}
+blockquote strong{color:#0d1b2e}
+
+hr{border:0; border-top:1px solid var(--rule); margin:1.5em 0}
+
+/* ---- code ---- */
+code{
+  font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  font-size:8.9pt; background:#eef1f6; padding:.1em .36em; border-radius:3px;
+  color:#243044;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--rule); border-radius:6px;
+  padding:.85em 1em; margin:.85em 0;
+  break-inside:avoid; font-size:8.6pt; line-height:1.5;
+  /* print has no scrollbars: wrap long lines instead of clipping them */
+  white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
+}
+pre code{background:none;padding:0;font-size:inherit}
+.hl{background:none}
+
+/* ---- tables ---- */
+table{
+  border-collapse:collapse; width:100%; margin:1em 0; font-size:9.3pt;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif; break-inside:avoid;
+}
+th{
+  text-align:left; font-weight:650; font-size:8.5pt; letter-spacing:.04em;
+  text-transform:uppercase; color:#fff; background:var(--accent);
+  padding:.55em .6em;
+}
+th:first-child{border-top-left-radius:4px}
+th:last-child{border-top-right-radius:4px}
+td{padding:.46em .6em; border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:1.5px solid var(--accent)}
+th[align=right],td[align=right]{text-align:right; font-variant-numeric:tabular-nums}
+table strong{color:var(--accent)}
+
+ul,ol{margin:.6em 0 .6em 1.15em; padding:0}
+li{margin:.3em 0}
+
+/* ---- figures ---- */
+figure{
+  margin:1.15em 0 1.25em; padding:0; break-inside:avoid; page-break-inside:avoid;
+}
+figure img{
+  display:block; width:100%; height:auto;
+  border:1px solid var(--rule); border-radius:6px; background:#fff;
+}
+figcaption{
+  margin-top:.5em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:8.3pt; line-height:1.45; color:var(--muted);
+  padding-left:.15em; border-left:2px solid var(--rule); padding-left:.6em;
+}
+figcaption code{font-size:7.8pt; background:#eef1f6}
+figcaption em{color:var(--muted)}
+
+.footer-note{
+  margin-top:.9em; padding-top:.55em; border-top:1px solid var(--rule);
+  font-size:8.6pt; color:var(--muted); line-height:1.5;
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+}
+.footer-note code{font-size:8pt}
+
+/* ---- formal abstract block ---- */
+.abstract{
+  background:var(--accent-soft); border:1px solid var(--rule); border-radius:6px;
+  padding:1em 1.2em .6em; margin:1em 0; break-inside:avoid;
+}
+.abstract p{margin:.55em 0; font-size:9.8pt; line-height:1.55}
+.abstract p:first-child{margin-top:0}
+.abstract code{font-size:8.4pt}
+.abstract-meta{
+  display:block; margin-top:.4em; font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+  font-size:7.8pt; color:var(--muted); letter-spacing:.01em;
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #f8f8f8; }
+.hl .c { color: #3D7B7B; font-style: italic } /* Comment */
+.hl .err { border: 1px solid #F00 } /* Error */
+.hl .k { color: #008000; font-weight: bold } /* Keyword */
+.hl .o { color: #666 } /* Operator */
+.hl .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.hl .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.hl .cp { color: #9C6500 } /* Comment.Preproc */
+.hl .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.hl .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.hl .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.hl .gd { color: #A00000 } /* Generic.Deleted */
+.hl .ge { font-style: italic } /* Generic.Emph */
+.hl .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #E40000 } /* Generic.Error */
+.hl .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #008400 } /* Generic.Inserted */
+.hl .go { color: #717171 } /* Generic.Output */
+.hl .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.hl .gs { font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #04D } /* Generic.Traceback */
+.hl .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.hl .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.hl .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.hl .kp { color: #008000 } /* Keyword.Pseudo */
+.hl .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.hl .kt { color: #B00040 } /* Keyword.Type */
+.hl .m { color: #666 } /* Literal.Number */
+.hl .s { color: #BA2121 } /* Literal.String */
+.hl .na { color: #687822 } /* Name.Attribute */
+.hl .nb { color: #008000 } /* Name.Builtin */
+.hl .nc { color: #00F; font-weight: bold } /* Name.Class */
+.hl .no { color: #800 } /* Name.Constant */
+.hl .nd { color: #A2F } /* Name.Decorator */
+.hl .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.hl .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.hl .nf { color: #00F } /* Name.Function */
+.hl .nl { color: #767600 } /* Name.Label */
+.hl .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.hl .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.hl .nv { color: #19177C } /* Name.Variable */
+.hl .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.hl .w { color: #BBB } /* Text.Whitespace */
+.hl .mb { color: #666 } /* Literal.Number.Bin */
+.hl .mf { color: #666 } /* Literal.Number.Float */
+.hl .mh { color: #666 } /* Literal.Number.Hex */
+.hl .mi { color: #666 } /* Literal.Number.Integer */
+.hl .mo { color: #666 } /* Literal.Number.Oct */
+.hl .sa { color: #BA2121 } /* Literal.String.Affix */
+.hl .sb { color: #BA2121 } /* Literal.String.Backtick */
+.hl .sc { color: #BA2121 } /* Literal.String.Char */
+.hl .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.hl .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.hl .s2 { color: #BA2121 } /* Literal.String.Double */
+.hl .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.hl .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.hl .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.hl .sx { color: #008000 } /* Literal.String.Other */
+.hl .sr { color: #A45A77 } /* Literal.String.Regex */
+.hl .s1 { color: #BA2121 } /* Literal.String.Single */
+.hl .ss { color: #19177C } /* Literal.String.Symbol */
+.hl .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #00F } /* Name.Function.Magic */
+.hl .vc { color: #19177C } /* Name.Variable.Class */
+.hl .vg { color: #19177C } /* Name.Variable.Global */
+.hl .vi { color: #19177C } /* Name.Variable.Instance */
+.hl .vm { color: #19177C } /* Name.Variable.Magic */
+.hl .il { color: #666 } /* Literal.Number.Integer.Long */</style></head><body><div class='wrap'><div class='masthead'><img src='file:///Users/emmettculhane/Desktop/JATAWARE/style-resources/jataware_logo_blue_full%20%282%29.png' alt='Jataware'><span class='kicker'>Rosetta &nbsp;·&nbsp; DeepScale</span></div><h1>The eastern-Horn MAM long rains are asymmetrically predictable</h1>
+<h3>A homogeneous domain and a dry-tail metric recover a signal that a whole-domain, symmetric search averages away</h3>
+<blockquote>
+<p>An expert review of a prior automated search flagged that its finding of &quot;little seasonal-scale
+predictability&quot; for the East African March–May long rains was a methodological artifact, not a
+property of the climate. This analysis tests that directly. Two corrections — restricting to the
+homogeneous eastern-Horn domain, and evaluating the predictor on the dry (below-normal) tail
+rather than symmetrically over all years — recover the operationally documented predictability.</p>
+</blockquote>
+<hr />
+<h2>1 · The two corrections</h2>
+<p>The prior search evaluated the Western-V Gradient (WVG) over whole-country boxes with a symmetric,
+all-years skill metric, and found near-no-skill for the MAM long rains. Two choices drove that:</p>
+<ol>
+<li><strong>Domain.</strong> The country boxes included western Kenya / the Lake Victoria basin — a wetter,
+convectively-driven regime off the Walker subsidence branch, with no coherent large-scale SST
+teleconnection — and northern Somalia. Pooling skill across these heterogeneous regimes dilutes it.
+The correction restricts to the <strong>eastern-Horn (EEA) domain</strong> (east/south of ~38°E, ~8°N), on the
+descending branch of the Indian Ocean Walker cell, and to <strong>south-central Somalia</strong> specifically.</li>
+<li><strong>Metric.</strong> The MAM–SST relationship is one-sided: dry seasons within/following La Niña carry a
+clear negative-WVG signature, while wet seasons do not. A symmetric metric (all-years correlation
+or ROC) therefore averages the signal toward zero. The correction evaluates the <strong>dry tail</strong> —
+below-normal discrimination and the La-Niña-conditional dry hit rate.</li>
+</ol>
+<h2>2 · The result</h2>
+<p>Area-mean rainfall, 1981–2023 (n = 43). WVG from pre-season SSTs (Jan–Feb for MAM). &quot;Below-median&quot;
+is SPI &lt; 0, the operational framing; &quot;strong −WVG&quot; is the most-negative-WVG third of years; La Niña
+is flagged by pre-season Niño-3.4 &lt; −0.5σ.</p>
+<p><em>Columns: <code>corr</code> = symmetric all-years LOYO correlation; <code>dry base</code> = climatological below-median rate;
+<code>dry after strong -WVG</code> = dry rate in the most-negative-WVG third of years; <code>+ La Nina</code> = also a La Nina year.</em></p>
+<table>
+<thead>
+<tr>
+<th>region</th>
+<th>season</th>
+<th style="text-align:right">corr</th>
+<th style="text-align:right">dry base</th>
+<th style="text-align:right">dry after strong -WVG</th>
+<th style="text-align:right">dry, -WVG + La Nina</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eastern Horn</td>
+<td><strong>MAM</strong></td>
+<td style="text-align:right">−0.21</td>
+<td style="text-align:right">0.56</td>
+<td style="text-align:right"><strong>0.79</strong></td>
+<td style="text-align:right"><strong>0.77</strong> (n=13)</td>
+</tr>
+<tr>
+<td>south-central Somalia</td>
+<td><strong>MAM</strong></td>
+<td style="text-align:right">−0.17</td>
+<td style="text-align:right">0.56</td>
+<td style="text-align:right"><strong>0.79</strong></td>
+<td style="text-align:right"><strong>0.77</strong> (n=13)</td>
+</tr>
+<tr>
+<td>eastern Horn</td>
+<td>OND <em>(control)</em></td>
+<td style="text-align:right">+0.26</td>
+<td style="text-align:right">0.70</td>
+<td style="text-align:right">0.86</td>
+<td style="text-align:right">1.00 (n=9)</td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img src="outputs/figures/wvg_asymmetry.png" alt="Scatter of pre-season Western-V Gradient versus eastern-Horn seasonal rainfall for MAM and OND. La Niña years with strong-negative WVG cluster in the dry tail; the wet side is scattered with no clean signal.">
+  <figcaption>Pre-season WVG vs eastern-Horn rainfall. La-Niña years (blue) with strong-negative WVG
+  cluster below the dry tercile; positive-WVG years scatter with no clean signal — a one-sided,
+  dry-tail relationship.</figcaption>
+</figure>
+<p><strong>The symmetric all-years correlation for MAM is −0.21</strong> — no linear skill, reproducing the prior
+search. <strong>But a strong-negative WVG raises the probability of a below-median MAM to 0.79, and to 0.77
+when it coincides with La Niña</strong>, against a ~0.5 base rate. Those figures match the operational
+negative-WVG analog statistics reported by the Climate Hazards Center (≈75–80% of negative-WVG
+analog years below-normal). The signal is real, region-specific, and concentrated exactly in the dry,
+La-Niña seasons that matter for anticipatory action — the seasons a symmetric whole-domain metric
+averages away. (OND, the short rains, is a control; its WVG link is weaker because the Indian Ocean
+Dipole, not the WVG, is its primary driver.)</p>
+<h2>3 · The methodological point</h2>
+<p>The prior &quot;MAM is unpredictable&quot; reading was an artifact of two defensible-looking defaults —
+whole-domain pooling and a symmetric skill metric — that are wrong for an asymmetric, regionally
+localized teleconnection. This is a general limitation of naive automated forecast-design search:
+optimizing a symmetric score over an administratively-defined region will systematically miss
+predictability that is one-sided (dry-tail only) and confined to a physically homogeneous sub-region.
+Automated search is a starting point; it requires <strong>domain-guided regionalization</strong> (here, the eHorn
+Walker-subsidence domain) and <strong>conditional, tail-focused evaluation</strong> to avoid discarding real,
+operationally critical signal. That is the corrected finding: not that the long rains are
+unpredictable, but that recovering their predictability requires the domain knowledge the operational
+centers encode.</p>
+<h2>4 · Caveats</h2>
+<ul>
+<li><strong>The WVG here is an approximation</strong> of the operational index (box definitions and standardization
+differ), so these are indicative recoveries, not a reproduction of the operational skill; the
+centers' forecast skill — using their exact index and its NMME forecast — is higher.</li>
+<li><strong>Small conditional samples</strong> (13 strong-negative-WVG La-Niña MAM years in 43): the conditional
+probabilities carry wide intervals and should be read as consistent-with-operational, not precise.</li>
+<li><strong>Perfect-prognosis predictor.</strong> This uses the observed pre-season WVG; an operational forecast
+additionally requires the NMME forecast of the WVG, which adds its own (documented, high) skill.</li>
+<li>This corrects the long-rains claim only; the domain and asymmetric-evaluation lessons apply to any
+automated seasonal-forecast search.</li>
+</ul>
+<div class="footer-note">
+<p>Below-median = SPI &lt; 0. La Niña = pre-season Niño-3.4 &lt; −0.5σ. eastern-Horn (EEA) = 38–50.5°E,
+4.5°S–8.5°N; south-central Somalia = 42–48°E, 1–6°N. CHIRPS v3 1981–2023; ERSSTv5. Method in
+<code>src/recover.py</code>.</p>
+</div>
+</div></body></html>
