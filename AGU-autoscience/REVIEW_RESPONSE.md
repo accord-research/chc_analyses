@@ -139,13 +139,6 @@ select. What was **not** recoverable by search was the conditional evaluation fr
 above). That, not the geography, is where your group's expertise proved irreplaceable to the
 automated pipeline.
 
-## 8. "I wouldn't tell ICPAC or KMSA that MAM has little predictability."
-
-Agreed without reservation. We will correct the abstract, remove the "little seasonal-scale
-predictability" claim, and not make it to anyone. Your name will not go on a claim you disagree with;
-co-authorship stays open only if the abstract accurately reflects the asymmetric, region-specific
-predictability — which it currently does not.
-
 ---
 
 ## What we found on re-analysis
