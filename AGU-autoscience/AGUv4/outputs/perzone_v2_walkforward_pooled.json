@@ -1,0 +1,286 @@
+[
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.10112
+  },
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 2,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.030304
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": 0.022794
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 2,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": -0.438178
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.299434
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 3,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": -0.108027
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": -0.1805
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": 0.253735
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": -0.143659
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": -0.228187
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.132657
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "ASO",
+    "months": [
+      8,
+      9,
+      10
+    ],
+    "discovered": true,
+    "weight": 0.5,
+    "zone_share": 1.0,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.093219
+  }
+]

@@ -1,0 +1,13 @@
+data/
+*.nc
+__pycache__/
+*.pyc
+.DS_Store
+.rx/
+outputs/cache/
+outputs/steplogs/
+outputs/**/*.png
+!outputs/figures/*.png
+# Ephemeral sandboxes recreated by legacy/reproduce_agu3.py
+legacy/run/
+legacy/AGUv0/

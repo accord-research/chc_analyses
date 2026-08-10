@@ -1,0 +1,688 @@
+[
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.157563,
+    "zone_share": 0.315126,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.110097
+  },
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.157563,
+    "zone_share": 0.315126,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.246302
+  },
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.315126,
+    "zone_share": 0.315126,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": -0.009594
+  },
+  {
+    "fold": 0,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.342437,
+    "zone_share": 0.684874,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.066964
+  },
+  {
+    "fold": 0,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.342437,
+    "zone_share": 0.684874,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 20,
+    "n_test": 3,
+    "test_years": [
+      2002,
+      2003,
+      2004
+    ],
+    "rpss": 0.441535
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.315964,
+    "zone_share": 0.315964,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": 0.417102
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.315964,
+    "zone_share": 0.315964,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": -0.117375
+  },
+  {
+    "fold": 1,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.342018,
+    "zone_share": 0.684036,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": 0.093252
+  },
+  {
+    "fold": 1,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.342018,
+    "zone_share": 0.684036,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 23,
+    "n_test": 4,
+    "test_years": [
+      2005,
+      2006,
+      2007,
+      2008
+    ],
+    "rpss": 0.213507
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.158261,
+    "zone_share": 0.316522,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.157083
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.158261,
+    "zone_share": 0.316522,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.385889
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.316522,
+    "zone_share": 0.316522,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.108581
+  },
+  {
+    "fold": 2,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.341739,
+    "zone_share": 0.683478,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.266161
+  },
+  {
+    "fold": 2,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.341739,
+    "zone_share": 0.683478,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 27,
+    "n_test": 4,
+    "test_years": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "rpss": 0.609721
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.157972,
+    "zone_share": 0.315944,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": 0.133289
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.157972,
+    "zone_share": 0.315944,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": 0.611319
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.315944,
+    "zone_share": 0.315944,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": -0.033328
+  },
+  {
+    "fold": 3,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.342028,
+    "zone_share": 0.684056,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": -0.11989
+  },
+  {
+    "fold": 3,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.342028,
+    "zone_share": 0.684056,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 31,
+    "n_test": 3,
+    "test_years": [
+      2013,
+      2014,
+      2015
+    ],
+    "rpss": 0.172559
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.156709,
+    "zone_share": 0.313418,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": -0.007933
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.156709,
+    "zone_share": 0.313418,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": -0.269454
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.313418,
+    "zone_share": 0.313418,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": 0.111614
+  },
+  {
+    "fold": 4,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.343291,
+    "zone_share": 0.686582,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": -0.194765
+  },
+  {
+    "fold": 4,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.343291,
+    "zone_share": 0.686582,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 34,
+    "n_test": 4,
+    "test_years": [
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "rpss": 0.500493
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.156843,
+    "zone_share": 0.313687,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.240086
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.156843,
+    "zone_share": 0.313687,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.006831
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.313687,
+    "zone_share": 0.313687,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.098125
+  },
+  {
+    "fold": 5,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.343157,
+    "zone_share": 0.686313,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.112268
+  },
+  {
+    "fold": 5,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.343157,
+    "zone_share": 0.686313,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 38,
+    "n_test": 4,
+    "test_years": [
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.066075
+  }
+]

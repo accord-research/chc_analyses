@@ -1,0 +1,16 @@
+{
+  "gates": 13,
+  "passed": 13,
+  "failed": 0,
+  "synthetic_bench_rpss": 0.2937,
+  "synthetic_atlas_rpss": 0.72,
+  "synthetic_partition_ari": 1.0,
+  "shuffle_mean_rpss": -0.0614,
+  "shuffle_values": [
+    -0.0689,
+    -0.0631,
+    -0.024,
+    -0.0895
+  ],
+  "status": "ok"
+}

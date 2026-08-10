@@ -1,0 +1,94 @@
+{
+  "rows": [
+    {
+      "benchmark": "fixedmean-mam-v2",
+      "kind": "fixedmean",
+      "window": "MAM",
+      "arm": "pooled",
+      "rpss": 0.055496,
+      "n_scored": 22,
+      "run": 66
+    },
+    {
+      "benchmark": "fixedmean-mam-v2",
+      "kind": "fixedmean",
+      "window": "MAM",
+      "arm": "zones",
+      "rpss": 0.115953,
+      "n_scored": 22,
+      "run": 67
+    },
+    {
+      "benchmark": "fixedmean-ond-v2",
+      "kind": "fixedmean",
+      "window": "OND",
+      "arm": "pooled",
+      "rpss": 0.305289,
+      "n_scored": 22,
+      "run": 71
+    },
+    {
+      "benchmark": "fixedmean-ond-v2",
+      "kind": "fixedmean",
+      "window": "OND",
+      "arm": "zones",
+      "rpss": 0.307142,
+      "n_scored": 22,
+      "run": 72
+    },
+    {
+      "benchmark": "grid-mam-v2",
+      "kind": "grid",
+      "window": "MAM",
+      "arm": "climatology",
+      "rpss": 0.0,
+      "n_scored": 22,
+      "run": 68
+    },
+    {
+      "benchmark": "grid-mam-v2",
+      "kind": "grid",
+      "window": "MAM",
+      "arm": "pooled",
+      "rpss": -0.000544,
+      "n_scored": 22,
+      "run": 69
+    },
+    {
+      "benchmark": "grid-mam-v2",
+      "kind": "grid",
+      "window": "MAM",
+      "arm": "zones-specific",
+      "rpss": 0.005992,
+      "n_scored": 22,
+      "run": 70
+    },
+    {
+      "benchmark": "grid-ond-v2",
+      "kind": "grid",
+      "window": "OND",
+      "arm": "climatology",
+      "rpss": 0.0,
+      "n_scored": 22,
+      "run": 73
+    },
+    {
+      "benchmark": "grid-ond-v2",
+      "kind": "grid",
+      "window": "OND",
+      "arm": "pooled",
+      "rpss": 0.181854,
+      "n_scored": 22,
+      "run": 74
+    },
+    {
+      "benchmark": "grid-ond-v2",
+      "kind": "grid",
+      "window": "OND",
+      "arm": "zones-specific",
+      "rpss": 0.174409,
+      "n_scored": 22,
+      "run": 75
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+# rosetta: add sst/ersst-v5 to the product catalog
+#
+# Minimal additive change: appended after the last product in
+# src/rosetta/catalog.yaml. Applies cleanly on top of rosetta HEAD.
+# Generated for v3rx SPEC.md section 20.1. Not committed in the rosetta
+# checkout, which carries unrelated uncommitted work.
+#
+--- a/src/rosetta/catalog.yaml
++++ b/src/rosetta/catalog.yaml
+@@ -1286,3 +1297,27 @@ nmme/cansipsic4-hindcast:
+     lon_res: 1.0
+     members: 40
+     hindcast_range: [1991, 2020]
++
++# ── Observational SST ────────────────────────────────────────────────────────
++# NOAA Extended Reconstructed SST v5. One NetCDF per month at NCEI, 2 deg
++# global grid, 0-360 longitude natively — so Nino-3.4 (190-240E), the IOD
++# poles (50-70E / 90-110E) and the west-Pacific boxes (130-170E) are all
++# addressable without wrapping. Files carry a size-1 `lev` dimension that
++# normalize() leaves in place; callers that want a plain (time, lat, lon)
++# field should squeeze it.
++sst/ersst-v5:
++  adapter: http
++  source_url: "https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/netcdf/"
++  file_pattern: "ersst.v5.{year}{month:02d}.nc"
++  format: netcdf
++  variables:
++    sst:
++      native_name: sst
++      units: "C"
++      target_units: "C"
++  grid:
++    lat_res: 2.0
++    lon_res: 2.0
++    hindcast_range: [1854, 2026]
++    temporal: monthly
++  notes: "NOAA ERSST v5 monthly (2 deg, 0-360 lon). One NetCDF per month from NCEI. Native units are degree_C and are passed through unconverted."

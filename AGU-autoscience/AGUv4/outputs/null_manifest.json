@@ -1,0 +1,22 @@
+{
+  "arms": [
+    "zones-specific",
+    "zones-shared",
+    "pooled"
+  ],
+  "expected_rows": 600,
+  "n_reps": 200,
+  "null_kind": "complete-season target permutation (SPEC Amendment 1 section 3)",
+  "protocol": "walkforward",
+  "seed": 4242,
+  "sha256": {
+    "bench.py": "154c06d55e702c629128fdfeed86021c99642352aeb380556823e0fb169cb43b",
+    "harness/atlas_score.py": "760b7d8ced7ed1aee54c47225220f0ee9c8be12588efa78ad82d224ce0e9edd1",
+    "harness/discovery.py": "aa594e3a7b9328a0cd4013898b059af4a2319dfd4fbd13ae5b2ac6f9f2cb5476",
+    "harness/fields.py": "7a88564103fc6c6d5d84c887ad27113869d44521798f7782b2e185412310eaf9",
+    "harness/indices.py": "12ad25f93c47a1408a557e3e61f81b8b9e75837ee0a81801c0fcc98b1c54fbf0",
+    "harness/nullperm.py": "0eb62c87d55f6ed61ca2824ce86f1a931cb348ea3de0f23581f57beb2115f03f",
+    "harness/pipeline_v2.py": "2857ff894a365056d609d2d0ce5beac8152d477b55b13296d76d9f29c2fd3dd5",
+    "run_atlas.py": "9e15b1671cde7272632e3baa511813b6f8c6eb29cba228f20812243d81116fbe"
+  }
+}

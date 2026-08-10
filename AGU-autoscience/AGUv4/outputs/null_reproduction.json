@@ -1,0 +1,13 @@
+{
+  "old_rows": 600,
+  "new_rows": 600,
+  "shared": 600,
+  "only_in_old": 0,
+  "only_in_new": 0,
+  "family_values_differing": 0,
+  "max_abs_diff": 0.0,
+  "max_at": null,
+  "bit_identical": true,
+  "conclusion": "the five runner fixes changed no null value",
+  "status": "ok"
+}

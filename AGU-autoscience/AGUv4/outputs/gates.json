@@ -1,0 +1,18 @@
+{
+  "gates": 14,
+  "passed": 14,
+  "failed": 0,
+  "synthetic_bench_rpss": 0.2937,
+  "synthetic_atlas_rpss": 0.7196,
+  "synthetic_partition_ari": 1.0,
+  "shuffle_mean_rpss": -0.087,
+  "shuffle_values": [
+    -0.0502,
+    -0.0621,
+    -0.121,
+    -0.1148
+  ],
+  "spec_version": "amendment-1",
+  "scorer_links": 4,
+  "status": "ok"
+}

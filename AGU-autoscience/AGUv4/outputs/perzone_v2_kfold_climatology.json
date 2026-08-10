@@ -1,0 +1,785 @@
+[
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.160327,
+    "zone_share": 0.320655,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.160327,
+    "zone_share": 0.320655,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 0,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.320655,
+    "zone_share": 0.320655,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 0,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.339673,
+    "zone_share": 0.679345,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 0,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.339673,
+    "zone_share": 0.679345,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1982,
+      1983,
+      1984,
+      1985,
+      1986,
+      1987,
+      1988
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.157688,
+    "zone_share": 0.315376,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1989,
+      1990,
+      1991,
+      1992,
+      1993,
+      1994,
+      1995
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.157688,
+    "zone_share": 0.315376,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1989,
+      1990,
+      1991,
+      1992,
+      1993,
+      1994,
+      1995
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 1,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.315376,
+    "zone_share": 0.315376,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1989,
+      1990,
+      1991,
+      1992,
+      1993,
+      1994,
+      1995
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 1,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.342312,
+    "zone_share": 0.684624,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1989,
+      1990,
+      1991,
+      1992,
+      1993,
+      1994,
+      1995
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 1,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.342312,
+    "zone_share": 0.684624,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1989,
+      1990,
+      1991,
+      1992,
+      1993,
+      1994,
+      1995
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.15769,
+    "zone_share": 0.315381,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.15769,
+    "zone_share": 0.315381,
+    "index": "wvg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 2,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.315381,
+    "zone_share": 0.315381,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 2,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.34231,
+    "zone_share": 0.684619,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 2,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.34231,
+    "zone_share": 0.684619,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      1996,
+      1997,
+      1998,
+      1999,
+      2000,
+      2001,
+      2002
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.15713,
+    "zone_share": 0.31426,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.15713,
+    "zone_share": 0.31426,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 3,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.31426,
+    "zone_share": 0.31426,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 3,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.34287,
+    "zone_share": 0.68574,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 3,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.34287,
+    "zone_share": 0.68574,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.321017,
+    "zone_share": 0.321017,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 4,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.321017,
+    "zone_share": 0.321017,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 4,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.339492,
+    "zone_share": 0.678983,
+    "index": "iod",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 4,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.339492,
+    "zone_share": 0.678983,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "MJJ",
+    "months": [
+      5,
+      6,
+      7
+    ],
+    "discovered": true,
+    "weight": 0.156145,
+    "zone_share": 0.312291,
+    "index": "iod",
+    "lead": 3,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "JAS",
+    "months": [
+      7,
+      8,
+      9
+    ],
+    "discovered": true,
+    "weight": 0.156145,
+    "zone_share": 0.312291,
+    "index": "wpg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 5,
+    "zone": 0,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": false,
+    "weight": 0.312291,
+    "zone_share": 0.312291,
+    "index": "wvg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 5,
+    "zone": 1,
+    "window": "MAM",
+    "months": [
+      3,
+      4,
+      5
+    ],
+    "discovered": true,
+    "weight": 0.343855,
+    "zone_share": 0.687709,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.0
+  },
+  {
+    "fold": 5,
+    "zone": 1,
+    "window": "OND",
+    "months": [
+      10,
+      11,
+      12
+    ],
+    "discovered": true,
+    "weight": 0.343855,
+    "zone_share": 0.687709,
+    "index": "iwhg",
+    "lead": 0,
+    "n_train": 35,
+    "n_test": 7,
+    "test_years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "rpss": 0.0
+  }
+]

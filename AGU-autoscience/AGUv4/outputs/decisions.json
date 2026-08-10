@@ -1,0 +1,195 @@
+{
+  "errors_in_null": 0,
+  "families": {
+    "climatology|atlas/all-windows": {
+      "rpss": 0.0,
+      "coverage": 1.0,
+      "n_null": 0,
+      "null_mean": null,
+      "p_value": null,
+      "adjudicated": true,
+      "clears": false
+    },
+    "climatology|MAM/all": {
+      "rpss": 0.0,
+      "coverage": 1.0,
+      "n_null": 0,
+      "null_mean": null,
+      "p_value": null,
+      "adjudicated": true,
+      "clears": false
+    },
+    "climatology|MAM/lanina": {
+      "rpss": 0.0,
+      "coverage": 0.6667,
+      "n_null": 0,
+      "null_mean": null,
+      "p_value": null,
+      "adjudicated": true,
+      "clears": false
+    },
+    "climatology|MAM/neg_wvg": {
+      "rpss": 0.0,
+      "coverage": 0.8333,
+      "n_null": 0,
+      "null_mean": null,
+      "p_value": null,
+      "adjudicated": true,
+      "clears": false
+    },
+    "pooled|atlas/all-windows": {
+      "rpss": -0.016825,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.036622,
+      "p_value": 0.35821,
+      "adjudicated": true,
+      "clears": false
+    },
+    "pooled|MAM/all": {
+      "rpss": 0.055496,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.025678,
+      "p_value": 0.1592,
+      "adjudicated": true,
+      "clears": false
+    },
+    "pooled|MAM/lanina": {
+      "rpss": 0.091024,
+      "coverage": 0.6667,
+      "n_null": 200,
+      "null_mean": -0.044712,
+      "p_value": 0.1592,
+      "adjudicated": true,
+      "clears": false
+    },
+    "pooled|MAM/neg_wvg": {
+      "rpss": 0.057314,
+      "coverage": 0.8333,
+      "n_null": 200,
+      "null_mean": -0.034899,
+      "p_value": 0.20896,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-shared|atlas/all-windows": {
+      "rpss": 0.192782,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.055029,
+      "p_value": 0.00498,
+      "adjudicated": true,
+      "clears": true
+    },
+    "zones-shared|MAM/all": {
+      "rpss": 0.036809,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.018494,
+      "p_value": 0.199,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-shared|MAM/lanina": {
+      "rpss": 0.062462,
+      "coverage": 0.6667,
+      "n_null": 200,
+      "null_mean": -0.032624,
+      "p_value": 0.22388,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-shared|MAM/neg_wvg": {
+      "rpss": 0.038209,
+      "coverage": 0.8333,
+      "n_null": 200,
+      "null_mean": -0.02402,
+      "p_value": 0.24378,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-specific|atlas/all-windows": {
+      "rpss": 0.204416,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.057406,
+      "p_value": 0.00498,
+      "adjudicated": true,
+      "clears": true
+    },
+    "zones-specific|MAM/all": {
+      "rpss": 0.043147,
+      "coverage": 1.0,
+      "n_null": 200,
+      "null_mean": -0.025229,
+      "p_value": 0.1393,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-specific|MAM/lanina": {
+      "rpss": 0.037029,
+      "coverage": 0.6667,
+      "n_null": 200,
+      "null_mean": -0.04239,
+      "p_value": 0.23383,
+      "adjudicated": true,
+      "clears": false
+    },
+    "zones-specific|MAM/neg_wvg": {
+      "rpss": 0.019866,
+      "coverage": 0.8333,
+      "n_null": 200,
+      "null_mean": -0.030361,
+      "p_value": 0.30348,
+      "adjudicated": true,
+      "clears": false
+    }
+  },
+  "paired": {
+    "zones-specific_minus_pooled": {
+      "delta_real": 0.221241,
+      "n_pairs": 200,
+      "delta_null_mean": -0.020784,
+      "delta_null_sd": 0.072137,
+      "p_value": 0.00498,
+      "clears": true
+    },
+    "zones-specific_minus_zones-shared": {
+      "delta_real": 0.011634,
+      "n_pairs": 200,
+      "delta_null_mean": -0.002377,
+      "delta_null_sd": 0.015339,
+      "p_value": 0.12438,
+      "clears": false
+    }
+  },
+  "primary": {
+    "arm": "zones-specific",
+    "family": "atlas/all-windows",
+    "protocol": "walkforward",
+    "rpss_atlas": 0.204416,
+    "coverage": 1.0,
+    "n_null": 200,
+    "null_mean": -0.057406,
+    "null_sd": 0.051065,
+    "null_p95": 0.028237,
+    "null_max": 0.078171,
+    "p_value": 0.00498,
+    "condition_positive": true,
+    "condition_p": true,
+    "verdict": "USEFUL"
+  },
+  "sensitivity_field_perm": {
+    "n": 20,
+    "mean": -0.050672,
+    "sd": 0.057793,
+    "p95": 0.028688,
+    "p_value_vs_real": 0.04762,
+    "wrapping_windows_present": [
+      "NDJ"
+    ],
+    "caveat": "calendar-year field permutation splices wrapping seasons across donor years; adjudicates nothing"
+  },
+  "null_scope": "prices predictor and lead selection; does not price zone discovery, which is not skill-selected (Amendment 1 3.2)"
+}

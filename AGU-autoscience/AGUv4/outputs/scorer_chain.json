@@ -1,0 +1,9 @@
+{
+  "links": 4,
+  "passed": 4,
+  "failed": 0,
+  "link1_batched_vs_percell_maxdiff": 7.771561172376096e-16,
+  "link2_percell_vs_bench_maxdiff": 1.3322676295501878e-15,
+  "tolerance": 1e-08,
+  "status": "ok"
+}

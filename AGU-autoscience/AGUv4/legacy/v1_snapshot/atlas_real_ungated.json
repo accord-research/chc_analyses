@@ -1,0 +1,458 @@
+[
+  {
+    "protocol": "walkforward",
+    "arm": "climatology",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "climatology",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.0,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.0,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.0,
+        "n_scored": 18.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.0,
+        "n_scored": 24.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 141.4
+  },
+  {
+    "protocol": "walkforward",
+    "arm": "pooled",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "pooled",
+    "k_per_fold": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": -0.016825,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.055496,
+        "n_scored": 22.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.091024,
+        "n_scored": 9.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.057314,
+        "n_scored": 12.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.3
+  },
+  {
+    "protocol": "walkforward",
+    "arm": "zones-shared",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "zones-shared",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.192782,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.036809,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.062462,
+        "n_scored": 18.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.038209,
+        "n_scored": 24.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.1
+  },
+  {
+    "protocol": "walkforward",
+    "arm": "zones-specific",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "zones-specific",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.204416,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.043147,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.037029,
+        "n_scored": 18.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.019866,
+        "n_scored": 24.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.1
+  },
+  {
+    "protocol": "walkforward",
+    "arm": "zones-specific",
+    "leak": false,
+    "weight_rule": "rain",
+    "tag": "zones-specific/rain",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.190037,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.043147,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.037029,
+        "n_scored": 18.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.019866,
+        "n_scored": 24.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.1
+  },
+  {
+    "protocol": "walkforward",
+    "arm": "zones-specific",
+    "leak": true,
+    "weight_rule": "equal",
+    "tag": "zones-specific/leaky",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.208282,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.045464,
+        "n_scored": 44.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.047999,
+        "n_scored": 18.0,
+        "coverage": 0.666667
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.027607,
+        "n_scored": 24.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.1
+  },
+  {
+    "protocol": "kfold",
+    "arm": "climatology",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "climatology",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.0,
+        "n_scored": 161.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": 0.0,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": 0.0,
+        "n_scored": 32.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": 0.0,
+        "n_scored": 32.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 301.8
+  },
+  {
+    "protocol": "kfold",
+    "arm": "pooled",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "pooled",
+    "k_per_fold": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": -0.006553,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": -0.050279,
+        "n_scored": 42.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": -0.072476,
+        "n_scored": 16.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": -0.082725,
+        "n_scored": 16.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.5
+  },
+  {
+    "protocol": "kfold",
+    "arm": "zones-shared",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "zones-shared",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.078091,
+        "n_scored": 161.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": -0.034837,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": -0.08526,
+        "n_scored": 32.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": -0.119499,
+        "n_scored": 32.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.2
+  },
+  {
+    "protocol": "kfold",
+    "arm": "zones-specific",
+    "leak": false,
+    "weight_rule": "equal",
+    "tag": "zones-specific",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.078091,
+        "n_scored": 161.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": -0.041149,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": -0.090255,
+        "n_scored": 32.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": -0.116225,
+        "n_scored": 32.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.3
+  },
+  {
+    "protocol": "kfold",
+    "arm": "zones-specific",
+    "leak": false,
+    "weight_rule": "rain",
+    "tag": "zones-specific/rain",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.069469,
+        "n_scored": 161.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": -0.041149,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": -0.090255,
+        "n_scored": 32.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": -0.116225,
+        "n_scored": 32.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.2
+  },
+  {
+    "protocol": "kfold",
+    "arm": "zones-specific",
+    "leak": true,
+    "weight_rule": "equal",
+    "tag": "zones-specific/leaky",
+    "k_per_fold": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "families": {
+      "atlas/all-windows": {
+        "rpss": 0.078647,
+        "n_scored": 161.0,
+        "coverage": 1.0
+      },
+      "MAM/all": {
+        "rpss": -0.040304,
+        "n_scored": 84.0,
+        "coverage": 1.0
+      },
+      "MAM/lanina": {
+        "rpss": -0.088552,
+        "n_scored": 32.0,
+        "coverage": 1.0
+      },
+      "MAM/neg_wvg": {
+        "rpss": -0.114514,
+        "n_scored": 32.0,
+        "coverage": 0.833333
+      }
+    },
+    "seconds": 0.1
+  }
+]

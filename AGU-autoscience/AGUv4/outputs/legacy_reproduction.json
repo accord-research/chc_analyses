@@ -1,0 +1,10 @@
+{
+  "tier1_total": 14,
+  "tier1_failed": 0,
+  "tier2_total": 10,
+  "tier2_failed": 0,
+  "survivors": 79,
+  "survivors_published": 79,
+  "failures": [],
+  "status": "ok"
+}
