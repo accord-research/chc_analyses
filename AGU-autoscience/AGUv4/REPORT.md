@@ -2,7 +2,7 @@
 
 ### Discovering seasonal rainfall zones for the eastern Horn of Africa, and measuring whether the result is worth having
 
-Ezekiel Barnett · ACCORD · 2026-08-10
+2026-08-10
 
 ---
 
@@ -10,7 +10,7 @@ Ezekiel Barnett · ACCORD · 2026-08-10
 
 Seasonal rainfall outlooks for the eastern Horn of Africa are built from three design choices: which sub-regions behave alike, which months are each region's rainy season, and which ocean index (at which lead) predicts that season. Those choices are usually made by people and reused for years. This work asks whether an algorithm can recover them from data — regions and seasons from the rainfall record alone; predictors from a fixed menu of sea-surface temperature indices — and whether the resulting atlas is worth issuing.
 
-A prior analysis (AGUv3) showed that clustering rainfall structure can recover operational-looking zones, calendars, and teleconnection recipes, including published conditional rates for the March–May long rains. That work was largely in-sample. Here the same discovery machinery is placed inside a walk-forward design: every fit uses training years only; skill is scored out of sample as **RPSS** (how much better tercile forecasts are than always saying one-third / one-third / one-third); and the headline claim must beat a null that reruns the procedure on year-scrambled rainfall, so selection among twenty index–lead combinations is paid for. Prior-work reproduction and one measured full-record leak sit in Appendix B.
+A prior analysis (AGUv3) showed that clustering rainfall structure can recover operational-looking zones, calendars, and teleconnection recipes, including published conditional rates for the March–May long rains. That work was largely in-sample. Here the same discovery machinery is placed inside a walk-forward design: every fit uses training years only; skill is scored out of sample as **RPSS** (how much better tercile forecasts are than climatology); and the headline claim must beat a null that reruns the procedure on year-scrambled rainfall, so selection among twenty index–lead combinations is paid for. Prior-work reproduction and one measured full-record leak sit in Appendix B.
 
 **Roadmap.** Methods states the algorithm. Results gives the pre-registered USEFUL verdict for the whole atlas. Discovery describes the map and seasons. Product skill asks whether that atlas beats a single pooled outlook as something a forecast centre would issue. Same-target skill holds the predictand fixed, so only the partition can explain skill differences. March–May tests the long-rains claim under the selection-aware null. Expert overlap is descriptive. Limitations and appendices cover bounds, the `rx` research record, AGUv3, and regeneration checks.
 
