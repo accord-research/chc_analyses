@@ -181,7 +181,7 @@ if ENV.exists():
               f"{len(live['file_sha256'])} files compared")
 
     # The point of hashing content rather than counting files: prove a silent edit is caught.
-    probe_lib = Path(rosetta.__file__).parent
+    probe_lib = Path(acmaddl.__file__).parent
     files_now, tree_now = hash_tree(probe_lib.parent)
     mutated = dict(files_now)
     k0 = sorted(mutated)[0]
@@ -195,11 +195,11 @@ if ENV.exists():
           env["asserted"]["fixtures"]["chirps_v3"]["sha256"] == SPEC_CHIRPS_SHA
           and env["asserted"]["fixtures"]["ersst_v5"]["sha256"] == SPEC_ERSST_SHA)
 
-cat_sha = sha256(Path(rosetta.__file__).parent / "catalog.yaml")
+cat_sha = sha256(Path(acmaddl.__file__).parent / "catalog.yaml")
 check("rosetta catalog.yaml sha256 matches SPEC 1.2",
       cat_sha == "bd683de05c7218627b366c4971b3239bc7e52548283f777695ea465c00f9132e", cat_sha[:16])
 check("rosetta exposes sst/ersst-v5",
-      "sst/ersst-v5:" in (Path(rosetta.__file__).parent / "catalog.yaml").read_text())
+      "sst/ersst-v5:" in (Path(acmaddl.__file__).parent / "catalog.yaml").read_text())
 check("the rosetta ERSST patch is preserved in-repo",
       (ROOT / "legacy" / "patches" / "rosetta-ersst-v5.patch").exists())
 

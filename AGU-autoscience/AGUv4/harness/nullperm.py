@@ -51,7 +51,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "harness"))
 
-from deepscale.metrics.rpss import _cpt_boundaries      # noqa: E402
+from africas2s.metrics.rpss import _cpt_boundaries      # noqa: E402
 import indices as IX                                    # noqa: E402
 import atlas_score as A                                 # noqa: E402
 

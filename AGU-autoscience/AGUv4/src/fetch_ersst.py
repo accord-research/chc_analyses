@@ -1,4 +1,4 @@
-"""fetch_ersst.py — build the ERSSTv5 fixture once, through rosetta.
+"""fetch_ersst.py — build the ERSSTv5 fixture once, through acmaddl.
 
 legacy/contracts/SPEC.md §1.2 pins this fixture by sha256. Nothing downstream ever touches the
 network, so the fixture must be built here and only here.
@@ -54,7 +54,7 @@ socket.getaddrinfo = lambda *a, **k: (
 
 import numpy as np
 import xarray as xr
-import rosetta
+import acmaddl
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
@@ -134,7 +134,7 @@ def main():
         print(f"[fetch] {PRODUCT} sst, belt {BELT}, {YEARS} ({n_months} monthly files)",
               flush=True)
         t0 = time.time()
-        ds = rosetta.fetch(product=PRODUCT, variable="sst", region=BELT,
+        ds = acmaddl.fetch(product=PRODUCT, variable="sst", region=BELT,
                            hindcast=YEARS, verbose=True, progress=True)
         print(f"  fetched in {time.time() - t0:.0f}s", flush=True)
 
@@ -188,8 +188,8 @@ def main():
         "incomplete_years": short,
         "finite_fraction": round(float(np.isfinite(da.values).mean()), 4),
         "units": "C",
-        "rosetta_git_sha": git_sha(Path(rosetta.__file__).resolve().parents[2]),
-        "rosetta_catalog_sha256": sha256(Path(rosetta.__file__).parent / "catalog.yaml"),
+        "rosetta_git_sha": git_sha(Path(acmaddl.__file__).resolve().parents[2]),
+        "rosetta_catalog_sha256": sha256(Path(acmaddl.__file__).parent / "catalog.yaml"),
     }
     print("\nPROVENANCE")
     print(json.dumps(prov, indent=2))

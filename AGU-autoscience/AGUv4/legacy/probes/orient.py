@@ -116,8 +116,8 @@ if not any("sst" in f.name for f in found):
     print("  NO SST FIXTURE PRESENT.")
 print("\n  rosetta catalog check for an ERSST product:")
 try:
-    import rosetta
-    cat = Path(rosetta.__file__).parent / "catalog.yaml"
+    import acmaddl
+    cat = Path(acmaddl.__file__).parent / "catalog.yaml"
     keys = [ln.split(":")[0] for ln in cat.read_text().splitlines()
             if ln and not ln[0].isspace() and ln.rstrip().endswith(":")]
     hits = [k for k in keys if "ersst" in k.lower()]
@@ -138,10 +138,10 @@ for m in ("numpy", "xarray", "scipy", "sklearn", "netCDF4", "matplotlib",
     except Exception as e:
         print(f"  {m:11s} UNAVAILABLE ({type(e).__name__})")
 try:
-    from deepscale.metrics.rpss import _cpt_boundaries
+    from africas2s.metrics.rpss import _cpt_boundaries
     v = np.arange(30, dtype=float)
-    print(f"  deepscale._cpt_boundaries(arange(30)) = {_cpt_boundaries(v)}")
+    print(f"  africas2s._cpt_boundaries(arange(30)) = {_cpt_boundaries(v)}")
 except Exception as e:
-    print(f"  deepscale._cpt_boundaries UNAVAILABLE: {type(e).__name__}: {e}")
+    print(f"  africas2s._cpt_boundaries UNAVAILABLE: {type(e).__name__}: {e}")
 
 print("\norientation complete", flush=True)

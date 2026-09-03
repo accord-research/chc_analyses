@@ -44,7 +44,7 @@ import pipeline as P               # noqa: E402
 import pipeline_v2 as P2           # noqa: E402
 import nullperm as NP              # noqa: E402
 from sklearn.metrics import adjusted_rand_score   # noqa: E402
-from deepscale.metrics.rpss import _cpt_boundaries  # noqa: E402
+from africas2s.metrics.rpss import _cpt_boundaries  # noqa: E402
 
 RESULTS = []
 

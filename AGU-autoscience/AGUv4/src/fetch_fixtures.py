@@ -23,7 +23,7 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 
 import numpy as np
-import rosetta
+import acmaddl
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 DATA.mkdir(exist_ok=True)
@@ -102,7 +102,7 @@ def fetch_chirps(only=None):
             continue
         print(f"[fetch] CHIRPS v3 monthly, region {name} {spec['bbox']}, {YEARS}", flush=True)
         t0 = time.time()
-        ds = rosetta.fetch(
+        ds = acmaddl.fetch(
             product="obs/chirps-v3-monthly",
             variable="precip",
             region=spec["bbox"],
@@ -129,7 +129,7 @@ def fetch_sst(only=None, years=None, prefix="sst_"):
         yr = years or YEARS
         print(f"[fetch] ERA5 sst, box {name} {bbox}, {yr} -> {prefix}", flush=True)
         t0 = time.time()
-        ds = rosetta.fetch(
+        ds = acmaddl.fetch(
             product="obs/era5",
             variable="sst",
             region=bbox,
@@ -166,7 +166,7 @@ def fetch_era5_precip(region="ca", out_name="ca_precip_era5_monthly.nc"):
     years = (1940, 2023)
     print(f"[fetch] ERA5 precip, {region} {bbox}, {years}", flush=True)
     t0 = time.time()
-    ds = rosetta.fetch(product="obs/era5", variable="precip", region=bbox, hindcast=years)
+    ds = acmaddl.fetch(product="obs/era5", variable="precip", region=bbox, hindcast=years)
     if not hasattr(ds, "data_vars"):
         ds = ds.to_dataset(name="precip")
     ds = _clean(ds, "precip")

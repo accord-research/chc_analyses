@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "harness"))
 
-from deepscale.metrics.rpss import _cpt_boundaries          # noqa: E402
+from africas2s.metrics.rpss import _cpt_boundaries          # noqa: E402
 import indices as IX                                        # noqa: E402
 from atlas_score import (Forecast, FEATURE_KEYS, fold_weights,   # noqa: E402
                          rainfall_share_weights, zone_window_list)

@@ -64,9 +64,9 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import xarray as xr
 
-from deepscale.metrics.base import MetricBase
-from deepscale.metrics.rpss import _cpt_boundaries          # CPT-compatible tercile edges
-from deepscale.registry import get_metric, register_metric
+from africas2s.metrics.base import MetricBase
+from africas2s.metrics.rpss import _cpt_boundaries          # CPT-compatible tercile edges
+from africas2s.registry import get_metric, register_metric
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"

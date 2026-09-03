@@ -35,7 +35,7 @@ import discovery as D              # noqa: E402
 import indices as IX               # noqa: E402
 import atlas_score as A            # noqa: E402
 import pipeline as P               # noqa: E402
-from deepscale.metrics.rpss import _cpt_boundaries   # noqa: E402
+from africas2s.metrics.rpss import _cpt_boundaries   # noqa: E402
 
 WINDOWS = {"MAM": [3, 4, 5], "OND": [10, 11, 12]}
 

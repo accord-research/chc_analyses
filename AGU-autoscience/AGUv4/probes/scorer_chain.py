@@ -41,7 +41,7 @@ import bench                                          # noqa: E402
 import batched as B                                   # noqa: E402
 import grid_sweep as G                                # noqa: E402
 import indices as IX                                  # noqa: E402
-from deepscale.metrics.rpss import _cpt_boundaries    # noqa: E402
+from africas2s.metrics.rpss import _cpt_boundaries    # noqa: E402
 
 TOL = 1e-8
 FIXTURE = "chirps_v3_ea_monthly.nc"

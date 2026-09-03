@@ -34,7 +34,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.special import erf
 
-from deepscale.metrics.rpss import _cpt_boundaries
+from africas2s.metrics.rpss import _cpt_boundaries
 
 _SQRT2 = np.sqrt(2.0)
 

@@ -55,7 +55,7 @@ from scipy.stats import norm
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import bench
 import batched as B
-from deepscale.metrics.rpss import _cpt_boundaries
+from africas2s.metrics.rpss import _cpt_boundaries
 
 FIXTURE = "ca_precip_monthly.nc"      # overridden by --fixture
 SST_PREFIX = "sst_"                   # overridden by --sst-prefix
