@@ -18,8 +18,8 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 import numpy as np
 import xarray as xr
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -54,7 +54,7 @@ TARGETS = [(lbl, s, im, BANDS[bn], mo) for (lbl, s, im, bn, mo) in _TARGETS]
 
 
 def fetch_precip(model, target, init_month, region):
-    g = rosetta.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
+    g = acmaddl.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
                       target=target, region=region, hindcast=HIND, year_index=True,
                       verbose=False, progress=False)
     return g[list(g.data_vars)[0]]
@@ -63,7 +63,7 @@ def fetch_precip(model, target, init_month, region):
 def chirps_zone(months, band, coarsen=10):
     ds = xr.open_dataset(DATA / CHIRPS_FILE)
     p = ds["precip"].sel(lat=slice(*band))
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     return seasonal.coarsen(lat=coarsen, lon=coarsen, boundary="trim").mean()
 
 
@@ -80,7 +80,7 @@ def mme_groc(models, obs):
         tracks["PRCP"][name] = (d, d.sel(year=[max(common)]))
     if not tracks["PRCP"]:
         return None, 0
-    res = deepscale.seasonal_mme(tracks, obs, method="cca", cv="loyo",
+    res = africas2s.seasonal_mme(tracks, obs, method="cca", cv="loyo",
                                  forecast_year=last, verbose=False)
     sc = res.skill_report.scores
     return dict(groc=float(sc.get("generalized_roc", np.nan)),

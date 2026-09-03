@@ -24,7 +24,7 @@ import xarray as xr
 
 import multiplicity as M           # COUNTRIES, TEXTBOOK, seasonal_rain, perm_pvalue, RNG, DATA, TAB
 import teleconnections as T
-from deepscale.metrics import loo_corr, permutation_test, fdr
+from africas2s.metrics import loo_corr, permutation_test, fdr
 
 TAB = M.TAB
 

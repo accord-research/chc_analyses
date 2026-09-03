@@ -36,8 +36,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import teleconnections as T
 from areas import AREA, BANDS, CHIRPS_FILE, LABEL, suffix
@@ -121,7 +121,7 @@ def model_forecast_index(target, init_m, spec):
     series = []
     for prod in MODELS:
         try:
-            g = rosetta.fetch(product=prod, variable="sst", init=f"{HIND[1]}-{init_m:02d}",
+            g = acmaddl.fetch(product=prod, variable="sst", init=f"{HIND[1]}-{init_m:02d}",
                               target=target, region=region, hindcast=HIND, year_index=True,
                               verbose=False, progress=False)
             da = g[list(g.data_vars)[0]]
@@ -139,7 +139,7 @@ def obs_index(spec, months):
     """Observed target-season (CONCURRENT) SST index anomaly per year from cached ERSST."""
     sst = T.load_sst()
     an = T.monthly_anom(sst)
-    seas = deepscale.seasonal_reduce(an, months, how="mean")
+    seas = africas2s.seasonal_reduce(an, months, how="mean")
     return compute_index(seas, spec)  # (year, lat, lon) -> (year,)
 
 
@@ -158,7 +158,7 @@ def obs_index_lead(spec, months):
 
 def chirps_zone_mean(months, band):
     p = xr.open_dataset(DATA / CHIRPS_FILE)["precip"].sel(lat=slice(*band)).mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(p, months)
+    return africas2s.seasonal_reduce(p, months)
 
 
 def loyo_reg_corr(pred, rain):

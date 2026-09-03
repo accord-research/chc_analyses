@@ -25,8 +25,8 @@ import xarray as xr
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -55,7 +55,7 @@ def km_of(deg, lat):
 
 def chirps_at(cf, months, band, lonbox, factor):
     p = xr.open_dataset(DATA / cf)["precip"].sel(lat=slice(*band), lon=slice(*lonbox))
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     if factor > 1:
         seasonal = seasonal.coarsen(lat=factor, lon=factor, boundary="trim").mean()
     return seasonal
@@ -65,13 +65,13 @@ def gcm_pooled(cf, season, band, lonbox):
     """Fetch each NMME model and pool them into one (year, member, lat, lon) predictor.
 
     The pooling (unique member ids, common grid, shared years, concat) is now
-    deepscale.pool_ensembles; only the model fetch loop is consumer-specific.
+    africas2s.pool_ensembles; only the model fetch loop is consumer-specific.
     """
     region = [band[0], band[1], *lonbox]
     das = []
     for prod in MODELS:
         try:
-            g = rosetta.fetch(product=prod, variable="precip", init=f"{HIND[1]}-08",
+            g = acmaddl.fetch(product=prod, variable="precip", init=f"{HIND[1]}-08",
                               target=season, region=region, hindcast=HIND, year_index=True,
                               verbose=False, progress=False, max_retries=4, degenerate_attempts=6)
             das.append(g[list(g.data_vars)[0]])
@@ -79,7 +79,7 @@ def gcm_pooled(cf, season, band, lonbox):
             print(f"  [drop {prod.split('/')[-1]}] {type(e).__name__}: {str(e)[:60]}", flush=True)
     if not das:
         return None
-    return deepscale.pool_ensembles(das)
+    return africas2s.pool_ensembles(das)
 
 
 def main():
@@ -93,7 +93,7 @@ def main():
             obs = chirps_at(cf, SEASON_MONTHS[season], band, lonbox, COARSEN[res])
             for m in METHODS:
                 try:
-                    r = deepscale.optimize(gcm, obs, methods=[m], primary_metric="generalized_roc",
+                    r = africas2s.optimize(gcm, obs, methods=[m], primary_metric="generalized_roc",
                                            verbose=False, progress=False)
                     g = float(r.score)
                 except Exception as e:

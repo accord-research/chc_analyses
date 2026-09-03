@@ -18,10 +18,10 @@ import warnings
 from pathlib import Path
 warnings.filterwarnings("ignore")
 import numpy as np
-import deepscale
+import africas2s
 
 import mme_search as MS
-from deepscale.metrics.generalized_roc import _obs_to_categories, _groc_from_flat
+from africas2s.metrics.generalized_roc import _obs_to_categories, _groc_from_flat
 
 TAB = Path(__file__).resolve().parent.parent / "outputs" / "tables"
 B = 2000
@@ -47,7 +47,7 @@ def hindcast_pairs(target, dname):
             print(f"    [skip {name}/{dname}] {type(e).__name__}: {e}")
     last = int(obs.year.max())
     tracks = {"PRED": {name: (da, da.sel(year=[last])) for name, da in preds.items()}}
-    res = deepscale.seasonal_mme(tracks, obs, method="cca", cv="loyo", forecast_year=last, verbose=False)
+    res = africas2s.seasonal_mme(tracks, obs, method="cca", cv="loyo", forecast_year=last, verbose=False)
     fcst = res.tercile_cv.transpose("year", "lat", "lon", "tercile")
     obs_t = obs.sel(year=fcst.year).transpose("year", "lat", "lon")
     obs_cat = _obs_to_categories(obs_t.values)                 # (year, lat, lon) ints 0/1/2, -1 for NaN

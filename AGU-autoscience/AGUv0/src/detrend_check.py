@@ -16,7 +16,7 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 import numpy as np
 import xarray as xr
-import deepscale
+import africas2s
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import teleconnections as T  # load_sst, build_indices, monthly_anom, index_preseason_mean
@@ -52,7 +52,7 @@ SEASON_MONTHS = {"MAM": [3, 4, 5], "JAS": [7, 8, 9], "OND": [10, 11, 12], "JJAS"
 
 def seasonal_rain(precip, months, s, n):
     band = precip.sel(lat=slice(s, n)).mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(band, months)
+    return africas2s.seasonal_reduce(band, months)
 
 
 def loyo_corr(x, y, detrend):

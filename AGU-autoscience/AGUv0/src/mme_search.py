@@ -29,8 +29,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -98,7 +98,7 @@ TARGETS = [(lbl, s, im, BANDS[bn], mo, ceiling_for(s, bn))
 
 
 def fetch_sst(model, target, init_month, box):
-    g = rosetta.fetch(product=model, variable="sst", init=f"{HIND[1]}-{init_month:02d}",
+    g = acmaddl.fetch(product=model, variable="sst", init=f"{HIND[1]}-{init_month:02d}",
                       target=target, region=box, hindcast=HIND, year_index=True,
                       verbose=False, progress=False)
     da = g[list(g.data_vars)[0]]
@@ -106,7 +106,7 @@ def fetch_sst(model, target, init_month, box):
 
 
 def fetch_precip(model, target, init_month, region):
-    g = rosetta.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
+    g = acmaddl.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
                       target=target, region=region, hindcast=HIND, year_index=True,
                       verbose=False, progress=False)
     return g[list(g.data_vars)[0]]
@@ -115,14 +115,14 @@ def fetch_precip(model, target, init_month, region):
 def chirps_zone(months, band, coarsen=10):
     ds = xr.open_dataset(DATA / CHIRPS_FILE)
     p = ds["precip"].sel(lat=slice(*band))
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     return seasonal.coarsen(lat=coarsen, lon=coarsen, boundary="trim").mean()
 
 
 def mme_skill(predictors, obs):
     last = int(obs.year.max())
     tracks = {"PRED": {name: (da, da.sel(year=[last])) for name, da in predictors.items()}}
-    res = deepscale.seasonal_mme(tracks, obs, method="cca", cv="loyo",
+    res = africas2s.seasonal_mme(tracks, obs, method="cca", cv="loyo",
                                  forecast_year=last, verbose=False)
     sc = res.skill_report.scores
     return dict(rpss=float(sc.get("rpss", np.nan)),

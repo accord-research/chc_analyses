@@ -53,7 +53,7 @@ def load_config(key):
 def run_config(exp, calibration="objective_avg", downscale_method=None,
                target_res=None, verbose=True):
     """Build -> run -> score one configuration. Returns a skill record dict."""
-    import rosetta
+    import acmaddl
 
     key = exp.get("_key", "adhoc")
     season = exp["season"]
@@ -72,7 +72,7 @@ def run_config(exp, calibration="objective_avg", downscale_method=None,
     # ---- 1. predictand (observations) — real fetch ----
     if verbose:
         print(f"[{key}] fetching CHIRPS predictand {region} {hind} ...", flush=True)
-    obs = rosetta.fetch(product=CONFIG["observations"], variable="precip",
+    obs = acmaddl.fetch(product=CONFIG["observations"], variable="precip",
                         region=region, hindcast=hind, verbose=False, progress=False)
     obs_season = _season_sum(obs["precip"], season["months"])   # (year, lat, lon)
     rec["n_years"] = int(obs_season.sizes.get("year", 0))
@@ -82,9 +82,9 @@ def run_config(exp, calibration="objective_avg", downscale_method=None,
     # them on the obs grid, and calls the chosen DeepScale calibrator. That download is the
     # heavy step; wire in per calibration method:
     #
-    #   cca         -> deepscale.pipelines.seasonal_mme(models, obs, cpt_args=...)
-    #   ereg        -> deepscale.calibrate(model_hindcasts, obs, method="ereg", ...)
-    #   logit       -> deepscale.calibrate(index_series, obs, method="logit", forecast=...)
+    #   cca         -> africas2s.pipelines.seasonal_mme(models, obs, cpt_args=...)
+    #   ereg        -> africas2s.calibrate(model_hindcasts, obs, method="ereg", ...)
+    #   logit       -> africas2s.calibrate(index_series, obs, method="logit", forecast=...)
     #   objective_avg -> equal-weight mean of {cca, ereg, logit} tercile probs (GHACOF recipe)
     #
     raise NotImplementedError(
@@ -96,11 +96,11 @@ def run_config(exp, calibration="objective_avg", downscale_method=None,
 
     # ---- 3. downscaling (axes K, L) ----  [reached once calibration is wired]
     # if downscale_method:
-    #     fcst = deepscale.downscale(coarse_fcst, obs, method=downscale_method,
+    #     fcst = africas2s.downscale(coarse_fcst, obs, method=downscale_method,
     #                                regrid_to=target_res)
 
     # ---- 4. score under LOYO ----
-    # report = deepscale.skill(fcst, obs_season, metrics=CONFIG["skill"]["metrics"], cv="loyo")
+    # report = africas2s.skill(fcst, obs_season, metrics=CONFIG["skill"]["metrics"], cv="loyo")
     # rec["skill"] = _summarize(report)
     # return rec
 

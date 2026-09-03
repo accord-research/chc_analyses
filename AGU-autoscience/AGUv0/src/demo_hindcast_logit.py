@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import teleconnections as T   # reuse SST-index construction
 
-import deepscale
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -80,7 +80,7 @@ def main():
         hind = idx.sel(year=train_years)
         obs_train = obs.sel(year=train_years)
         fcst_val = float(idx.sel(year=int(y)).values)
-        p = deepscale.calibrate(hind, obs_train, method="logit", forecast=fcst_val)
+        p = africas2s.calibrate(hind, obs_train, method="logit", forecast=fcst_val)
         probs.append(p.assign_coords(year=int(y)))
     probs = xr.concat(probs, dim="year").transpose("year", "tercile", "lat", "lon")
 

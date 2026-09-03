@@ -26,8 +26,8 @@ import xarray as xr
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -54,7 +54,7 @@ def lead_of(init_m, season):
 
 def chirps_zone(cf, months, band, coarsen=10):
     p = xr.open_dataset(DATA / cf)["precip"].sel(lat=slice(*band))
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     return seasonal.coarsen(lat=coarsen, lon=coarsen, boundary="trim").mean()
 
 
@@ -65,8 +65,8 @@ def run_lead(cf, season, band, init_m):
     for prod in MODELS:
         try:
             # degenerate_attempts>1: reject a zero-filled/truncated response and retry (the
-            # robustness that used to live in the local safe_fetch wrapper, now in rosetta.fetch).
-            g = rosetta.fetch(product=prod, variable="precip", init=f"{HIND[1]}-{init_m:02d}",
+            # robustness that used to live in the local safe_fetch wrapper, now in acmaddl.fetch).
+            g = acmaddl.fetch(product=prod, variable="precip", init=f"{HIND[1]}-{init_m:02d}",
                               target=season, region=region, hindcast=HIND, year_index=True,
                               verbose=False, progress=False, max_retries=4, degenerate_attempts=6)
             preds[prod.split("/")[-1]] = g[list(g.data_vars)[0]]
@@ -80,7 +80,7 @@ def run_lead(cf, season, band, init_m):
     # pooled path emit a constant [0.5, 0, 0.5] tercile forecast — GROC exactly 0.500 — because one
     # model's blown-up leverage poisoned the MME-averaged leverage. Fixed in deepscale
     # methods/cca.py::_project_by_sv; pooled and cpt_per_model now agree to ~0.002.)
-    res = deepscale.seasonal_mme(tracks, obs, method="cca", cv="loyo", forecast_year=last, verbose=False)
+    res = africas2s.seasonal_mme(tracks, obs, method="cca", cv="loyo", forecast_year=last, verbose=False)
     sc = res.skill_report.scores
     # accuracy: hit rate from the CV tercile forecast, zone-averaged. Guard against years whose
     # tercile probabilities came back all-NaN (degenerate CV fold) — argmax over an all-NaN slice

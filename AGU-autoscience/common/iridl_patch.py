@@ -6,7 +6,7 @@ catalog only, at the **same models on the IRI Data Library** (the canonical NMME
 CCSR mirrors). Fetches then land in the nuthatch cache under the ordinary CCSR product
 keys, so:
 
-  * analysis code runs unchanged (still calls `rosetta.fetch("nmme/cesm1", ...)`);
+  * analysis code runs unchanged (still calls `acmaddl.fetch("nmme/cesm1", ...)`);
   * nothing on disk (catalog.yaml) is modified;
   * on recovery, re-fetching with `cache_mode="overwrite"` **replaces** this IRIDL data
     with canonical CCSR data — so the final product is still IRIDL-free.
@@ -24,7 +24,7 @@ set is one of the searchable axes, a 3-model MME is an acceptable default. To ad
 confirm its IRIDL path (`…/dods.dds` → 200) and append a `_flat(...)`/split entry below.
 """
 import urllib.request
-import rosetta.catalog as _cat
+import acmaddl.catalog as _cat
 from nuthatch.nuthatch import set_global_cache_variables as _scv
 
 _B = "https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME"
@@ -72,7 +72,7 @@ _CCSR_PROBE = "https://forecast.ccsr.columbia.edu/data/NMME/COLA-RSMAS/CESM1/sst
 
 def ccsr_reachable(url: str = _CCSR_PROBE, timeout: int = 20) -> bool:
     """True if the canonical CCSR endpoint is serving (HTTP 200) — for recovery pollers.
-    A direct HTTP probe, NOT a rosetta.fetch (which would return the cached IRIDL data)."""
+    A direct HTTP probe, NOT a acmaddl.fetch (which would return the cached IRIDL data)."""
     try:
         return urllib.request.urlopen(
             urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=timeout
@@ -89,7 +89,7 @@ def apply(verbose: bool = True):
 
     # The opendap (IRIDL) adapter normalizes precip to the CF short name `pr`; the ccsr
     # adapter keys it as `precip` (what analysis code indexes). Wrap fetch to rename back.
-    import rosetta as _r
+    import acmaddl as _r
     if not getattr(_r.fetch, "_iridl_wrapped", False):
         _orig = _r.fetch
 

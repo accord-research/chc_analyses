@@ -17,7 +17,7 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 import numpy as np
 import xarray as xr
-import deepscale
+import africas2s
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -45,14 +45,14 @@ CFG = [
 ]
 
 
-from deepscale.metrics import loo_corr as _loo_corr
+from africas2s.metrics import loo_corr as _loo_corr
 
 
 def loo_corr(x, y):
     """LOO CV correlation of predictor `x` vs predictand `y`, aligned on shared finite years.
 
     Year-alignment is the consumer-specific data prep; the closed-form leave-one-out correlation
-    is deepscale.metrics.loo_corr (min_finite=12 keeps this study's 12-year floor)."""
+    is africas2s.metrics.loo_corr (min_finite=12 keeps this study's 12-year floor)."""
     yrs = np.intersect1d(x.dropna("year").year, y.dropna("year").year)
     xv = x.sel(year=yrs).values.astype(float)
     yv = y.sel(year=yrs).values.astype(float)
@@ -63,12 +63,12 @@ def zone_season_rain(precip, zones, zid, months):
     mask = zones == zid
     z = precip.where(mask)
     band = z.mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(band, months)
+    return africas2s.seasonal_reduce(band, months)
 
 
 def band_season_rain(precip, band, months):
     b = precip.sel(lat=slice(*band)).mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(b, months)
+    return africas2s.seasonal_reduce(b, months)
 
 
 def main():

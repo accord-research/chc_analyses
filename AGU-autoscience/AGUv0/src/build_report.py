@@ -451,7 +451,7 @@ These results should be read as a **diagnostic framework**, not general conclusi
    — a large OPeNDAP request failing mid-transfer and being silently zero-filled rather than raising. A
    zero-variance predictor makes CCA singular (divide-by-zero) and NaNs out every skill score. Fixed by
    per-year fetching (`single_year_fetch`), purging the poisoned cache, and a degenerate-response
-   guard now built into `rosetta.fetch` (`degenerate_attempts=`), which rejects a zero-filled
+   guard now built into `acmaddl.fetch` (`degenerate_attempts=`), which rejects a zero-filled
    response before it can be memoized. **Any number produced before that fix is void.**
    (b) *Degenerate CCA modes → collapsed probabilities.* CCA divided EOF projections by singular values with
    no guard against near-zero (rank-deficient) modes. One model produced leverages of ~10⁹¹ (statistical

@@ -85,8 +85,8 @@ def obs_sst_field(target: T.Target, lead: int, domain="indo_pacific", coarsen=2)
 
 # ─────────────────────────── NMME forecast fields (via rosetta / IRIDL) ───────────────────────────
 def _fetch(model, variable, target, lead, region):
-    import rosetta
-    g = rosetta.fetch(product=model, variable=variable, init=f"{HIND[1]}-{init_month(target, lead):02d}",
+    import acmaddl
+    g = acmaddl.fetch(product=model, variable=variable, init=f"{HIND[1]}-{init_month(target, lead):02d}",
                       target=season_code(target), region=list(region), hindcast=HIND,
                       year_index=True, verbose=False, progress=False)
     return g[list(g.data_vars)[0]]

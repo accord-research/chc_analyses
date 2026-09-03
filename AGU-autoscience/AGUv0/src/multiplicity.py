@@ -25,7 +25,7 @@ from pathlib import Path
 warnings.filterwarnings("ignore")
 import numpy as np
 import xarray as xr
-import deepscale
+import africas2s
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -51,9 +51,9 @@ TEXTBOOK = ["nino34", "atl3", "tna", "tsa", "atl_grad", "iod_dmi", "wvg2", "wvg3
 
 # Leave-one-out CV correlation, its one-sided permutation test (upper tail — the LOO null is
 # biased negative, so a two-sided |r| test would be invalid) and Benjamini–Hochberg FDR all now
-# live in deepscale.metrics. Passing the module-level RNG through preserves the exact permutation
+# live in africas2s.metrics. Passing the module-level RNG through preserves the exact permutation
 # draw sequence, so this reproduces the published leaderboard bit-for-bit.
-from deepscale.metrics import loo_corr, permutation_test, fdr
+from africas2s.metrics import loo_corr, permutation_test, fdr
 
 
 def perm_pvalue(x, y, nperm=NPERM):
@@ -62,7 +62,7 @@ def perm_pvalue(x, y, nperm=NPERM):
 
 def seasonal_rain(precip, months, s, n):
     band = precip.sel(lat=slice(s, n)).mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(band, months)
+    return africas2s.seasonal_reduce(band, months)
 
 
 def main():

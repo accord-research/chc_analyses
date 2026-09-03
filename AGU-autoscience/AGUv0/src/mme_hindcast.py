@@ -30,8 +30,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -56,7 +56,7 @@ CONFIGS = [
 
 def fetch_gcm(product, target, init_month, region):
     init = f"{HIND[1]}-{init_month:02d}"
-    g = rosetta.fetch(product=product, variable="precip", init=init, target=target,
+    g = acmaddl.fetch(product=product, variable="precip", init=init, target=target,
                       region=region, hindcast=HIND, year_index=True,
                       verbose=False, progress=False)
     da = g[list(g.data_vars)[0]]
@@ -65,7 +65,7 @@ def fetch_gcm(product, target, init_month, region):
 
 def chirps_seasonal(months, grid):
     p = xr.open_dataset(DATA / "nigeria_chirps_monthly.nc")["precip"]
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     return seasonal.interp(lat=grid.lat, lon=grid.lon)
 
 
@@ -85,7 +85,7 @@ def run_config(label, target, init_month, band, months, ceiling):
     last = int(obs.year.max())
     tracks = {"PRCP": {name: (da, da.sel(year=[last])) for name, da in models.items()}}
     try:
-        res = deepscale.seasonal_mme(tracks, obs, method="cca", cv="loyo",
+        res = africas2s.seasonal_mme(tracks, obs, method="cca", cv="loyo",
                                      forecast_year=last, verbose=False)
     except Exception as e:
         print(f"  [mme failed] {type(e).__name__}: {e}", flush=True)

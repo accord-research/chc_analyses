@@ -7,7 +7,7 @@ fetches the full two-country window once, via the same rosetta product/cache the
 v2 fetch used.
 """
 from pathlib import Path
-import rosetta
+import acmaddl
 
 OUT = Path(__file__).resolve().parents[1] / "data" / "kenya_somalia_chirps_monthly.nc"
 
@@ -15,7 +15,7 @@ OUT = Path(__file__).resolve().parents[1] / "data" / "kenya_somalia_chirps_month
 # Somalia (41-51.4E, 1.6S-12N) with a small margin.
 REGION = [-5.0, 12.0, 33.0, 52.0]
 
-ds = rosetta.fetch(
+ds = acmaddl.fetch(
     product="obs/chirps-v3-monthly",
     variable="precip",
     region=REGION,

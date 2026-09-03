@@ -4,7 +4,7 @@ Every config, whatever its predictor_source/method, is reduced to a common repre
 per-year cross-validated **tercile probabilities** + a **deterministic** CV series over the same
 gridded predictand — and scored with the SAME four metrics, so cells are comparable.
 
-  * field predictors (obs_sst_field / gcm_mos_sst / gcm_mos_precip) → `deepscale.seasonal_mme`
+  * field predictors (obs_sst_field / gcm_mos_sst / gcm_mos_precip) → `africas2s.seasonal_mme`
     (CPT-style CCA-MOS, or qm) under LOYO;
   * persistence (scalar) → a leave-one-year-out scalar→field regression, then deepscale terciles.
 """
@@ -18,10 +18,10 @@ warnings.filterwarnings("ignore")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import targets as T
 import predictors as P
-import deepscale
-from deepscale.registry import get_metric
-from deepscale.metrics.generalized_roc import _obs_to_categories
-from deepscale.tercile import to_tercile_cv
+import africas2s
+from africas2s.registry import get_metric
+from africas2s.metrics.generalized_roc import _obs_to_categories
+from africas2s.tercile import to_tercile_cv
 
 METRIC_NAMES = ("generalized_roc", "rpss", "pearson_r", "hit_rate")
 
@@ -149,7 +149,7 @@ def score_config(cfg) -> dict:
         pyears = h.year.values if pyears is None else np.intersect1d(pyears, h.year.values)
     y = y.sel(year=np.intersect1d(y.year.values, pyears))
     cpt_args = {"n_modes": cfg.eof_modes} if cfg.method == "cca" and cfg.eof_modes > 0 else None
-    res = deepscale.seasonal_mme(tracks, y, method=cfg.method, cv="loyo", cpt_args=cpt_args,
+    res = africas2s.seasonal_mme(tracks, y, method=cfg.method, cv="loyo", cpt_args=cpt_args,
                                  forecast_year=int(y.year.max()), verbose=False)
     return _score(res.tercile_cv, y, _det_from_result(res))
 

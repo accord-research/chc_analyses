@@ -109,9 +109,9 @@ def perm_p(stat_fn, args, observed, rng, nperm=NPERM):
 
 
 def seasonal_rain(precip, months, s, n):
-    import deepscale
+    import africas2s
     band = precip.sel(lat=slice(s, n)).mean(["lat", "lon"])
-    return deepscale.seasonal_reduce(band, months)
+    return africas2s.seasonal_reduce(band, months)
 
 
 def bh(pvals):

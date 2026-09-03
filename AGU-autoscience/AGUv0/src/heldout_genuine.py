@@ -29,7 +29,7 @@ import xarray as xr
 
 import teleconnections as T
 import feature_discovery as F
-from deepscale.metrics import loo_corr
+from africas2s.metrics import loo_corr
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -46,8 +46,8 @@ COUNTRIES = [("Nigeria", "nigeria_chirps_monthly.nc",
 
 def seasonal_rain(precip, months, s, n):
     band = precip.sel(lat=slice(s, n)).mean(["lat", "lon"])
-    import deepscale
-    return deepscale.seasonal_reduce(band, months)
+    import africas2s
+    return africas2s.seasonal_reduce(band, months)
 
 
 def oos_scalar(xv, yv, tr, te):

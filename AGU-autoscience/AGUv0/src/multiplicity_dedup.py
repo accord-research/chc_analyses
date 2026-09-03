@@ -35,7 +35,7 @@ COLLINEAR_CLUSTER = {"nino34": "enso_iod", "iod_dmi": "enso_iod", "wvg2": "enso_
 
 
 def bh(pvals):
-    """Benjamini-Hochberg q-values (same convention as deepscale.metrics.fdr)."""
+    """Benjamini-Hochberg q-values (same convention as africas2s.metrics.fdr)."""
     p = np.asarray(pvals, dtype=float)
     m = len(p)
     order = np.argsort(p)

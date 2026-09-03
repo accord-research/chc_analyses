@@ -4,7 +4,7 @@ mme_methods.py — search the METHOD axis across the full DeepScale registry.
 Not limited to the ICPAC calibration trio (CCA/eReg/logit): this compares every method the
 tools expose for mapping a coarse GCM precip forecast to CHIRPS rainfall — CCA, BCSD, quantile
 mapping (QM/DQM), delta, rank-analog — plus a climatology baseline, head-to-head, by
-leave-one-year-out CV skill (via `deepscale.optimize`, which runs the CV internally). CorrDiff
+leave-one-year-out CV skill (via `africas2s.optimize`, which runs the CV internally). CorrDiff
 (diffusion ML) is omitted here (needs trained weights); it is the natural add-on.
 
 For each (target zone/season) and method, we report the CV skill averaged across the NMME
@@ -28,8 +28,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-import rosetta
-import deepscale
+import acmaddl
+import africas2s
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -81,7 +81,7 @@ TARGETS = [(lbl, s, im, BANDS[bn], mo, _ceiling_for(s, bn)) for (lbl, s, im, bn,
 
 
 def fetch_precip(model, target, init_month, region):
-    g = rosetta.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
+    g = acmaddl.fetch(product=model, variable="precip", init=f"{HIND[1]}-{init_month:02d}",
                       target=target, region=region, hindcast=HIND, year_index=True,
                       verbose=False, progress=False)
     return g[list(g.data_vars)[0]]
@@ -90,13 +90,13 @@ def fetch_precip(model, target, init_month, region):
 def chirps_zone(months, band, coarsen=5):
     ds = xr.open_dataset(DATA / CHIRPS_FILE)
     p = ds["precip"].sel(lat=slice(*band))
-    seasonal = deepscale.seasonal_reduce(p, months).sel(year=slice(*HIND))
+    seasonal = africas2s.seasonal_reduce(p, months).sel(year=slice(*HIND))
     return seasonal.coarsen(lat=coarsen, lon=coarsen, boundary="trim").mean()
 
 
 def method_skill(gcm, obs, method, metric):
     """LOYO CV skill of one method on one model, via optimize (CV runs internally)."""
-    r = deepscale.optimize(gcm, obs, methods=[method], primary_metric=metric,
+    r = africas2s.optimize(gcm, obs, methods=[method], primary_metric=metric,
                            verbose=False, progress=False)
     return float(r.score)
 
@@ -136,7 +136,7 @@ def main():
 
     # best method per target (by mean GROC)
     md = ["# Best calibration/downscaling method per target (full DeepScale registry)\n",
-          "CV skill (LOYO) averaged across NMME models, via `deepscale.optimize`. GROC>0.5 = skill.\n",
+          "CV skill (LOYO) averaged across NMME models, via `africas2s.optimize`. GROC>0.5 = skill.\n",
           "| Target | Best method | mean GROC | best-model GROC | mean RPSS | Ceiling r |",
           "|---|---|---|---|---|---|"]
     targets = list(dict.fromkeys(r["target"] for r in rows))

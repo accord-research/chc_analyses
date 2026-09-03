@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 import xarray as xr
-import deepscale
+import africas2s
 
 # Region config: bbox (lat_s, lat_n, lon_w, lon_e) + the cached CHIRPS monthly file for each.
 _V1 = Path(__file__).resolve().parents[1]
@@ -100,7 +100,7 @@ def predictand(target: Target, coarsen: int = 10, hindcast=(1993, 2016)) -> xr.D
     """Coarsened gridded seasonal rainfall total for the target's region & months, sliced to the
     common hindcast period (so obs- and GCM-predictor configs share years)."""
     p = load_precip(target.bbox, target.chirps)
-    seasonal = deepscale.seasonal_reduce(p, list(target.months))         # (year, lat, lon)
+    seasonal = africas2s.seasonal_reduce(p, list(target.months))         # (year, lat, lon)
     seasonal = seasonal.sel(year=slice(*hindcast))
     return seasonal.coarsen(lat=coarsen, lon=coarsen, boundary="trim").mean()
 

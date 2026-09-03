@@ -15,7 +15,7 @@ import sys, time, warnings
 from pathlib import Path
 warnings.filterwarnings("ignore")
 
-import rosetta
+import acmaddl
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from areas import BBOX, CHIRPS_FILE, LABEL
 
@@ -72,7 +72,7 @@ def fetch_chirps():
     print(f"[chirps] fetching CHIRPS v3 monthly {LABEL} {START}-{END} "
           f"(~{n_months} monthly COGs, interval={CHIRPS_REQUEST_INTERVAL}s) ...", flush=True)
     t = time.time()
-    ds = rosetta.fetch(product="obs/chirps-v3-monthly", variable="precip",
+    ds = acmaddl.fetch(product="obs/chirps-v3-monthly", variable="precip",
                        region=BBOX, hindcast=(START, END),
                        request_interval=CHIRPS_REQUEST_INTERVAL,
                        verbose=False, progress=True)
@@ -87,7 +87,7 @@ def fetch_ersst():
         return
     print(f"[ersst] fetching ERSST v5 monthly tropical belt {START}-{END} ...", flush=True)
     t = time.time()
-    ds = rosetta.fetch(product="obs/ersst-v5", variable="sst",
+    ds = acmaddl.fetch(product="obs/ersst-v5", variable="sst",
                        region=SST_BELT, hindcast=(START, END),
                        verbose=False, progress=False)
     print(f"[ersst] done in {time.time()-t:.0f}s  dims={dict(ds.sizes)}", flush=True)
