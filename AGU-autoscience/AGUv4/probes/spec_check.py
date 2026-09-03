@@ -142,7 +142,7 @@ def git_info(repo):
     return sha, len([ln for ln in dirty.splitlines() if ln.strip()])
 
 
-import rosetta, deepscale  # noqa: E402
+import acmaddl, africas2s  # noqa: E402
 
 # SPEC 2 rejects git shas and dirty-file counts as drift detectors and pins CONTENT
 # instead. outputs/env.json is the record; this re-derives it from the live trees.
