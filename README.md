@@ -11,6 +11,7 @@ of the stack.
 |---|---|
 | [`chc_ethiopia/`](chc_ethiopia/) | Ethiopia **Kiremt** (JJAS) 2026 drought outlook and the East African **OND** short-rains ocean-state outlook, each reproducing a CHC deck. |
 | [`AGU-autoscience/`](AGU-autoscience/) | Seasonal-forecast **design as a search space** over the stack — a WMO-compliant objective-forecast design search (seasonality → rainy-season targets → forecast lead), in versioned, self-contained passes (`AGUv0`, `AGUv1`). |
+| [`IOD-forecasting/`](IOD-forecasting/) | Weekly-refresh outlooks of Indian Ocean SST in the two **Dipole boxes** and of the **Dipole Mode Index**, at five lead horizons (next 30 days, weeks&nbsp;1–4). ECMWF S2S corrected by plain OLS against NOAA OI SST over the 20 reforecast years attached to the same calendar date; west and east poles calibrated separately, skill quoted leave-one-year-out and against a persistence baseline. |
 
 *New analyses are added as sub-directories, each with its own README; this table is the index.*
 
