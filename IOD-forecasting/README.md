@@ -14,8 +14,9 @@ continues a warming trend where a quantile map clamps to the historical range.
 
 Both poles are carried as absolute temperatures and calibrated separately, then
 combined. The dipole is reported twice — calibrated and raw — so the size of the
-regression's amplitude correction is visible; these are **not** two climatologies (see
-the corrections note below).
+regression's amplitude correction is visible. These are **not** two climatologies: least
+squares with an intercept preserves the mean, so the observed climatology cancels out of
+the difference and what remains is the change in amplitude.
 
 ## Layout
 
@@ -68,15 +69,3 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
   80% intervals but the dipole close to the edge. In the east the *raw* model was
   essentially exact and the calibration moved it the wrong way — the shrinkage risk of a
   twenty-point fit.
-
-## Library work this required
-
-- acmadDL **#11** — S2S `sst` silently returned 1 lead instead of 46 (ECDS needs
-  explicit leadtimes for instantaneous fields; the MARS range shorthand only works for
-  accumulated ones).
-- acmadDL **#12** — `obs/oisst-v2-daily`, plus per-year file support in the opendap
-  adapter (PSL files one NetCDF per year with no aggregation endpoint).
-- africas2s **#9** — `lead_window_reduce`, `doy_climatology`/`doy_anomaly`, and the
-  `eio` index.
-- acmadDL **#13** — pin `hyear` on S2S reforecast requests, so the 2006–2025 training
-  window is guaranteed rather than an ECDS default.
