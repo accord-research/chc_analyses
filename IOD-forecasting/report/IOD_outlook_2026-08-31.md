@@ -142,6 +142,8 @@ comparison and has been withdrawn.
 
 Typical error of the corrected forecast is 0.15–0.29 °C (west) and 0.20–0.37 °C (east).
 
+![Corrected SST anomaly at every horizon (°C vs the 2006–2025 observed average). Boxes: western (orange) and eastern (teal) poles; land in tan. Grey ocean is where leave-one-year-out correlation falls below 0.4 and the forecast should not be relied on — note how that area grows from week 1 to week 4, and that it covers much of the eastern box by week 4. Each cell is corrected by its own regression; observations are averaged from 0.25° to the model's 1.5° grid. Fields are cubic-refined for contouring, which is presentational only — every number quoted above comes from the native 1.5° field.](assets/fig3_maps.png){width=96%}
+
 ## Early verification
 
 OISST is already available for the whole of the week-1 window, so that forecast can be
