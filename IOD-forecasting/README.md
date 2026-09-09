@@ -69,27 +69,6 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
   essentially exact and the calibration moved it the wrong way — the shrinkage risk of a
   twenty-point fit.
 
-## Corrections applied after audit (2026-09-08)
-
-A sub-agent audit against the reference materials and independent sources found four
-things worth recording, all now fixed:
-
-1. **The "two climatologies" framing was mathematically false.** OLS with an intercept is
-   mean-preserving, so `calibrated − obs_clim ≡ slope × (x₀ − x̄)` — the observed
-   climatology cancels identically. The two DMI columns are `dmi_calibrated` and
-   `dmi_raw`, and their difference is the regression's *amplitude* correction, not bias
-   removal.
-2. **The 80% intervals were 20–28% too narrow in the west.** Now a Student-*t* prediction
-   interval carrying the leverage term — this forecast extrapolates 2.3–3.0 sd beyond the
-   training mean there. The DMI interval no longer assumes independent pole residuals
-   (they correlate −0.41 at week 1).
-3. **The headline skill claim rested on an untested parameter.** The 14-day persistence
-   baseline was the weakest of three; the claim of beating persistence at every horizon
-   does not survive a 30-day baseline and has been withdrawn.
-4. **A one-day window offset.** S2S SST is `stepType="avg"`, so step 24 is the mean over
-   hours 0–24 — the init day, not the day after. Verification windows and advertised dates
-   were one day late.
-
 ## Library work this required
 
 - acmadDL **#11** — S2S `sst` silently returned 1 lead instead of 46 (ECDS needs
