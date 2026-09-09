@@ -12,10 +12,15 @@ trend where a quantile map clamps to the historical range.
 
 Both poles are carried as absolute temperatures (WIO, EIO) and calibrated
 separately, exactly as asked; the dipole (DMI) is then formed from anomalies.
-Because the init is a fixed calendar day, each climatology is just the 20-year
-mean of that window -- so we report DMI against BOTH a model climatology (the
-reforecast's own, which absorbs the model's lead-dependent bias) and an observed
-one (OISST, anchored to what the ocean actually did).
+
+DMI is reported twice, as `dmi_calibrated` and `dmi_raw`. These are NOT two
+climatologies. OLS with an intercept is mean-preserving, so
+`calibrated - obs_clim == slope * (x0 - xbar)`: the observed climatology cancels
+identically and carries no information beyond the slopes. The two columns are
+the calibrated forecast and the uncalibrated model, and the gap between them is
+the regression's AMPLITUDE correction -- the model under-disperses the west pole
+(slope > 1) and over-disperses the east (slope < 1). Mean bias cancels on both
+sides and is not what the difference shows.
 """
 from __future__ import annotations
 
@@ -40,7 +45,7 @@ def fetch_model(init, *, region=REGION, verbose=False):
     """The live forecast and its matching reforecast suite, both in degrees C.
 
     acmadDL declares S2S sst in kelvin; OISST is Celsius. Converting here keeps
-    every downstream number in one unit and makes the deck's ~29 C thresholds
+    every downstream number in one unit and keeps absolute pole temperatures
     directly readable.
     """
     fcst = acmaddl.fetch(product="c3s/ecmwf-s2s", variable="sst", init=init,
@@ -53,15 +58,26 @@ def fetch_model(init, *, region=REGION, verbose=False):
 def window_valid_dates(init, window, year=None):
     """The calendar dates a lead window verifies over.
 
-    Window days are 1-based and inclusive: day 1 is the first full forecast day,
-    i.e. the day after the 00Z issuance.
+    S2S sst is filed with ``stepType="avg"`` over each 24 h period, so the field
+    at step 24 is the mean over hours 0-24 from a 00Z init -- the calendar day OF
+    the init, not the day after. cfgrib labels valid_time with the END of the
+    period, which is one day late; taking that label at face value would offset
+    every observed verification window by a day. Window day 1 is therefore the
+    init day itself.
+
+    A consequence worth stating: the day 1-30 window includes the init day, whose
+    ocean state is already partly known at issue time.
     """
     init_ts = pd.Timestamp(init)
     if year is not None:
-        init_ts = init_ts.replace(year=int(year))
+        # 29 Feb has no counterpart in a non-leap year; step back a day rather than raise.
+        try:
+            init_ts = init_ts.replace(year=int(year))
+        except ValueError:
+            init_ts = init_ts.replace(month=2, day=28, year=int(year))
     first, last = WINDOWS[window]
-    return (init_ts + pd.Timedelta(days=first),
-            init_ts + pd.Timedelta(days=last))
+    return (init_ts + pd.Timedelta(days=first - 1),
+            init_ts + pd.Timedelta(days=last - 1))
 
 
 def fetch_observed_windows(init, years, *, region=REGION, verbose=False):
@@ -120,7 +136,32 @@ def ols(x, y):
     # n-2 degrees of freedom: a slope and an intercept were estimated.
     sd = float(np.sqrt((resid ** 2).sum() / max(len(x) - 2, 1)))
     r = float(np.corrcoef(x, y)[0, 1]) if len(x) > 1 else np.nan
-    return dict(slope=float(slope), intercept=float(intercept), r=r, resid_sd=sd, n=int(len(x)))
+    return dict(slope=float(slope), intercept=float(intercept), r=r, resid_sd=sd,
+                n=int(len(x)), xbar=float(x.mean()),
+                sxx=float(((x - x.mean()) ** 2).sum()), resid=resid)
+
+
+def prediction_interval(fit, x0, *, level=0.80):
+    """Half-width of a prediction interval for a new observation at ``x0``.
+
+    Three things the naive ``z * resid_sd`` leaves out, all of which matter here:
+
+    * with n=20 the reference distribution is t on n-2 df, not the normal;
+    * a *prediction* interval carries the 1/n term for the uncertainty in the
+      fitted mean, on top of the residual scatter;
+    * the leverage term ``(x0 - xbar)^2 / Sxx`` grows without bound away from the
+      training mean. This forecast sits 2-3 standard deviations above it in the
+      western pole, so that term is doing real work rather than rounding.
+
+    Ignoring all three understated the western interval by 20-28%.
+    """
+    from scipy import stats
+    n = fit["n"]
+    dof = max(n - 2, 1)
+    leverage = 1.0 / n + (float(x0) - fit["xbar"]) ** 2 / fit["sxx"] if fit["sxx"] > 0 else 1.0 / n
+    se = fit["resid_sd"] * np.sqrt(1.0 + leverage)
+    tcrit = float(stats.t.ppf(0.5 + level / 2.0, dof))
+    return float(tcrit * se), float(leverage)
 
 
 def loyo_skill(x, y):
@@ -149,20 +190,27 @@ def loyo_skill(x, y):
                 n=int(ok.sum()))
 
 
-def persistence_predictor(init, years, pole, *, region=REGION, days=14, verbose=False):
+def persistence_predictor(init, years, pole, *, region=REGION, days=30, verbose=False):
     """The observed pole temperature over the `days` before each init.
 
     SST is strongly autocorrelated, so "the ocean stays as it is" is a genuinely
     hard baseline. Without it a high correlation says almost nothing: a model
     that only reproduced persistence would score nearly as well. Skill is what
     the forecast adds *over* this.
+
+    ``days`` is not innocuous and the default is deliberately the demanding one.
+    A 14-day window -- the first thing tried here -- is the weakest of 7/14/30 at
+    almost every horizon, i.e. the choice that most flatters the model. Thirty
+    days is the harder and more natural comparison for a product whose flagship
+    window is a 30-day mean, and it is what :func:`persistence_sensitivity`
+    reports across. The window is inclusive of both endpoints.
     """
     y0, y1 = int(min(years)), int(max(years))
     obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
                         hindcast=(y0, y1 + 1), region=region, verbose=verbose)["sst"]
     vals = []
     for year in years:
-        init_ts = pd.Timestamp(init).replace(year=int(year))
+        init_ts, _ = window_valid_dates(init, "week1", year=year)[0], None
         sel = obs.sel(time=slice(init_ts - pd.Timedelta(days=days), init_ts))
         vals.append(a2s.Index.named(pole).reduce(sel.mean("time")))
     return xr.concat(vals, dim=pd.Index(list(years), name="year"))
@@ -177,15 +225,46 @@ def calibrate_pole(hcst_idx, obs_idx, fcst_idx):
         fit = ols(x, y)
         skill = loyo_skill(x, y)
         raw = float(fcst_idx.sel(window=window))
+        ci80, leverage = prediction_interval(fit, raw, level=0.80)
         rows.append(dict(
             window=window, raw=raw,
             calibrated=fit["slope"] * raw + fit["intercept"],
             model_clim=float(np.nanmean(x)), obs_clim=float(np.nanmean(y)),
             slope=fit["slope"], intercept=fit["intercept"],
             fit_r=fit["r"], resid_sd=fit["resid_sd"],
+            ci80=ci80, leverage=leverage,
+            # how far outside the training range this forecast sits, in training sd
+            z_vs_training=(raw - fit["xbar"]) / np.sqrt(fit["sxx"] / max(fit["n"] - 1, 1)),
             loyo_r=skill["r"], loyo_rmse=skill["rmse"], n_years=fit["n"],
         ))
-    return pd.DataFrame(rows).set_index("window")
+    table = pd.DataFrame(rows).set_index("window")
+    table.attrs["residuals"] = {w: ols(hcst_idx.sel(window=w).values,
+                                       obs_idx.sel(window=w).values)["resid"] for w in WINDOWS}
+    table.attrs["fits"] = {w: ols(hcst_idx.sel(window=w).values,
+                                  obs_idx.sel(window=w).values) for w in WINDOWS}
+    return table
+
+
+def persistence_sensitivity(init, years, hcst_idx, obs_idx, *, windows=(7, 14, 30), verbose=False):
+    """LOYO skill of the model against persistence at several baseline lengths.
+
+    The persistence window is a free parameter, and the headline claim turns on
+    it: at 14 days the model beats persistence everywhere, at 30 days it does not
+    in the west. Reporting the sweep is the honest form of the comparison.
+    """
+    rows = []
+    for pole in POLES:
+        for w in WINDOWS:
+            y = obs_idx[pole].sel(window=w).values
+            m = loyo_skill(hcst_idx[pole].sel(window=w).values, y)
+            row = dict(pole=pole.upper(), window=w, model_r=m["r"], model_rmse=m["rmse"])
+            for d in windows:
+                p = loyo_skill(persistence_predictor(init, years, pole, days=d,
+                                                     verbose=verbose).values, y)
+                row[f"persist{d}_r"] = p["r"]
+                row[f"gain{d}"] = m["r"] - p["r"]
+            rows.append(row)
+    return pd.DataFrame(rows).set_index(["pole", "window"])
 
 
 def regrid_like(fine, target):
@@ -270,18 +349,37 @@ def run(init, *, verbose=False):
 
     tables = {p: calibrate_pole(hcst_idx[p], obs_idx[p], fcst_idx[p]) for p in POLES}
 
-    # DMI is a difference of anomalies, so it inherits its baseline. Report both:
-    #   observed  -- calibrated poles against the OISST climatology (what the ocean does)
-    #   model     -- raw poles against the reforecast climatology (what this model does)
+    # DMI: the calibrated forecast, and the uncalibrated model beside it.
+    #
+    # These are NOT two climatologies. OLS with an intercept is mean-preserving,
+    # so `calibrated - obs_clim == slope * (x0 - xbar)` -- the observed
+    # climatology cancels identically. Setting both slopes to 1 gives the raw
+    # column. The gap between them is therefore the regression's amplitude
+    # correction (west slope > 1, east slope < 1), not bias removal.
+    W, E = tables["wio"], tables["eio"]
     dmi = pd.DataFrame({
-        "dmi_obs_clim": ((tables["wio"]["calibrated"] - tables["wio"]["obs_clim"])
-                         - (tables["eio"]["calibrated"] - tables["eio"]["obs_clim"])),
-        "dmi_model_clim": ((tables["wio"]["raw"] - tables["wio"]["model_clim"])
-                           - (tables["eio"]["raw"] - tables["eio"]["model_clim"])),
+        "dmi_calibrated": ((W["calibrated"] - W["obs_clim"]) - (E["calibrated"] - E["obs_clim"])),
+        "dmi_raw": ((W["raw"] - W["model_clim"]) - (E["raw"] - E["model_clim"])),
     })
-    # Independent pole errors add in quadrature.
-    dmi["ci80_halfwidth"] = 1.2816 * np.sqrt(
-        tables["wio"]["resid_sd"] ** 2 + tables["eio"]["resid_sd"] ** 2)
+
+    # Pole residuals are NOT independent (corr runs -0.46..+0.20 by window), so
+    # adding them in quadrature understates the difference -- by 19% at week 1.
+    # Take the empirical sd of the residual difference instead, then inflate for
+    # the same prediction-interval terms the poles get.
+    from scipy import stats
+    ci, corr = [], []
+    for w in WINDOWS:
+        rw, re_ = W.attrs["residuals"][w], E.attrs["residuals"][w]
+        fw, fe = W.attrs["fits"][w], E.attrs["fits"][w]
+        n = fw["n"]
+        sd_diff = float(np.std(rw - re_, ddof=2))
+        leverage = 0.5 * (float(W.loc[w, "leverage"]) + float(E.loc[w, "leverage"]))
+        tcrit = float(stats.t.ppf(0.90, max(n - 2, 1)))
+        ci.append(tcrit * sd_diff * np.sqrt(1.0 + leverage))
+        corr.append(float(np.corrcoef(rw, re_)[0, 1]))
+    dmi["ci80"] = ci
+    dmi["pole_resid_corr"] = corr
+
     calib_fields = calibrate_fields(hcst_w, obs_w, fcst_w)
     return dict(init=init, years=years, poles=tables, dmi=dmi,
                 calibrated_fields=calib_fields,

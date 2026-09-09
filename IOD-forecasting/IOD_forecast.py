@@ -76,51 +76,56 @@ for pole in iod.POLES:
 #
 # SST is strongly autocorrelated, so a high correlation on its own says very
 # little — a forecast that only reproduced "the ocean stays as it is" would score
-# well too. The bar is what the model adds **over persistence**, here the observed
-# pole temperature over the 14 days before init.
+# well too. The bar is what the model adds **over persistence**.
+#
+# The length of the persistence window is a free parameter and the conclusion
+# turns on it, so all three are reported rather than the flattering one. At 14
+# days the model beats persistence everywhere; at 30 days — the harder and more
+# natural comparison for a 30-day product — it does not, in week 1 or in the west
+# at week 4.
 
 # %%
-skill_rows = []
-for pole in iod.POLES:
-    hcst_idx = iod.pole_series(res["fields"]["reforecast"])[pole]
-    obs_idx = iod.pole_series(res["fields"]["observed"], ensemble_mean=False)[pole]
-    pers = iod.persistence_predictor(INIT, years, pole)
-    for w in iod.WINDOWS:
-        y = obs_idx.sel(window=w).values
-        m = iod.loyo_skill(hcst_idx.sel(window=w).values, y)
-        p = iod.loyo_skill(pers.values, y)
-        skill_rows.append(dict(pole=pole.upper(), window=w, model_r=m["r"],
-                               persistence_r=p["r"], gain=m["r"] - p["r"],
-                               model_rmse=m["rmse"], persistence_rmse=p["rmse"]))
-skill = pd.DataFrame(skill_rows)
-print(skill.set_index(["pole", "window"]).round(3).to_string())
+hcst_idx = iod.pole_series(res["fields"]["reforecast"])
+obs_idx = iod.pole_series(res["fields"]["observed"], ensemble_mean=False)
+skill = iod.persistence_sensitivity(INIT, years, hcst_idx, obs_idx)
+print(skill[["model_r", "persist7_r", "persist14_r", "persist30_r",
+             "gain7", "gain14", "gain30"]].round(3).to_string())
 
 # %% [hide]
 fig, axes = plt.subplots(1, 2, figsize=(9, 3.1), sharey=True)
+xs = np.arange(len(iod.WINDOWS))
 for ax, pole in zip(axes, iod.POLES):
-    s = skill[skill.pole == pole.upper()]
-    x = np.arange(len(iod.WINDOWS))
-    ax.plot(x, s.model_r, "o-", color=POLE_C[pole], lw=2, label="ECMWF S2S, calibrated")
-    ax.plot(x, s.persistence_r, "s--", color="#8a8a8a", lw=1.5, label="persistence")
-    ax.fill_between(x, s.persistence_r, s.model_r, color=POLE_C[pole], alpha=.13)
-    ax.set_xticks(x); ax.set_xticklabels([WLAB[w] for w in iod.WINDOWS], rotation=30, ha="right")
+    sp = skill.loc[pole.upper()]
+    ax.plot(xs, sp["model_r"], "o-", color=POLE_C[pole], lw=2, label="ECMWF S2S, calibrated")
+    ax.plot(xs, sp["persist30_r"], "s--", color="#6a6a6a", lw=1.5, label="persistence (30 d)")
+    ax.plot(xs, sp["persist14_r"], "^:", color="#b0b0b0", lw=1.2, label="persistence (14 d)")
+    ax.fill_between(xs, sp["persist30_r"], sp["model_r"],
+                    where=(sp["model_r"] >= sp["persist30_r"]),
+                    color=POLE_C[pole], alpha=.13, interpolate=True)
+    ax.set_xticks(xs); ax.set_xticklabels([WLAB[w] for w in iod.WINDOWS], rotation=30, ha="right")
     ax.set_ylim(0, 1); ax.grid(axis="y", alpha=.25)
     ax.set_title(f"{pole.upper()} — {'western' if pole=='wio' else 'eastern'} pole")
 axes[0].set_ylabel("leave-one-year-out correlation")
-axes[0].legend(frameon=False, fontsize=8, loc="lower left")
-fig.suptitle("Skill above persistence widens with lead — the shaded gap is what the model adds",
+axes[0].legend(frameon=False, fontsize=7.5, loc="lower left")
+fig.suptitle("Gain over persistence is real at weeks 2-4 in the east; week 1 is not an improvement",
              fontsize=10, y=1.02)
 fig.tight_layout(); plt.show()
 
 # %% [markdown]
-# ## The dipole, both ways
+# ## The dipole, calibrated and raw
 #
-# DMI is a difference of anomalies, so it inherits whatever baseline the anomaly
-# is taken against. Neither choice is more correct, so both are reported: the
-# **observed** framing asks how warm the poles are against the ocean's own recent
-# history; the **model** framing asks how they sit against what this model
-# normally predicts at this lead. The gap between them is the model's
-# lead-dependent bias, which the regression absorbs.
+# An earlier version of this notebook reported the dipole against "two
+# climatologies". That was wrong, and worth stating rather than quietly fixing:
+# least squares with an intercept is mean-preserving, so
+# `calibrated − obs_clim ≡ slope × (x₀ − x̄)` — the observed climatology
+# **cancels identically**, and setting both slopes to 1 recovers the other
+# column exactly.
+#
+# So these are the **calibrated forecast** and the **uncalibrated model**. The gap
+# between them is the regression's *amplitude* correction: it stretches the west
+# (slope > 1, the ensemble mean under-disperses that pole) and shrinks the east
+# (slope < 1, where the model over-amplifies variability). Constant bias cancels
+# on both sides and is not what the difference shows.
 
 # %%
 print(res["dmi"].round(3).to_string())
@@ -129,15 +134,15 @@ print(res["dmi"].round(3).to_string())
 fig, ax = plt.subplots(figsize=(6.4, 3.2))
 x = np.arange(len(iod.WINDOWS))
 d = res["dmi"]
-ax.errorbar(x - .07, d.dmi_obs_clim, yerr=d.ci80_halfwidth, fmt="o-",
-            color="#1f6f80", lw=2, capsize=3, label="vs observed climatology")
-ax.errorbar(x + .07, d.dmi_model_clim, fmt="s--", color="#c4552f", lw=1.5,
-            label="vs model climatology")
+ax.errorbar(x - .07, d["dmi_calibrated"], yerr=d["ci80"], fmt="o-",
+            color="#1f6f80", lw=2, capsize=3, label="calibrated (the product)")
+ax.errorbar(x + .07, d["dmi_raw"], fmt="s--", color="#c4552f", lw=1.5,
+            label="raw model")
 ax.axhline(0, color="#444", lw=.8)
 ax.set_xticks(x); ax.set_xticklabels([WLAB[w] for w in iod.WINDOWS], rotation=30, ha="right")
 ax.set_ylabel("DMI (°C)"); ax.grid(axis="y", alpha=.25)
 ax.legend(frameon=False, fontsize=8)
-ax.set_title("Positive dipole at every horizon; error bars are the 80% interval", fontsize=10)
+ax.set_title("Positive dipole at every horizon; bars are the 80% prediction interval", fontsize=10)
 fig.tight_layout(); plt.show()
 
 # %% [markdown]
@@ -207,17 +212,17 @@ plt.show()
 rows = []
 for pole in iod.POLES:
     t = res["poles"][pole]
-    sk = skill[skill.pole == pole.upper()].set_index("window")
+    sk = skill.loc[pole.upper()]
     for w in iod.WINDOWS:
         vs, ve = iod.window_valid_dates(INIT, w)
         rows.append(dict(init=INIT, index=pole.upper(), window=w,
                          valid_from=vs.date(), valid_to=ve.date(),
                          calibrated_C=round(t.loc[w, "calibrated"], 3),
                          anomaly_C=round(t.loc[w, "calibrated"] - t.loc[w, "obs_clim"], 3),
-                         ci80=round(1.2816 * t.loc[w, "resid_sd"], 3),
+                         ci80=round(t.loc[w, "ci80"], 3),
                          loyo_r=round(sk.loc[w, "model_r"], 3),
-                         persistence_r=round(sk.loc[w, "persistence_r"], 3),
-                         skill_gain=round(sk.loc[w, "gain"], 3)))
+                         persist30_r=round(sk.loc[w, "persist30_r"], 3),
+                         gain30=round(sk.loc[w, "gain30"], 3)))
 out = pd.DataFrame(rows)
 out.to_csv(f"outputs/indices_{INIT}.csv", index=False)
 res["dmi"].reset_index().assign(init=INIT).to_csv(f"outputs/dmi_{INIT}.csv", index=False)
@@ -228,18 +233,23 @@ print(f"\nwrote outputs/indices_{INIT}.csv, dmi_{INIT}.csv, calibrated_fields_{I
 # %% [markdown]
 # ## Caveats
 #
-# * **Week 1 is barely better than persistence** (r 0.88 vs 0.85 for the west).
-#   At that range "the ocean stays as it is" is nearly as good, and the product's
-#   value is really weeks 2–4.
+# * **Week 1 adds nothing over persistence**, in either box at any baseline
+#   tested, and neither does the west at week 4. The value is weeks 2–4, in the
+#   east especially.
+# * **Near-term values run above independent estimates.** BoM has the IOD neutral
+#   (+0.25) for the week we forecast at +0.43; our own observations give +0.01.
+#   Direction over the season is not in dispute — a positive IOD is the consensus
+#   — but the near-term level should be read as an upper estimate.
+# * **The baseline is 2006–2025**, the reforecast period, not the 1991–2020
+#   climatology BoM/CPC/NOAA publish against. The anomalies are not directly
+#   comparable with theirs.
+# * **The interval is a prediction interval** on Student's t, carrying the
+#   leverage term — this forecast sits 2.3–3.0 sd beyond the training mean in the
+#   west, so the naive `1.28 × resid_sd` understated it by 20–28%.
+# * **The ensemble mean is calibrated, not the spread.** With 100 real-time
+#   members a spread-aware interval is reachable and would be the natural next step.
+# * **Twenty years is a short fit.** Every slope rests on 20 points; leave-one-year-out
+#   rather than in-sample skill is quoted throughout for that reason.
 # * **Field and index calibration disagree slightly** (0.1–0.3 °C on WIO). Fitting
 #   per cell then area-averaging is not the same operation as fitting the
-#   area-average, once slopes vary across the box. The index table is the number
-#   to quote for an index — it is fitted directly on the quantity being reported —
-#   and the maps are for spatial pattern.
-# * **The ensemble mean is calibrated, not the spread.** The 80% interval comes
-#   from regression residuals across 20 years, so it reflects historical error,
-#   not this week's ensemble disagreement. With 100 real-time members a
-#   spread-aware interval is reachable and would be the natural next step.
-# * **Twenty years is a short fit.** Every slope rests on 20 points; a single
-#   unusual year moves it. That is inherent to the on-the-fly reforecast design,
-#   and is why leave-one-year-out rather than in-sample skill is quoted throughout.
+#   area-average. The index table is the number to quote for an index.

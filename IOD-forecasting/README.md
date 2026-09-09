@@ -25,11 +25,7 @@ combined; the dipole is reported against **both** a model and an observed climat
 | `IOD_forecast.py` / `.ipynb` | Narrative notebook, percent-format source + executed output |
 | `report/` | Two-to-three page PDF outlook, markdown source and figures |
 | `tools/py2nb.py` | Percent-`.py` → executed `.ipynb` (no jupytext in the shared env) |
-| `outputs/` | Per-init CSV/netCDF and figures — regenerable, written by a run; not committed |
-
-> The CHC reference materials that framed this task (Funk's cdsapi download scripts and
-> the October-rains deck) are not committed here — they are unpublished CHC material and
-> live in the private `experiments` copy of this directory.
+| `outputs/` | Per-init CSV/netCDF and figures — regenerable, so gitignored |
 
 ## Running one
 
@@ -51,12 +47,42 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
 
 ## Findings so far
 
-- **Positive dipole at every horizon** for the 31 Aug 2026 init (+0.42 to +0.84 °C),
+- **Positive dipole at every horizon** for the 31 Aug 2026 init (+0.43 to +0.86 °C),
   driven by a warm western box 0.7–1.0 °C above its 2006–2025 average.
-- **Skill beats persistence at every horizon and the margin widens with lead.** This
-  matters: SST is so autocorrelated that a bare correlation says little. In the eastern
-  box at weeks 3–4 persistence collapses to r≈0.31 while the model holds 0.77–0.82.
-- **Week 1 adds little** over assuming no change — the product's value is weeks 2–4.
+- **The gain over persistence is real at weeks 2–4, and concentrated in the east**
+  (+0.15 to +0.21 in correlation against a 30-day persistence baseline). **Week 1 is not
+  an improvement on persistence**, and neither is the west at week 4. The persistence
+  window is a free parameter and the conclusion turns on it, so 7/14/30-day baselines are
+  all reported rather than the flattering one.
+- **Near-term values run above independent estimates.** BoM has the IOD neutral (+0.25) for
+  the week we forecast at +0.43; our own observations give +0.01 for that week. The
+  seasonal direction is not in dispute — a positive IOD is the consensus — but the
+  near-term level reads as an upper estimate.
+- **Early verification of week 1**: west +0.13, east −0.29, dipole +0.42, all inside their
+  80% intervals but the dipole close to the edge. In the east the *raw* model was
+  essentially exact and the calibration moved it the wrong way — the shrinkage risk of a
+  twenty-point fit.
+
+## Corrections applied after audit (2026-09-08)
+
+A sub-agent audit against the reference materials and independent sources found four
+things worth recording, all now fixed:
+
+1. **The "two climatologies" framing was mathematically false.** OLS with an intercept is
+   mean-preserving, so `calibrated − obs_clim ≡ slope × (x₀ − x̄)` — the observed
+   climatology cancels identically. The two DMI columns are `dmi_calibrated` and
+   `dmi_raw`, and their difference is the regression's *amplitude* correction, not bias
+   removal.
+2. **The 80% intervals were 20–28% too narrow in the west.** Now a Student-*t* prediction
+   interval carrying the leverage term — this forecast extrapolates 2.3–3.0 sd beyond the
+   training mean there. The DMI interval no longer assumes independent pole residuals
+   (they correlate −0.41 at week 1).
+3. **The headline skill claim rested on an untested parameter.** The 14-day persistence
+   baseline was the weakest of three; the claim of beating persistence at every horizon
+   does not survive a 30-day baseline and has been withdrawn.
+4. **A one-day window offset.** S2S SST is `stepType="avg"`, so step 24 is the mean over
+   hours 0–24 — the init day, not the day after. Verification windows and advertised dates
+   were one day late.
 
 ## Library work this required
 
@@ -67,3 +93,5 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
   adapter (PSL files one NetCDF per year with no aggregation endpoint).
 - africas2s **#9** — `lead_window_reduce`, `doy_climatology`/`doy_anomaly`, and the
   `eio` index.
+- acmadDL **#13** — pin `hyear` on S2S reforecast requests, so the 2006–2025 training
+  window is guaranteed rather than an ECDS default.

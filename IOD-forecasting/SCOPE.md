@@ -59,8 +59,10 @@ same ones.
 The east box is the asymmetric one — it stops at the equator.
 
 **WIO — western pole.** `[-10, 10, 50, 70]`, `transform="raw"`, `weights="cos_lat"`.
-Exists today as `wio_index`. Absolute temperature, deliberately not an anomaly, so the
-deck's ~29 °C threshold stays meaningful.
+Exists today as `wio_index`. Absolute temperature, deliberately not an anomaly, so a
+threshold in degrees stays meaningful. (An earlier draft attributed a "~29 °C threshold" to
+the CHC deck; that phrase was inherited from the `wio` docstring in africas2s and **appears
+nowhere in the deck's 26 slides**. Attribution withdrawn.)
 
 **EIO — eastern pole.** `[-10, 0, 90, 110]`, `transform="raw"`, `weights="cos_lat"`.
 **New.** Trivially built: take the WIO recipe and swap in the DMI east box. Roughly six lines.
@@ -132,25 +134,21 @@ One weekly run, driven by the most recent ECMWF extended-range init:
    leave-one-year-out skill per lead — with DMI carried as a pair of results, one per
    climatology, side by side.
 
-### Both climatologies, reported separately
+### Correction, and what the two DMI columns actually are
 
-DMI is an anomaly index, so it inherits whatever baseline the anomaly is taken against.
-We compute **both** and present them per climatology rather than picking one:
+**This section previously claimed something false and is corrected here.** The plan was to
+report DMI against a model climatology and an observed one. Least squares with an intercept
+is mean-preserving, so `calibrated − obs_clim ≡ slope × (x₀ − x̄)`: the observed climatology
+**cancels identically** and carries no information beyond the slopes. Setting both slopes to
+1 recovers the other column exactly. So the two columns are the **calibrated forecast** and
+the **uncalibrated model**, not two climatologies, and the gap between them is the
+regression's *amplitude* correction — west slope > 1, east slope < 1 — not the removal of a
+lead-dependent bias. Any constant bias cancels on both sides. Columns are now named
+`dmi_calibrated` and `dmi_raw`.
 
-| Climatology | Built from | Property |
-|---|---|---|
-| **Model** | The 2006–2025 reforecast ensemble, per lead window | Self-consistent with the forecast — removes the model's own lead-dependent SST bias, so the anomaly is "warm relative to what this model usually predicts at this lead". |
-| **Observed** | NOAA OI SST over the same 2006–2025 window | Anchored to reality — the anomaly is "warm relative to what the ocean actually does", which is the framing the deck's warmest-on-record language uses. |
-
-Reporting both is cheap once the day-of-year climatology helper exists (it is the same
-function applied to two inputs), and the spread between them is itself diagnostic: a large
-gap means the model carries a lead-dependent bias that the regression is having to absorb.
-WIO and EIO are absolute °C and are unaffected — they have no baseline.
-
-Because the reforecast is keyed to the calendar init, the training sample is re-fit every
-run — which is the right behaviour, and also why each run is self-contained and cacheable.
-
----
+A genuine model-versus-observed climatology comparison is still possible and mildly
+interesting (the model's own 20-year window mean against OISST's), but it is a diagnostic of
+mean bias, not a second forecast framing, and it is not what the earlier text described.
 
 ## 6. Plan
 
