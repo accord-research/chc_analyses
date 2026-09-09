@@ -13,7 +13,9 @@ date — Funk's stated preference over quantile matching, since a straight line
 continues a warming trend where a quantile map clamps to the historical range.
 
 Both poles are carried as absolute temperatures and calibrated separately, then
-combined; the dipole is reported against **both** a model and an observed climatology.
+combined. The dipole is reported twice — calibrated and raw — so the size of the
+regression's amplitude correction is visible; these are **not** two climatologies (see
+the corrections note below).
 
 ## Layout
 
@@ -23,9 +25,13 @@ combined; the dipole is reported against **both** a model and an observed climat
 | `iod_pipeline.py` | The pipeline. `run("YYYY-MM-DD")` is the whole thing — the init date is the only input |
 | `make_maps.py` | Map rendering (coastlines, skill masking) shared by the notebook and the report |
 | `IOD_forecast.py` / `.ipynb` | Narrative notebook, percent-format source + executed output |
-| `report/` | Two-to-three page PDF outlook, markdown source and figures |
+| `report/` | Four-page PDF outlook, markdown source and figures |
 | `tools/py2nb.py` | Percent-`.py` → executed `.ipynb` (no jupytext in the shared env) |
 | `outputs/` | Per-init CSV/netCDF and figures — regenerable, so gitignored |
+
+> The CHC reference materials that framed this task (Funk's cdsapi download scripts and
+> the October-rains deck) are not committed here — they are unpublished CHC material and
+> live in the private `experiments` copy of this directory.
 
 ## Running one
 
@@ -49,11 +55,11 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
 
 - **Positive dipole at every horizon** for the 31 Aug 2026 init (+0.43 to +0.86 °C),
   driven by a warm western box 0.7–1.0 °C above its 2006–2025 average.
-- **The gain over persistence is real at weeks 2–4, and concentrated in the east**
-  (+0.15 to +0.21 in correlation against a 30-day persistence baseline). **Week 1 is not
-  an improvement on persistence**, and neither is the west at week 4. The persistence
-  window is a free parameter and the conclusion turns on it, so 7/14/30-day baselines are
-  all reported rather than the flattering one.
+- **Only week 2 beats persistence by more than twenty years can resolve** — and it does so
+  in both poles (+0.16 west, +0.15 east, 80% bootstrap intervals excluding zero). Weeks 3–4
+  in the east have larger point gains (+0.21, +0.18) but intervals straddling zero, as does
+  the 30-day window. The persistence window is itself a free parameter, so 7/14/30-day
+  baselines are all reported rather than the flattering one.
 - **Near-term values run above independent estimates.** BoM has the IOD neutral (+0.25) for
   the week we forecast at +0.43; our own observations give +0.01 for that week. The
   seasonal direction is not in dispute — a positive IOD is the consensus — but the

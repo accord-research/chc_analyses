@@ -7,9 +7,10 @@
 # The method follows Funk's steer directly: **simple regression against NOAA OI
 # values** rather than quantile matching, "particularly appropriate given climate
 # change", with the **west and east boxes calibrated separately** and combined
-# afterwards. For a fixed calendar init, each climatology is just the 20-year mean
-# of that window, so the dipole is reported against **both** a model climatology
-# and an observed one.
+# afterwards. The dipole is reported twice — **calibrated and raw** — so the size
+# of the regression's amplitude correction is visible. These are not two
+# climatologies: least squares with an intercept is mean-preserving, so the
+# observed climatology cancels out of the difference (spelled out below).
 
 # %% [hide]
 import warnings, sys
@@ -60,9 +61,9 @@ for w in iod.WINDOWS:
 # %% [markdown]
 # ## The two poles, as separate results
 #
-# Both in absolute °C, which is what makes the deck's ~29 °C western-pole
-# threshold directly readable. `slope` is the regression's correction: above 1
-# means the model under-disperses that pole and the fit stretches it.
+# Both in absolute °C, so a threshold in degrees stays directly readable.
+# `slope` is the regression's correction: above 1 means the model under-disperses
+# that pole and the fit stretches it.
 
 # %%
 for pole in iod.POLES:
@@ -177,8 +178,14 @@ for j, w in enumerate(iod.WINDOWS):
     cs = mm._panel(axes[0, j], anom.sel(window=w),
                    cf.loyo_r.sel(window=w) >= mm.SKILL_FLOOR, proj, norm, WLAB[w])
     # the skill field itself, on the same refined basemap
+    # mask the refined skill field the same way the anomaly panels are masked:
+    # without this, nearest-filled values over land and over the uncalibrated
+    # outer ring are actually drawn, hidden only by the land polygon on top.
     sfine = mm.refine(cf.loyo_r.sel(window=w))
-    sk = axes[1, j].contourf(sfine["lon"].values, sfine["lat"].values, sfine.values,
+    svalid = mm.refine(cf.loyo_r.sel(window=w).notnull().astype(float),
+                       method="linear").values > 0.5
+    sk = axes[1, j].contourf(sfine["lon"].values, sfine["lat"].values,
+                             np.where(svalid, sfine.values, np.nan),
                              levels=np.arange(0, 1.01, 0.1), cmap="viridis",
                              transform=proj, zorder=2, extend="neither")
     mm._basemap(axes[1, j], proj)
@@ -214,11 +221,11 @@ for pole in iod.POLES:
                          persist30_r=round(sk.loc[w, "persist30_r"], 3),
                          gain30=round(sk.loc[w, "gain30"], 3)))
 out = pd.DataFrame(rows)
-out.to_csv(f"outputs/indices_{INIT}.csv", index=False)
-res["dmi"].reset_index().assign(init=INIT).to_csv(f"outputs/dmi_{INIT}.csv", index=False)
-cf.to_netcdf(f"outputs/calibrated_fields_{INIT}.nc")
+# Display only. `refresh_outputs.py` owns the published artefacts under outputs/;
+# writing them from here too meant whichever ran last won, and the notebook's
+# thinner table was silently overwriting columns the report quotes.
 print(out.to_string(index=False))
-print(f"\nwrote outputs/indices_{INIT}.csv, dmi_{INIT}.csv, calibrated_fields_{INIT}.nc")
+print("\nPublished artefacts are written by refresh_outputs.py, not by this notebook.")
 
 # %% [markdown]
 # ## Caveats

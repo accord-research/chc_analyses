@@ -28,7 +28,7 @@ ECMWF sub-seasonal (S2S) forecast, corrected against NOAA OI SST by linear regre
 
 **The forecast is for a positive Indian Ocean Dipole at every horizon**, of weak-to-moderate
 amplitude: +0.43 °C over the first week, about +0.82 to +0.86 °C in weeks 2 and 3, and
-+0.73 °C averaged over the next 30 days. This is driven almost entirely by a warm western
++0.72 °C averaged over the next 30 days. This is driven almost entirely by a warm western
 box, forecast at 28.4–28.8 °C, 0.7–1.0 °C above its 2006–2025 average for these dates. The
 eastern box is close to normal, 0.1–0.3 °C above.
 
@@ -41,11 +41,14 @@ with forecast magnitudes easing. Computed on our own data and baseline, the obse
 for that week is +0.01 against our forecast +0.43 — inside the stated interval, but at its
 edge (see *Early verification*).
 
-**The forecast is more accurate than persistence at weeks 2 to 4, and the eastern box is
-where it earns its keep.** Against a 30-day persistence baseline, the eastern box gains
-+0.15 to +0.21 in correlation at weeks 2–4. **Week 1 is not better than persistence** at any
-baseline tested, and the **western box at week 4 is not either**. The useful range of this
-product is weeks 2 to 4, and it is strongest in the east.
+**Only at week 2 does the forecast measurably beat persistence** — and there it does so in
+both boxes. Against a 30-day persistence baseline the week-2 gain in correlation is +0.16
+(west) and +0.15 (east), and in both cases an 80% bootstrap interval on the gain excludes
+zero. At every other horizon the gain is **not separable from sampling noise on twenty
+years**: the eastern box gains +0.21 at week 3 and +0.18 at week 4, but those intervals
+straddle zero, as does the +0.11 on the 30-day window. This applies symmetrically — the
+small negative gains at week 1 and at week 4 in the west are equally inconclusive. Twenty
+years is simply too short to resolve differences of this size.
 
 ## Method
 
@@ -98,7 +101,7 @@ valid init dates. Data via `acmadDL`, analysis via `africas2s`.
 | Week 2 | 7–13 Sep | 28.73 °C (+1.03) | 28.31 °C (+0.21) | +0.82 ± 0.40 |
 | Week 3 | 14–20 Sep | 28.81 °C (+1.02) | 28.26 °C (+0.16) | +0.86 ± 0.62 |
 | Week 4 | 21–27 Sep | 28.78 °C (+0.83) | 28.28 °C (+0.10) | +0.73 ± 0.59 |
-| Days 1–30 | 31 Aug – 29 Sep | 28.68 °C (+0.89) | 28.29 °C (+0.17) | +0.73 ± 0.42 |
+| Days 1–30 | 31 Aug – 29 Sep | 28.68 °C (+0.89) | 28.29 °C (+0.17) | +0.72 ± 0.42 |
 
 Temperatures are absolute; brackets are the departure from the **2006–2025** average for the
 same dates, dipole in °C with its 80% interval. That baseline is the reforecast period, not
@@ -122,27 +125,33 @@ depends on how long a window it averages, so both are shown.
 | | Week 1 | Week 2 | Week 3 | Week 4 | Days 1–30 |
 |---|---|---|---|---|---|
 | **West** — model | 0.89 | 0.90 | 0.76 | 0.69 | 0.83 |
-| West — persistence, 30 d | 0.85 | 0.74 | 0.68 | **0.71** | 0.81 |
-| West — persistence, 14 d | 0.88 | 0.68 | 0.60 | 0.63 | 0.75 |
+| West — persistence, 30 d / 14 d | 0.85 / 0.88 | 0.74 / 0.68 | 0.68 / 0.60 | 0.71 / 0.63 | 0.81 / 0.75 |
+| West — gain (80% interval) | +0.04 (−0.04, +0.12) | **+0.16 (+0.02, +0.28)** | +0.08 (−0.07, +0.22) | −0.02 (−0.11, +0.14) | +0.02 (−0.07, +0.14) |
 | **East** — model | 0.87 | 0.92 | 0.83 | 0.77 | 0.90 |
-| East — persistence, 30 d | **0.87** | 0.77 | 0.62 | 0.60 | 0.79 |
-| East — persistence, 14 d | 0.85 | 0.61 | 0.36 | 0.31 | 0.60 |
+| East — persistence, 30 d / 14 d | 0.87 / 0.85 | 0.77 / 0.61 | 0.62 / 0.36 | 0.60 / 0.31 | 0.79 / 0.60 |
+| East — gain (80% interval) | −0.01 (−0.06, +0.04) | **+0.15 (+0.03, +0.20)** | +0.21 (−0.02, +0.32) | +0.18 (−0.05, +0.30) | +0.11 (−0.02, +0.19) |
 
-Read this carefully, because the choice of baseline changes the conclusion:
+Two things govern how this table should be read.
 
-- **The east at weeks 2–4 is a genuine gain** — +0.15 to +0.21 over the 30-day baseline, and
-  more against the 14-day one. This is the product's real contribution.
-- **Week 1 is not an improvement on persistence** in either box, at any baseline tested.
-- **The west at week 4 is not either** (0.69 model against 0.71 for 30-day persistence).
+**The baseline length changes the answer.** An earlier draft of this report used only the
+14-day baseline and claimed the forecast beat persistence at every horizon with a margin
+that grew with lead. That is true only for that one window — the weakest of the three
+tested. It does not survive the 30-day comparison, which is the more natural benchmark for a
+product whose flagship window is a 30-day mean, and it has been withdrawn.
 
-An earlier draft of this report used only the 14-day baseline and claimed the forecast beat
-persistence at every horizon with a margin that grew with lead. That is true only for that
-one window, which is the weakest of the three tested; it does not survive the 30-day
-comparison and has been withdrawn.
+**Twenty years cannot resolve most of these differences.** The gain rows above carry an 80%
+bootstrap interval, resampling the (model, persistence, observed) triples so the dependence
+between the two predictors is preserved.
+
+**Week 2 is the only horizon where the gain excludes zero, and it does so in both boxes.**
+Weeks 3 and 4 in the east have the largest point gains in the table and still cannot be
+separated from noise; so can the 30-day window, which is the horizon most likely to be
+quoted. The same standard applies to the negative numbers: week 1, and week 4 in the west,
+are inconclusive rather than demonstrated failures.
 
 Typical error of the corrected forecast is 0.15–0.29 °C (west) and 0.20–0.37 °C (east).
 
-![Corrected SST anomaly at every horizon (°C vs the 2006–2025 observed average). Boxes: western (orange) and eastern (teal) poles; land in tan. Grey ocean is where leave-one-year-out correlation falls below 0.4 and the forecast should not be relied on — note how that area grows from week 1 to week 4, and that it covers much of the eastern box by week 4. Each cell is corrected by its own regression; observations are averaged from 0.25° to the model's 1.5° grid. Fields are cubic-refined for contouring, which is presentational only — every number quoted above comes from the native 1.5° field.](assets/fig3_maps.png){width=96%}
+![Corrected SST anomaly at every horizon (°C vs the 2006–2025 observed average). Boxes: western (orange) and eastern (teal) poles; land in tan. Grey ocean is where leave-one-year-out correlation falls below 0.4 and the forecast should not be relied on. That area expands with lead across the basin, and the eastern box is consistently the more affected of the two. Each cell is corrected by its own regression; observations are averaged from 0.25° to the model's 1.5° grid. Fields are cubic-refined for contouring — presentational only, and the zero contour in particular is placed by the interpolation rather than measured; every number quoted above comes from the native 1.5° field.](assets/fig3_maps.png){width=96%}
 
 ## Early verification
 
@@ -166,8 +175,9 @@ treat the eastern calibration with some caution and to keep verifying.
 
 ## Limitations
 
-- **Week 1 adds nothing over persistence**, and the west at week 4 adds nothing either. The
-  value of this product is weeks 2–4, most clearly in the eastern box.
+- **Only week 2 shows a gain over persistence that twenty years can resolve.** Weeks 3–4
+  and the 30-day window have larger point gains in the east but intervals straddling zero.
+  Week 1 is indistinguishable from persistence rather than worse than it.
 - **Near-term values run above independent estimates.** BoM has the IOD neutral (+0.25) for
   the week we forecast at +0.43; our own observations give +0.01 for that week. The
   disagreement on *direction over the season* is nil — everyone forecasts a positive IOD —
@@ -180,9 +190,19 @@ treat the eastern calibration with some caution and to keep verifying.
   the slope estimate itself still rests on twenty points.
 - **The interval is historical**, not ensemble-based. A version using the 100 members' spread
   is the obvious next step.
-- **Map and box numbers differ by 0.1–0.3 °C** — correcting each cell then averaging is not
+- **Map and box numbers differ by 0.15–0.35 °C** — correcting each cell then averaging is not
   the same calculation as correcting the box average; quote the table for a box.
 - **Box footprints differ slightly between model and observations** (cell-centre masking on a
   1.5° grid versus 0.25°), so part of the model–observation offset is footprint rather than
   model error. The intercept absorbs the constant part.
+- **The dipole is built from separately calibrated poles, and that choice is worth ~0.4 °C.**
+  Calibrating each pole and differencing multiplies the raw dipole by 1.15–1.82×. Regressing
+  the observed dipole directly on the model dipole instead gives shrinkage, and week-2
+  forecasts of +0.41 against our +0.82. Our construction verifies better out-of-sample and
+  is what Funk asked for (poles separately, then combined), but a choice that moves the
+  headline by more than the +0.4 °C threshold itself deserves stating.
+- **Persistence is given a one-day advantage.** Its averaging window ends on the init day,
+  which is also day 1 of the verification window, and assumes same-day observations that
+  would not be available at issue. Both make persistence look better, so the comparisons
+  above are conservative.
 - **One model only**, ECMWF S2S. GEFSv12 was considered and set aside.

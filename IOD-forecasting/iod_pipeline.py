@@ -245,6 +245,57 @@ def calibrate_pole(hcst_idx, obs_idx, fcst_idx):
     return table
 
 
+def williams_test(r_my, r_py, r_mp, n):
+    """Williams' t for two DEPENDENT correlations that share a variable.
+
+    Model-vs-observed and persistence-vs-observed are not independent: they share
+    the observed series, and the two predictors are themselves strongly
+    correlated. Comparing them with anything that assumes independence overstates
+    the evidence. Returns (t, p, df) for a two-sided test of r_my == r_py.
+
+    With n=20 this is the difference between "the model beats persistence" and
+    "the model beats persistence by more than twenty years can resolve".
+    """
+    from scipy import stats
+    if not all(np.isfinite([r_my, r_py, r_mp])) or n < 5:
+        return float("nan"), float("nan"), 0
+    det = (1 - r_my ** 2 - r_py ** 2 - r_mp ** 2) + 2 * r_my * r_py * r_mp
+    df = n - 3
+    denom = (2 * ((n - 1) / df) * det
+             + ((r_my + r_py) ** 2 / 4) * (1 - r_mp) ** 3)
+    if denom <= 0:
+        return float("nan"), float("nan"), df
+    t = (r_my - r_py) * np.sqrt((n - 1) * (1 + r_mp) / denom)
+    return float(t), float(2 * stats.t.sf(abs(t), df)), int(df)
+
+
+def bootstrap_gain_ci(x_model, x_pers, y, *, level=0.80, n_boot=4000, seed=0):
+    """Pairs-bootstrap CI for the correlation gain (model - persistence).
+
+    Preferred over an analytic test for dependent correlations: those come in
+    several formula variants that disagree at n=20, and the point here is only
+    whether the gain is separable from sampling noise. Resampling the (model,
+    persistence, observed) triples keeps the dependence between the two
+    predictors intact, which is what makes the comparison hard in the first place.
+    """
+    rng = np.random.default_rng(seed)
+    x_model = np.asarray(x_model, float); x_pers = np.asarray(x_pers, float)
+    y = np.asarray(y, float)
+    ok = np.isfinite(x_model) & np.isfinite(x_pers) & np.isfinite(y)
+    xm, xp, yy = x_model[ok], x_pers[ok], y[ok]
+    n = len(yy)
+    if n < 5:
+        return float("nan"), float("nan")
+    gains = np.empty(n_boot)
+    for b in range(n_boot):
+        i = rng.integers(0, n, n)
+        if np.std(xm[i]) == 0 or np.std(xp[i]) == 0 or np.std(yy[i]) == 0:
+            gains[b] = np.nan; continue
+        gains[b] = (np.corrcoef(xm[i], yy[i])[0, 1] - np.corrcoef(xp[i], yy[i])[0, 1])
+    lo, hi = np.nanquantile(gains, [(1 - level) / 2, 1 - (1 - level) / 2])
+    return float(lo), float(hi)
+
+
 def persistence_sensitivity(init, years, hcst_idx, obs_idx, *, windows=(7, 14, 30), verbose=False):
     """LOYO skill of the model against persistence at several baseline lengths.
 
@@ -258,11 +309,21 @@ def persistence_sensitivity(init, years, hcst_idx, obs_idx, *, windows=(7, 14, 3
             y = obs_idx[pole].sel(window=w).values
             m = loyo_skill(hcst_idx[pole].sel(window=w).values, y)
             row = dict(pole=pole.upper(), window=w, model_r=m["r"], model_rmse=m["rmse"])
+            x_model = hcst_idx[pole].sel(window=w).values
             for d in windows:
-                p = loyo_skill(persistence_predictor(init, years, pole, days=d,
-                                                     verbose=verbose).values, y)
+                x_pers = persistence_predictor(init, years, pole, days=d,
+                                               verbose=verbose).values
+                p = loyo_skill(x_pers, y)
                 row[f"persist{d}_r"] = p["r"]
                 row[f"gain{d}"] = m["r"] - p["r"]
+                # significance of the DIFFERENCE, not of either correlation
+                ok = np.isfinite(x_model) & np.isfinite(x_pers) & np.isfinite(y)
+                r_mp = float(np.corrcoef(x_model[ok], x_pers[ok])[0, 1])
+                _, pv, _ = williams_test(m["r"], p["r"], r_mp, int(ok.sum()))
+                row[f"p{d}"] = pv
+                lo, hi = bootstrap_gain_ci(x_model, x_pers, y)
+                row[f"gain{d}_lo"] = lo
+                row[f"gain{d}_hi"] = hi
             rows.append(row)
     return pd.DataFrame(rows).set_index(["pole", "window"])
 

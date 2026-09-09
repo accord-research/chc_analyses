@@ -36,9 +36,11 @@ REFINE = 4
 # interior rather than a ring of "no data" around every panel.
 EXTENT = [46.5, 112.5, -13.5, 13.5]
 
-# Symmetric about zero so the diverging colours mean what they look like, with a
-# deliberate flat band across +/-0.15 -- below that the anomaly is not meaningfully
-# different from climatology at this lead and should not read as coloured.
+# Symmetric about zero so the diverging colours mean what they look like. The
+# +/-0.15 band is rendered white as a readability choice, NOT a significance
+# threshold: the box prediction intervals are 0.22-0.49 C, so plenty of coloured
+# cells are equally indistinguishable from zero. It only keeps near-zero noise
+# from reading as signal.
 LEVELS = [-1.5, -1.0, -0.7, -0.45, -0.15, 0.15, 0.45, 0.7, 1.0, 1.5]
 
 ALL_WINDOWS = (("week1", "Week 1"), ("week2", "Week 2"), ("week3", "Week 3"),
@@ -141,11 +143,13 @@ def render(cf, out, windows=ALL_WINDOWS, ncols=2, panel_w=3.5):
         box = spare[0].get_position()
         cax = fig.add_axes([box.x0 + box.width * 0.16, box.y0 + box.height * 0.50,
                             box.width * 0.58, box.height * 0.055])
-        cb = fig.colorbar(cs, cax=cax, orientation="horizontal", ticks=LEVELS[::2])
+        cb = fig.colorbar(cs, cax=cax, orientation="horizontal", ticks=LEVELS)
     else:
-        cb = fig.colorbar(cs, ax=axes.tolist(), fraction=.030, pad=.015, ticks=LEVELS[::2])
+        cb = fig.colorbar(cs, ax=axes.tolist(), fraction=.030, pad=.015, ticks=LEVELS)
     cb.set_label("°C vs observed climatology", fontsize=8, labelpad=2)
-    cb.ax.tick_params(labelsize=7)
+    # every level labelled: with alternate ticks the +0.15 edge went unlabelled and
+    # the white band appeared to run to +0.45, so a +0.3 cell read as neutral.
+    cb.ax.tick_params(labelsize=5.5, rotation=45)
     fig.savefig(out, dpi=230, bbox_inches="tight"); plt.close(fig)
     return out
 

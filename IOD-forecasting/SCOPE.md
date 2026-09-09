@@ -83,7 +83,7 @@ reforecast suite, which is the part that is normally painful.
 
 | Capability | Status | Where it stands |
 |---|---|---|
-| `c3s/ecmwf-s2s` | **have** | Catalogued against the ECMWF ECDS endpoint (`ecds.ecmwf.int/api`), `s2s-forecasts`, `origin=ecmwf`, `perturbed_forecast`, `level_type=single_level` — the same request shape as Funk's own script. 1.5° grid, 50 forecast members. |
+| `c3s/ecmwf-s2s` | **have** | Catalogued against the ECMWF ECDS endpoint (`ecds.ecmwf.int/api`), `s2s-forecasts`, `origin=ecmwf`, `perturbed_forecast`, `level_type=single_level` — the same request shape as Funk's own script. 1.5° grid, 100 forecast members (10 in the reforecast). |
 | `sst` variable | **have** | Declared on the S2S product: `sea_surface_temperature`, K → K. No conversion work needed. |
 | Reforecast suite | **have** | `fetch(..., reforecast=True)` switches the collection to `s2s-reforecasts` and `perturbed_reforecast` — the adapter comments note the realtime collection's reforecast flag is broken upstream, and this route works around it. |
 | Hindcast window default | **have** | Defaults to `(init_year − 20, init_year − 1)` = **2006–2025** for a 2026 init. Exactly the window Funk's follow-up email corrects to. |
@@ -129,10 +129,10 @@ One weekly run, driven by the most recent ECMWF extended-range init:
 5. **Fit** per lead window, separately for west and east: OLS of observed on ensemble-mean
    forecast across the 20 reforecast years. Apply to the live forecast.
 6. **Derive** WIO and EIO from the calibrated absolute fields; derive DMI from the
-   calibrated anomalies — **twice, once per climatology** (see below).
+   calibrated anomalies, reported **calibrated and raw** (see below).
 7. **Report** calibrated SST fields, the three index values with error bounds, and
-   leave-one-year-out skill per lead — with DMI carried as a pair of results, one per
-   climatology, side by side.
+   leave-one-year-out skill per lead — with DMI carried as a pair of results,
+   calibrated and raw, side by side.
 
 ### Correction, and what the two DMI columns actually are
 
@@ -176,20 +176,21 @@ axis rather than assuming; refuses an incomplete window), `doy_climatology`/`doy
 registry, not the notebook, since `setio` already existed as its anomaly counterpart.
 → *Output:* PR #9, 18 tests, 1014 passing offline.
 
-**04 · Hindcast experiment.** ✅ **DONE — and the answer is all five horizons.** Skill is
-quoted leave-one-year-out throughout, and against a **persistence baseline**, because SST is
-so autocorrelated that a bare correlation says almost nothing. The model beats persistence at
-every horizon and the gain *widens* with lead:
+**04 · Hindcast experiment.** ✅ **DONE — and the answer is narrower than first written.**
+Skill is quoted leave-one-year-out, against a **persistence baseline**, because SST is so
+autocorrelated that a bare correlation says little. An earlier version of this section
+claimed the model beat persistence at every horizon with a margin that widened with lead.
+That rested on a 14-day persistence window — the weakest of 7/14/30 — and has been
+withdrawn. Against the harder 30-day baseline, with 80% bootstrap intervals on the gain:
 
-| | week1 | week2 | week3 | week4 | days 1–30 |
+| gain (80% interval) | Week 1 | Week 2 | Week 3 | Week 4 | Days 1–30 |
 |---|---|---|---|---|---|
-| WIO model r | 0.88 | 0.87 | 0.76 | 0.72 | 0.82 |
-| WIO persistence r | 0.85 | 0.66 | 0.60 | 0.64 | 0.74 |
-| EIO model r | 0.88 | 0.91 | 0.82 | 0.77 | 0.90 |
-| EIO persistence r | 0.83 | 0.58 | 0.33 | 0.31 | 0.57 |
+| West | +0.04 (−0.04, +0.12) | **+0.16 (+0.02, +0.28)** | +0.08 (−0.07, +0.22) | −0.02 (−0.11, +0.14) | +0.02 (−0.07, +0.14) |
+| East | −0.01 (−0.06, +0.04) | **+0.15 (+0.03, +0.20)** | +0.21 (−0.02, +0.32) | +0.18 (−0.05, +0.30) | +0.11 (−0.02, +0.19) |
 
-Weeks 3–4 in the east are where the model earns its keep — persistence collapses to r≈0.31
-while the model holds 0.77. Week 1 is the honest caveat: barely better than persistence.
+**Week 2 is the only horizon whose gain excludes zero, and it does so in both poles.** Weeks
+3–4 in the east have the largest point gains and still cannot be separated from noise on
+twenty years; nor can the 30-day window. The same standard applies to the negatives.
 
 **05 · Executed notebook, one real init.** ✅ **DONE.** `IOD_forecast.py` (percent source) →
 `IOD_forecast.ipynb`, executed clean, 3 figures. Reproduced on a second independent init
@@ -237,7 +238,8 @@ cells greyed rather than shown.
 **Settled**
 
 - ~~Week 4 in or out?~~ **In** — five horizons.
-- ~~Which climatology for anomalies?~~ **Both**, reported per climatology (§5).
+- ~~Which climatology for anomalies?~~ Superseded: the observed climatology cancels
+  out of the difference, so the pair reported is calibrated vs raw (§5).
 
 ---
 

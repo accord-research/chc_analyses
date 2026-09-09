@@ -32,7 +32,10 @@ for pole in iod.POLES:
                          loyo_r=round(sk.loc[w,"model_r"],3),
                          persist30_r=round(sk.loc[w,"persist30_r"],3),
                          persist14_r=round(sk.loc[w,"persist14_r"],3),
-                         gain30=round(sk.loc[w,"gain30"],3)))
+                         gain30=round(sk.loc[w,"gain30"],3),
+                         gain30_lo=round(sk.loc[w,"gain30_lo"],3),
+                         gain30_hi=round(sk.loc[w,"gain30_hi"],3),
+                         gain30_clears_zero=bool(sk.loc[w,"gain30_lo"] > 0)))
 idx = pd.DataFrame(rows); idx.to_csv(f"outputs/indices_{INIT}.csv", index=False)
 res["dmi"].reset_index().assign(init=INIT).to_csv(f"outputs/dmi_{INIT}.csv", index=False)
 sens.to_csv(f"outputs/persistence_sensitivity_{INIT}.csv")
@@ -62,9 +65,13 @@ for pole, c, nm in (("wio",CW,"WIO (west)"), ("eio",CE,"EIO (east)")):
 ax[0].axhline(0,color="#444",lw=.7); ax[0].set_ylabel("SST anomaly (°C)")
 ax[0].set_title("(a) Pole SST anomalies",fontsize=8,loc="left"); ax[0].legend(frameon=False,fontsize=6.8)
 d=res["dmi"]
-ax[1].errorbar(x-0.06, d["dmi_calibrated"], yerr=d["ci80"], fmt="o-", color=CE, lw=1.6,
+# Deliberately NOT the pole colours: orange/teal mean west/east in the other three
+# panels, and reusing them here for calibrated/raw made panel (b)'s orange read as
+# "the western pole".
+DMI_CAL, DMI_RAW = "#3b3b6d", "#9a9a9a"
+ax[1].errorbar(x-0.06, d["dmi_calibrated"], yerr=d["ci80"], fmt="o-", color=DMI_CAL, lw=1.6,
                capsize=2.5, ms=3.5, label="calibrated")
-ax[1].plot(x+0.06, d["dmi_raw"], "s--", color=CW, lw=1.3, ms=3.5, label="raw model")
+ax[1].plot(x+0.06, d["dmi_raw"], "s--", color=DMI_RAW, lw=1.3, ms=3.5, label="raw model")
 ax[1].axhline(0,color="#444",lw=.7); ax[1].set_ylabel("DMI (°C)")
 ax[1].set_title("(b) Dipole Mode Index",fontsize=8,loc="left"); ax[1].legend(frameon=False,fontsize=6.8)
 for j,(pole,c,nm) in enumerate((("WIO",CW,"(c) WIO skill"),("EIO",CE,"(d) EIO skill"))):
