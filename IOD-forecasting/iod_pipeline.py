@@ -284,6 +284,11 @@ def regrid_like(fine, target):
     fx = _factor(fine["lon"].values, target["lon"].values)
     if fy > 1 or fx > 1:
         fine = fine.coarsen(lat=fy, lon=fx, boundary="trim").mean()
+    # Coarsening puts block centres off the model centres, so the outermost model
+    # row and column fall outside the coarsened grid and are left NaN: those cells
+    # are never calibrated. Extrapolating to fill them would invent a slope from
+    # no overlapping observations, so they stay NaN and the maps simply do not
+    # draw them (see make_maps.EXTENT).
     return fine.interp(lat=target["lat"], lon=target["lon"])
 
 

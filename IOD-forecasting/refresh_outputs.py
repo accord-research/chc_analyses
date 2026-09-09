@@ -1,7 +1,8 @@
 """Regenerate every published artefact for one init: CSVs, facts, and report figures."""
 import warnings; warnings.filterwarnings("ignore")
 import sys, json; sys.path.insert(0, ".")
-import numpy as np, pandas as pd, matplotlib; matplotlib.use("Agg")
+import numpy as np, pandas as pd, matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import iod_pipeline as iod, make_maps
 

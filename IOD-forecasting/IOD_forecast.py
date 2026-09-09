@@ -160,45 +160,35 @@ fig.tight_layout(); plt.show()
 # that hides that would overstate the product.
 
 # %% [hide]
-import cartopy.crs as ccrs, cartopy.feature as cfeature
+import cartopy.crs as ccrs
+import make_maps as mm
 
+# Same filled-contour renderer the report uses -- the GHACOF house style: cubic
+# refinement onto a finer grid so the field reads as a field rather than as a
+# mosaic of 1.5 deg model cells. Presentational only; every number quoted above
+# comes from the native-resolution field.
 cf = res["calibrated_fields"]
 anom = cf.calibrated_sst - cf.obs_climatology
-lim = float(np.nanpercentile(np.abs(anom.values), 98))
-norm = TwoSlopeNorm(vcenter=0, vmin=-lim, vmax=lim)
 proj = ccrs.PlateCarree()
-SKILL_FLOOR, MASK_GREY, LAND_TAN = 0.4, "#b9b9b9", "#efe7d8"
+norm = mm.BoundaryNorm(mm.LEVELS, ncolors=plt.get_cmap("RdBu_r").N, extend="both")
 
-def _basemap(ax):
-    ax.add_feature(cfeature.LAND.with_scale("50m"), facecolor=LAND_TAN, edgecolor="none", zorder=3)
-    ax.add_feature(cfeature.COASTLINE.with_scale("50m"), lw=0.4, edgecolor="#5a5a5a", zorder=4)
-    ax.add_feature(cfeature.BORDERS.with_scale("50m"), lw=0.25, edgecolor="#9a9a9a", zorder=4)
-    ax.set_extent([45, 115, -15, 15], crs=proj)
-    for box, c in (("wtio", "#c4552f"), ("setio", "#1f6f80")):
-        b = REGIONS[box]
-        ax.add_patch(plt.Rectangle((b["west"], b["south"]), b["east"] - b["west"],
-                                   b["north"] - b["south"], fill=False, ec=c, lw=1.3,
-                                   transform=proj, zorder=5))
-
-fig, axes = plt.subplots(2, 5, figsize=(14, 4.6), subplot_kw={"projection": proj})
+fig, axes = plt.subplots(2, 5, figsize=(15, 4.4), subplot_kw={"projection": proj})
 for j, w in enumerate(iod.WINDOWS):
-    # masked cells get an explicit grey: white is the colormap's own centre, so an
-    # unskilful cell left blank would read as "no anomaly".
-    axes[0, j].set_facecolor(MASK_GREY)
-    a = anom.sel(window=w).where(cf.loyo_r.sel(window=w) >= SKILL_FLOOR)
-    im = axes[0, j].pcolormesh(anom.lon, anom.lat, a, cmap="RdBu_r", norm=norm,
-                               shading="auto", transform=proj, zorder=2)
-    sk = axes[1, j].pcolormesh(cf.loyo_r.lon, cf.loyo_r.lat, cf.loyo_r.sel(window=w),
-                               cmap="viridis", vmin=0, vmax=1, shading="auto",
-                               transform=proj, zorder=2)
-    for row, ttl in ((0, WLAB[w]), (1, "skill (LOYO r)")):
-        _basemap(axes[row, j])
-        axes[row, j].set_title(ttl, fontsize=9, pad=4)
-fig.colorbar(im, ax=axes[0, :].tolist(), fraction=.018, pad=.01, label="°C vs observed climatology")
+    cs = mm._panel(axes[0, j], anom.sel(window=w),
+                   cf.loyo_r.sel(window=w) >= mm.SKILL_FLOOR, proj, norm, WLAB[w])
+    # the skill field itself, on the same refined basemap
+    sfine = mm.refine(cf.loyo_r.sel(window=w))
+    sk = axes[1, j].contourf(sfine["lon"].values, sfine["lat"].values, sfine.values,
+                             levels=np.arange(0, 1.01, 0.1), cmap="viridis",
+                             transform=proj, zorder=2, extend="neither")
+    mm._basemap(axes[1, j], proj)
+    axes[1, j].set_title("skill (LOYO r)", fontsize=9, pad=3)
+fig.colorbar(cs, ax=axes[0, :].tolist(), fraction=.018, pad=.01,
+             ticks=mm.LEVELS[::2], label="°C vs observed climatology")
 fig.colorbar(sk, ax=axes[1, :].tolist(), fraction=.018, pad=.01, label="r")
 fig.suptitle(f"Calibrated Indian Ocean SST anomaly and its skill — init {INIT}\n"
              "boxes: western (orange) and eastern (teal) poles; land tan, grey ocean = LOYO r < 0.4",
-             fontsize=11, y=1.03)
+             fontsize=11, y=1.04)
 plt.show()
 
 # %% [markdown]
