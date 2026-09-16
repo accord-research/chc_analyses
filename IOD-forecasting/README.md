@@ -45,6 +45,14 @@ Needs ECDS credentials for `c3s/ecmwf-s2s` (see acmadDL's README — ECDS is a s
 service from the Copernicus CDS, with its own key and licences). A run takes a few
 minutes once the observational record is cached; the first OISST fetch is ~40 minutes.
 
+**Valid init dates are narrower than they look.** ECMWF files extended-range reforecasts
+for **Monday and Thursday** issuances only, and the reforecast suite **lags the real-time
+forecast by about a week** — on 15 Sep 2026 the forecast for the 14th was available while
+its reforecast was not, and the same for the 10th, but the 7th had both. Without training
+reforecasts a run cannot calibrate and fails with `MarsNoDataError`, so a weekly job must
+not simply take the latest issuance. `iod_pipeline.latest_usable_init()` walks back through
+Mon/Thu dates and returns the first that has a reforecast.
+
 Rebuild the notebook and report:
 
 ```bash

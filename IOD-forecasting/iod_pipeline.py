@@ -41,6 +41,42 @@ BASELINE_YEARS = 20                           # ECMWF files 20 on-the-fly refore
 
 # ----------------------------------------------------------------- data layer
 
+def latest_usable_init(today=None, *, region=REGION, back=6, verbose=False):
+    """The most recent issuance that actually has a reforecast suite.
+
+    Two separate constraints, and only the first is obvious:
+
+    * ECMWF files extended-range reforecasts for **Monday and Thursday**
+      issuances only, so other dates cannot be calibrated at all;
+    * the reforecast suite **lags the real-time forecast by about a week**.
+      Verified 2026-09-15: the forecast for 2026-09-14 was available while its
+      reforecast was not, and 2026-09-10 likewise, but 2026-09-07 had both.
+
+    So "the latest issuance" is the wrong target for a weekly run -- it will fail
+    with MarsNoDataError on a date whose forecast exists. This walks back through
+    Mon/Thu issuances and returns the first with a reforecast, probing cheaply
+    (one lead, a tiny box) rather than pulling the suite.
+    """
+    today = pd.Timestamp(today or pd.Timestamp.today().normalize())
+    tried = []
+    for d in pd.date_range(today - pd.Timedelta(days=back * 7), today)[::-1]:
+        if d.day_name() not in ("Monday", "Thursday"):
+            continue
+        init = d.strftime("%Y-%m-%d")
+        tried.append(init)
+        try:
+            acmaddl.fetch(product="c3s/ecmwf-s2s", variable="sst", init=init,
+                          region=[-2, 2, 50, 54], reforecast=True, verbose=False)
+            if verbose:
+                print(f"[iod] latest usable init: {init}")
+            return init
+        except Exception:
+            continue
+    raise RuntimeError(
+        f"No Mon/Thu issuance in the last {back} weeks has a reforecast suite "
+        f"(tried {', '.join(tried[:8])}...).")
+
+
 def fetch_model(init, *, region=REGION, verbose=False):
     """The live forecast and its matching reforecast suite, both in degrees C.
 

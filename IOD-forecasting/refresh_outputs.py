@@ -6,7 +6,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import iod_pipeline as iod, make_maps
 
-INIT = "2026-08-31"
+INIT = sys.argv[1] if len(sys.argv) > 1 else "2026-08-31"   # Mon/Thu issuances only
 CW, CE = "#c4552f", "#1f6f80"
 LAB = ["W1", "W2", "W3", "W4", "D1-30"]
 
