@@ -72,7 +72,7 @@ members disagree. **Testing** is leave-one-year-out throughout: the line is refi
 each year, then used to predict it. **Reproducing:** `iod_pipeline.run("2026-08-31")` — the
 date is the only input, and reforecasts exist only for Monday and Thursday issuances.
 
-![**(a)** Forecast anomaly in each box, 80% prediction intervals. **(b)** The dipole, calibrated and raw — the gap is the regression's amplitude correction, not bias removal. **(c,d)** Leave-one-year-out correlation against two persistence baselines; shading is the gain over the harder 30-day one.](assets/fig1_combined.png){width=92%}
+![**(a)** Forecast anomaly in each box, 80% prediction intervals. **(b)** The dipole, calibrated and raw — the gap is the regression's amplitude correction, not bias removal. **(c,d)** Leave-one-year-out correlation against two persistence baselines; shading is the gain over the harder 30-day one.](assets/fig1_combined_2026-08-31.png){width=92%}
 
 ## Results
 
@@ -121,7 +121,7 @@ length matters: an earlier draft used only the 14-day window, the weakest of the
 and claimed the forecast beat persistence at every horizon by a margin growing with lead —
 that claim is withdrawn.
 
-![Corrected SST anomaly at every horizon (°C vs the 2006–2025 observed average). Boxes: western (orange) and eastern (teal); land in tan. Grey ocean is where leave-one-year-out correlation falls below 0.4 and the forecast should not be relied on; that area expands with lead across the basin, and the eastern box is consistently the more affected. Each cell is corrected by its own regression, observations averaged from 0.25° to the model's 1.5° grid. Fields are cubic-refined for contouring — presentational only, and the zero contour in particular is placed by the interpolation rather than measured.](assets/fig3_maps.png){width=88%}
+![Corrected SST anomaly at every horizon (°C vs the 2006–2025 observed average). Boxes: western (orange) and eastern (teal); land in tan. Grey ocean is where leave-one-year-out correlation falls below 0.4 and the forecast should not be relied on; that area expands with lead across the basin, and the eastern box is consistently the more affected. Each cell is corrected by its own regression, observations averaged from 0.25° to the model's 1.5° grid. Fields are cubic-refined for contouring — presentational only, and the zero contour in particular is placed by the interpolation rather than measured.](assets/fig3_maps_2026-08-31.png){width=88%}
 
 ## Early verification
 

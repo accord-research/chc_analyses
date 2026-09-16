@@ -85,10 +85,15 @@ for j,(pole,c,nm) in enumerate((("WIO",CW,"(c) WIO skill"),("EIO",CE,"(d) EIO sk
     if j==0: a.set_ylabel("LOYO correlation"); a.legend(frameon=False,fontsize=6.3,loc="lower left")
 for a in ax: a.set_xticks(x); a.set_xticklabels(LAB,fontsize=7); a.grid(axis="y",alpha=.25)
 fig.tight_layout(pad=0.5)
-fig.savefig("outputs/figures/fig1_combined.png", dpi=210, bbox_inches="tight"); plt.close(fig)
+fig.savefig(f"outputs/figures/fig1_combined_{INIT}.png", dpi=210, bbox_inches="tight"); plt.close(fig)
 
-make_maps.render(res["calibrated_fields"], "outputs/figures/fig3_maps.png")
-for f in ("fig1_combined.png","fig3_maps.png"):
-    import shutil; shutil.copy(f"outputs/figures/{f}", f"report/assets/{f}")
+make_maps.render(res["calibrated_fields"], f"outputs/figures/fig3_maps_{INIT}.png")
+# Per-init asset names. A weekly product regenerates these every run, and with a
+# single shared filename each run silently repointed every PREVIOUS report's
+# markdown at the newest figures -- the built PDFs were fine, but rebuilding an
+# older report would quietly have produced the wrong document.
+import shutil
+for f in ("fig1_combined", "fig3_maps"):
+    shutil.copy(f"outputs/figures/{f}_{INIT}.png", f"report/assets/{f}_{INIT}.png")
 print("refreshed:", ", ".join(sorted(facts["dmi"])))
 print(idx[["index","window","valid_from","valid_to","calibrated_C","anomaly_C","ci80","loyo_r","persist30_r"]].to_string(index=False))
