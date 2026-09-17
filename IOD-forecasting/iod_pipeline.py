@@ -41,26 +41,29 @@ BASELINE_YEARS = 20                           # ECMWF files 20 on-the-fly refore
 
 # ----------------------------------------------------------------- data layer
 
-def latest_usable_init(today=None, *, region=REGION, back=6, verbose=False):
-    """The most recent issuance that actually has a reforecast suite.
+def latest_usable_init(today=None, *, back=30, verbose=False):
+    """The most recent issuance that has a reforecast suite.
 
-    Two separate constraints, and only the first is obvious:
+    ECMWF files extended-range reforecasts on **odd calendar days of the month**.
+    Confirmed by probe on 2026-09-17: Friday the 11th, Sunday the 13th and Tuesday
+    the 15th all have a 20-year suite; Saturday the 12th and Wednesday the 16th
+    have none.
 
-    * ECMWF files extended-range reforecasts for **Monday and Thursday**
-      issuances only, so other dates cannot be calibrated at all;
-    * the reforecast suite **lags the real-time forecast by about a week**.
-      Verified 2026-09-15: the forecast for 2026-09-14 was available while its
-      reforecast was not, and 2026-09-10 likewise, but 2026-09-07 had both.
+    An earlier version of this function asserted Monday/Thursday issuances with a
+    roughly one-week lag. That was wrong on both counts -- it was inferred from
+    four dates that happened to be consistent with it, and it would have skipped
+    every odd-numbered Friday, Sunday and Tuesday, i.e. most valid inits. Chris
+    Funk supplied the actual rule.
 
-    So "the latest issuance" is the wrong target for a weekly run -- it will fail
-    with MarsNoDataError on a date whose forecast exists. This walks back through
-    Mon/Thu issuances and returns the first with a reforecast, probing cheaply
-    (one lead, a tiny box) rather than pulling the suite.
+    Note an odd day is necessary but not sufficient: the 31st of one month is
+    followed by the 1st, so consecutive odd days occur, and a given odd day can
+    still be missing. This probes rather than assumes, cheaply (a 4x4 degree box)
+    rather than pulling the suite.
     """
     today = pd.Timestamp(today or pd.Timestamp.today().normalize())
     tried = []
-    for d in pd.date_range(today - pd.Timedelta(days=back * 7), today)[::-1]:
-        if d.day_name() not in ("Monday", "Thursday"):
+    for d in pd.date_range(today - pd.Timedelta(days=back), today)[::-1]:
+        if d.day % 2 == 0:
             continue
         init = d.strftime("%Y-%m-%d")
         tried.append(init)
@@ -73,7 +76,7 @@ def latest_usable_init(today=None, *, region=REGION, back=6, verbose=False):
         except Exception:
             continue
     raise RuntimeError(
-        f"No Mon/Thu issuance in the last {back} weeks has a reforecast suite "
+        f"No odd-day issuance in the last {back} days has a reforecast suite "
         f"(tried {', '.join(tried[:8])}...).")
 
 

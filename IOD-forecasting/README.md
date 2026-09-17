@@ -30,9 +30,8 @@ the difference and what remains is the change in amplitude.
 | `tools/py2nb.py` | Percent-`.py` → executed `.ipynb` (no jupytext in the shared env) |
 | `outputs/` | Per-init CSV/netCDF and figures — regenerable, so gitignored |
 
-> The CHC reference materials that framed this task (Funk's cdsapi download scripts and
-> the October-rains deck) are not committed here — they are unpublished CHC material and
-> live in the private `experiments` copy of this directory.
+> The CHC reference materials that framed this task are not committed here — they are
+> unpublished CHC material and live in the private `experiments` copy of this directory.
 
 ## Running one
 
@@ -45,13 +44,15 @@ Needs ECDS credentials for `c3s/ecmwf-s2s` (see acmadDL's README — ECDS is a s
 service from the Copernicus CDS, with its own key and licences). A run takes a few
 minutes once the observational record is cached; the first OISST fetch is ~40 minutes.
 
-**Valid init dates are narrower than they look.** ECMWF files extended-range reforecasts
-for **Monday and Thursday** issuances only, and the reforecast suite **lags the real-time
-forecast by about a week** — on 15 Sep 2026 the forecast for the 14th was available while
-its reforecast was not, and the same for the 10th, but the 7th had both. Without training
-reforecasts a run cannot calibrate and fails with `MarsNoDataError`, so a weekly job must
-not simply take the latest issuance. `iod_pipeline.latest_usable_init()` walks back through
-Mon/Thu dates and returns the first that has a reforecast.
+**Valid init dates.** ECMWF files extended-range reforecasts on **odd calendar days of
+the month**. Verified 2026-09-17: Fri 11th, Sun 13th and Tue 15th each have a 20-year
+suite; Sat 12th and Wed 16th have none. Without training reforecasts a run cannot
+calibrate and fails with `MarsNoDataError`, so a weekly job must land on an odd day —
+`iod_pipeline.latest_usable_init()` walks back and probes cheaply for one.
+
+> An earlier version of this README claimed Monday/Thursday issuances with a roughly
+> one-week reforecast lag. That was inferred from four dates that happened to fit it and
+> was wrong on both counts; the odd-day rule comes from Chris Funk and is confirmed above.
 
 Rebuild the notebook and report:
 
