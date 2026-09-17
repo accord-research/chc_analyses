@@ -22,29 +22,32 @@ linkcolor: "black"
 
 ## Abstract
 
-A forecast of sea surface temperature in the two Indian Ocean Dipole boxes, and of the
-dipole, for the next 30 days and each of the next four weeks, from the ECMWF sub-seasonal
-(S2S) forecast corrected against NOAA OI SST by linear regression. Third issuance, run on
-the 13 September initialisation at Chris Funk's request.
+A positive Indian Ocean Dipole is forecast at every horizon over the coming month, and it has
+strengthened with each successive issuance. The dipole index reaches **+0.94 °C in week 1 and
++1.13 °C in week 2, averaging +1.02 °C over the next 30 days** — up from +0.84 °C a week
+earlier and +0.72 °C a fortnight earlier. Values above +1.0 °C place this in moderate positive
+territory.
 
-**The dipole has strengthened again and now exceeds +1.0 over the next 30 days**: +0.94 in
-week 1, +1.13 in week 2, +1.02 across days 1–30 — up from +0.84 on the 7 September run and
-+0.72 on 31 August. The driver has changed: the western box remains warm (+0.90 to +1.07
-above its 2006–2025 average) but the **eastern box has now turned slightly cool** (−0.00 to
-−0.07, having been +0.08 to +0.16 a week ago). A cooling east is the classic second half of
-a positive dipole.
+The physical signature has completed. The western box has been anomalously warm throughout,
++0.90 to +1.07 °C above its 2006–2025 average, and the **eastern box has now turned slightly
+cool** (−0.00 to −0.07 °C, having been +0.08 to +0.16 °C a week ago). A warm west against a
+cooling east is the canonical positive-dipole pattern, and its emergence — rather than the
+magnitude alone — is the substantive development in this issuance.
 
-**Our numbers reproduce Chris's own almost exactly.** Comparing like for like — raw model
-anomaly against the reforecast-mean climatology, which is how his workbook computes it — the
-western box agrees to **0.005–0.024 °C** at every horizon. The eastern box runs 0.05–0.07 °C
-warmer in ours, most likely because his climatology uses 2006–2024 and ours 2006–2025; the
-extra year matters most where warming is fastest.
+Forecasts are produced from the ECMWF sub-seasonal ensemble, corrected against NOAA OI SST by
+linear regression fitted on the twenty reforecast years attached to the same calendar date.
+Skill is assessed leave-one-year-out and against persistence. On the accumulated evidence of
+three issuances, the forecast's demonstrable advantage over persistence lies in the **eastern
+box at weeks 2 to 4**, where the gain is consistently positive and clears an 80% interval at
+four of five horizons this run; the western box has not been separable from persistence in any
+issuance.
 
-**The eastern gain over persistence is now the durable finding.** It clears zero at weeks
-2, 3, 4 and on the 30-day window this run, was positive at every horizon in the two previous
-runs, and cleared at weeks 2 or 4 in both. The west has not cleared zero in any of the three
-issuances. On the accumulated evidence the product's value is the **eastern box at weeks
-2–4**; the west is not distinguishable from persistence.
+**Two cautions qualify the headline.** The dipole has been forecast too positive in all three
+verified windows so far, by +0.20 to +0.42 °C. And the eastern calibration has degraded rather
+than improved the forecast in each of those windows — the uncorrected model value has been
+within 0.04 °C every time, while the corrected value has been 0.18 to 0.32 °C too cool. Because
+the dipole is the west-minus-east difference, an over-cooled east inflates it. The values above
+should therefore be read as an upper estimate.
 
 ## Method
 
@@ -58,9 +61,10 @@ area-weighted by cosine of latitude on each dataset's own grid.
 
 **Windows.** Days 1–7, 8–14, 15–21, 22–28 and 1–30. S2S SST is filed as a 24-hour mean, so
 day 1 is the **day of the 00Z issuance**, not the day after: week 1 verifies 13 to 19
-September. *Note this differs by one day from the convention in Chris's workbook, which
-labels lead day 1 as the 14th — it follows cfgrib's `valid_time`, which marks the end of the
-24-hour averaging period. Worth settling between us before numbers are compared closely.*
+September. *Note that an independent calculation of the same initialisation labels lead day 1
+as the 14th, following cfgrib's `valid_time`, which marks the end of the 24-hour averaging
+period rather than its start. The two conventions differ by a day and should be reconciled
+before values are compared closely.*
 
 **Correction.** Per box and window, ordinary least squares of observed on forecast temperature
 across the twenty reforecast years, applied to this year's forecast. Regression rather than
@@ -101,23 +105,24 @@ constant bias cancels on both sides. What changes is amplitude — the west is s
 (slope 0.95–1.22) and the east shrunk (0.66–0.70). Given the verification record below, that
 eastern shrinkage remains the part to distrust.
 
-## Cross-check against CHC's own calculation
+## Cross-check against an independent calculation
 
-Chris's workbook for this same initialisation computes box means independently. Comparing on
-his indexing, raw model anomaly against the reforecast-mean climatology:
+An independent calculation of the same initialisation, performed through a separate pipeline,
+provides a check on the box means. Comparing on its lead indexing, raw model anomaly against
+the reforecast-mean climatology:
 
-| | our raw anomaly | CHC | difference |
+| | this report | independent | difference |
 |---|---|---|---|
 | West, week 1 | +0.767 | +0.773 | −0.006 |
 | West, days 1–30 | +0.868 | +0.880 | −0.012 |
 | East, week 1 | −0.003 | −0.050 | +0.047 |
 | East, days 1–30 | −0.072 | −0.130 | +0.058 |
 
-The western agreement — within 0.024 °C at every horizon — is an independent check on the box
-definition, area weighting and lead handling, computed through a different pipeline. The
-eastern offset of 0.05–0.07 °C is systematic and is most plausibly the climatology period:
-2006–2024 in his, 2006–2025 in ours. Worth reconciling, since it propagates directly into the
-dipole (ours is 0.05–0.09 °C lower than his throughout).
+The western agreement — within 0.024 °C at every horizon — corroborates the box definition,
+area weighting and lead handling. The eastern offset of 0.05–0.07 °C is systematic and most
+plausibly reflects the climatology period: 2006–2024 in the independent calculation against
+2006–2025 here. It propagates directly into the dipole, which is 0.05–0.09 °C lower in this
+report throughout, and is worth reconciling.
 
 ## Accuracy
 
@@ -134,7 +139,7 @@ ocean stays as it is at issue". Gains carry an 80% bootstrap interval.
 | gain (80% interval) | +0.14 (−0.04, +0.27) | **+0.25 (+0.00, +0.37)** | **+0.26 (+0.04, +0.37)** | **+0.15 (+0.03, +0.22)** | **+0.19 (+0.02, +0.29)** |
 
 **The east clears zero at four of five horizons this run**, the strongest showing in three
-issuances. Set against the previous two — week 2 in both boxes on 31 August, weeks 4 and
+issuances. Set against the previous two issuances — week 2 in both boxes on 31 August, weeks 4 and
 days 1–30 in the east on 7 September — the pattern across runs is that **the eastern gain at
 weeks 2–4 is consistently positive and often significant, while the west has never cleared
 zero in any run**. Which specific horizons clear still moves between issuances, so read the
