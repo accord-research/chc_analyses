@@ -82,11 +82,11 @@ exist only for odd calendar days of the month. The calculation is reproduced by
 | Days 1–30 | 19 Sep – 18 Oct | 29.10 °C (+0.94) | 28.29 °C (+0.09) | +0.86 ± 0.35 |
 
 Absolute temperatures, with the departure from the 2006–2025 average in brackets and the dipole
-with its 80% interval. That baseline is the reforecast period rather than the 1991–2020
-climatology used by BoM, CPC and NOAA, so these anomalies are not comparable with the dipole
-values those centres publish. The uncorrected model dipole is +0.78 to +0.93. The regression
+with its 80% interval. The uncorrected model dipole is +0.78 to +0.93. The regression
 changes amplitude rather than removing a bias, with western slopes of 0.83 to 1.12 and eastern
-slopes of 0.72 to 0.75.
+slopes of 0.72 to 0.75. The eastern slopes sit below one because model spread there is 1.15 to
+1.26 times the observed spread with correlation of 0.83 to 0.92, least squares setting the slope
+as correlation times observed over model spread. The western ratio is 0.78 to 0.99.
 
 ## Accuracy
 
@@ -149,8 +149,7 @@ Dipole forecasts for this run, on the 2006–2025 average used in Results.
 | Observed start, model change | +0.32 | +0.17 | +0.02 | +0.11 | +0.14 |
 | ARIMA | +0.54 | +0.39 | +0.20 | +0.21 | +0.33 |
 
-Both are below the standing forecast, which the verification record also shows running too
-positive. Because
+Because
 ARIMA is a stronger comparison than flat persistence at week 1, the measured gain over
 persistence at that lead may overstate what the forecast adds. Neither is proposed as a
 replacement.
@@ -180,6 +179,7 @@ Every error is inside its 80% interval. In all four the dipole forecast was too 
   a direction that varies by window. This run it is amplified at weeks 1 and 2 and damped at
   weeks 3 and 4.
 - **The intervals** come from past errors, not the ensemble spread, and none is attached to the
-  alternative methods.
+  alternative methods. Leave-one-year-out coverage across all twenty years and
+  ten combinations is 79.5% against the 80% target.
 - **Box and map numbers** differ by up to 0.19 °C in this run. Quote the table.
 - **One model.** All figures come from the ECMWF ensemble.
