@@ -687,6 +687,71 @@ def arima_skill(pole, years, init, *, order=(1, 0, 1), region=REGION,
     return out, df
 
 
+def interval_coverage(init, years, *, level=0.80, region=REGION, verbose=False):
+    """How often the truth lands inside its own prediction interval.
+
+    Four verified windows cannot settle whether an 80% interval is honest --
+    four of four inside has a 41% chance even for a badly wrong interval. This
+    refits leave-one-year-out across the reforecast years, builds the interval
+    the held-out year would have been given, and checks whether that year's
+    observation fell inside it. The report quotes the pooled figure, so it must
+    be produced here rather than by hand.
+    """
+    fcst, hcst = fetch_model(init, verbose=verbose)
+    hcst_w = a2s.lead_window_reduce(hcst, WINDOWS)
+    obs_w = fetch_observed_windows(init, years, verbose=verbose)
+    x_all = pole_series(hcst_w)
+    y_all = pole_series(obs_w, ensemble_mean=False)
+
+    rows = []
+    for pole in POLES:
+        for w in WINDOWS:
+            x = x_all[pole].sel(window=w).values.astype(float)
+            y = y_all[pole].sel(window=w).values.astype(float)
+            inside = 0
+            for i in range(len(y)):
+                k = np.ones(len(y), bool); k[i] = False
+                fit = ols(x[k], y[k])
+                pred = fit["intercept"] + fit["slope"] * x[i]
+                half, _ = prediction_interval(fit, x[i], level=level)
+                if abs(y[i] - pred) <= half:
+                    inside += 1
+            rows.append(dict(pole=pole.upper(), window=w, n=len(y),
+                             inside=inside, coverage=inside / len(y)))
+    out = pd.DataFrame(rows).set_index(["pole", "window"])
+    out.attrs["pooled"] = float(out["inside"].sum() / out["n"].sum())
+    out.attrs["level"] = level
+    return out
+
+
+def dispersion(init, years, *, region=REGION, verbose=False):
+    """Model spread against observed spread, and the slope it implies.
+
+    Explains the calibration slopes rather than just reporting them. Least
+    squares sets slope = r * sd(obs) / sd(model), so a model whose year-to-year
+    spread exceeds the observed spread is shrunk by construction. The eastern
+    box runs about 20% wide, which is where its 0.72 slope comes from, and that
+    makes the eastern problem one of amplitude rather than offset.
+    """
+    fcst, hcst = fetch_model(init, verbose=verbose)
+    hcst_w = a2s.lead_window_reduce(hcst, WINDOWS)
+    obs_w = fetch_observed_windows(init, years, verbose=verbose)
+    x_all = pole_series(hcst_w)
+    y_all = pole_series(obs_w, ensemble_mean=False)
+
+    rows = []
+    for pole in POLES:
+        for w in WINDOWS:
+            x = x_all[pole].sel(window=w).values.astype(float)
+            y = y_all[pole].sel(window=w).values.astype(float)
+            sx, sy = float(x.std(ddof=1)), float(y.std(ddof=1))
+            r = float(np.corrcoef(x, y)[0, 1])
+            rows.append(dict(pole=pole.upper(), window=w, mean_bias=float(x.mean() - y.mean()),
+                             sd_model=sx, sd_obs=sy, spread_ratio=sx / sy, corr=r,
+                             implied_slope=r * sy / sx))
+    return pd.DataFrame(rows).set_index(["pole", "window"])
+
+
 def verify(init, window, *, outputs="outputs", region=REGION, cache=True, verbose=False):
     """Score a past issuance against the OISST that has since verified it.
 

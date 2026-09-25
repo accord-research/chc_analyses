@@ -24,10 +24,11 @@ the difference and what remains is the change in amplitude.
 |---|---|
 | `SCOPE.md` | Scoping memo: what was asked, what existed, what had to be built, and the plan |
 | `iod_pipeline.py` | The pipeline. `run("YYYY-MM-DD")` is the whole thing — the init date is the only input |
-| `refresh_outputs.py` | Regenerates every published artefact for one init; `refresh_alternatives()` does the experimental methods |
+| `refresh_outputs.py` | Regenerates every published artefact for one init; `refresh_alternatives()` does the experimental methods and the report's two diagnostics |
 | `make_maps.py` | Map rendering (coastlines, skill masking) shared by the notebook and the report |
 | `IOD_forecast.py` / `.ipynb` | Narrative notebook, percent-format source + executed output |
 | `report/` | PDF outlook, markdown source and per-init figures |
+| `skill/` | The issuance process itself, with the report template and both mandatory audit prompts |
 | `tools/py2nb.py` | Percent-`.py` → executed `.ipynb` (no jupytext in the shared env) |
 | `outputs/` | Per-init CSV/netCDF and figures — regenerable, so gitignored |
 

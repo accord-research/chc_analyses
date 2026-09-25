@@ -123,7 +123,12 @@ if __name__ == "__main__":
 
 
 def refresh_alternatives(init, *, years=None, outputs="outputs"):
-    """The alternative calibration and the ARIMA reference, for one init.
+    """The alternative methods, plus the two diagnostics the report cites.
+
+    interval_coverage and dispersion back numbers quoted in the report proper,
+    not in the alternatives section, so they belong to any run that regenerates
+    the report. They live here rather than in the main path because both refit
+    the calibration many times over and the forecast does not need them.
 
     Kept here with the rest of the published artefacts. These were built by hand
     for the first issuance that used them, and the ARIMA dipole ended up on a
@@ -155,12 +160,18 @@ def refresh_alternatives(init, *, years=None, outputs="outputs"):
     cmp_ = pd.concat([iod.arima_vs_model(p, years, init).assign(pole=p) for p in iod.POLES])
     cmp_.to_csv(f"{outputs}/arima_vs_model_{init}.csv")
 
+    cov = iod.interval_coverage(init, years)
+    cov.to_csv(f"{outputs}/interval_coverage_{init}.csv")
+    disp = iod.dispersion(init, years)
+    disp.to_csv(f"{outputs}/dispersion_{init}.csv")
+
     dip = iod.arima_forecast_dipole(init, years)
     rows = [dict(pole=p, window=w, **dip[p][w]) for p in iod.POLES for w in iod.WINDOWS]
     rows += [dict(pole="dmi", window=w, anomaly=dip["dmi"][w]) for w in iod.WINDOWS]
     arima = pd.DataFrame(rows).set_index(["pole", "window"])
     arima.to_csv(f"{outputs}/arima_forecast_{init}.csv")
-    return dict(tendency=tendency, comparison=cmp_, arima=arima)
+    return dict(tendency=tendency, comparison=cmp_, arima=arima,
+                coverage=cov, dispersion=disp)
 
 
 def report_rows(init, *, outputs="outputs"):
