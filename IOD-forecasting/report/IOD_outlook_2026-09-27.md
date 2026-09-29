@@ -99,8 +99,8 @@ correlation times observed spread over model spread. In the west the model sprea
 ## Accuracy
 
 The table gives leave-one-year-out correlation across the twenty reforecast years for the
-forecast and for persistence. Persistence is the observed mean of the 31 days ending at issue,
-carried through the same leave-one-year-out regression. The gain carries an 80% bootstrap
+forecast and for persistence. Persistence is the observed mean of the 30 days before issue
+and the issue day itself, carried through the same leave-one-year-out regression. The gain carries an 80% bootstrap
 interval.
 
 | | Week 1 | Week 2 | Week 3 | Week 4 | Days 1–30 |
@@ -115,8 +115,9 @@ At all ten box and window combinations the 80% interval on the gain includes zer
 is more accurate than persistence by more than the uncertainty on that difference. Williams' test
 of the difference between two correlations sharing the same observed series gives p between 0.26
 and 0.81 across the ten combinations. The largest gain is the west at week 2, at +0.14 with an interval of
-−0.00 to +0.34 and p of 0.26. At week 1 the forecast is less accurate than 30-day persistence in
-both boxes.
+−0.00 to +0.34 and p of 0.26. At week 1 the forecast is less accurate than persistence on both
+baselines. Against a 7-day baseline, the observed mean of the 7 days ending at issue, the
+forecast's leave-one-year-out correlation is lower by 0.07 in the west and by 0.14 in the east.
 
 The bootstrap interval on the gain was corrected for this issuance. It previously resampled the
 predictors in sample while the gain it bracketed was measured out of sample, so the two described
@@ -156,8 +157,11 @@ by up to 0.03 °C.
 - **The eastern correction** is worse than no correction in seven of the ten verified windows,
   better in two and indistinguishable in one. Read the eastern box and the dipole as upper
   estimates.
-- **The gain over persistence** depends on which persistence is used, and at week 1 the forecast
-  is less accurate than 30-day persistence in both boxes.
+- **The gain over persistence** depends on which persistence is used. The table above uses the
+  30-day baseline. Measured by leave-one-year-out correlation, a 7-day baseline is the more
+  accurate of the two at week 1 and the 30-day baseline is the more accurate at week 3. Against
+  the 7-day baseline the week-1 gain is −0.07 in the west and −0.14 in the east, against −0.05
+  and −0.04 in the table.
 - **The baseline** is 2006–2025 rather than 1991–2020, and is computed on a different SST analysis from BoM's,
   so these anomalies are not comparable with published dipole values.
 - **Twenty years** is a short training record. The western forecast lies 2.2 to 2.8 standard
