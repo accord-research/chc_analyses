@@ -22,14 +22,32 @@ python -c "import iod_pipeline as iod; print(iod.latest_usable_init())"
 ```
 
 `latest_usable_init()` probes the reforecast only. Confirm the *forecast* suite also resolves
-before committing to a date — an embargoed forecast gives a false green.
+before committing to a date — an embargoed forecast gives a false green. On 29 Sep 2026 it
+returned the 29th while that day's forecast was still embargoed, and the 27th was the newest
+that actually worked.
+
+The embargo does not announce itself. It has surfaced as `AccessError: Restricted access to
+S2S data` and, more often, as a bare `HTTPError: 400 Client Error` from the ECDS results
+endpoint. Treat a 400 on a recent odd day as "not published yet" rather than a broken request,
+and step back two days.
 
 ## 2. Generate artefacts
 
 ```bash
 python refresh_outputs.py 2026-09-19          # indices, dmi, figures, fields
-python -c "import refresh_outputs as ro; ro.refresh_alternatives('2026-09-19')"
+python -c "import refresh_outputs as ro; ro.refresh_diagnostics('2026-09-19')"
+python -c "import refresh_outputs as ro; ro.refresh_history('2026-09-19')"
+python -c "import refresh_outputs as ro; ro.refresh_alternatives('2026-09-19')"   # only if reporting them
 ```
+
+`refresh_history` writes the verification record to `outputs/verification_<init>.csv` and the
+figure comparing every issuance to date. Run it every time. It prints any window it could not
+score, which matters because a stale observed cache would otherwise silently shorten a count the
+report leans on.
+
+`refresh_diagnostics` emits the interval coverage and the spread ratios, which the report
+proper cites in Accuracy, Results and Limitations. Run it every time. `refresh_alternatives`
+is only needed for an issuance that reports the experimental methods, and it is slow.
 
 `refresh_outputs.py` owns every published artefact for the main analysis; `refresh_alternatives`
 owns the experimental methods. Never compute a reported number by hand in a scratch script —

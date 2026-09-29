@@ -122,6 +122,26 @@ if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: refresh_outputs.py <YYYY-MM-DD>"))
 
 
+def refresh_diagnostics(init, *, years=None, outputs="outputs"):
+    """The two diagnostics the report proper cites, without the alternatives.
+
+    interval_coverage and dispersion back numbers in Accuracy, Results and
+    Limitations. The alternative methods are optional in any given issuance and
+    are slow, so an issuance that does not report them should not have to run
+    them to get these.
+    """
+    import pandas as pd
+    import iod_pipeline as iod
+
+    years = list(years or range(iod.BASELINE_START, iod.BASELINE_START + iod.BASELINE_YEARS))
+    init = str(pd.Timestamp(init).date())
+    cov = iod.interval_coverage(init, years)
+    cov.to_csv(f"{outputs}/interval_coverage_{init}.csv")
+    disp = iod.dispersion(init, years)
+    disp.to_csv(f"{outputs}/dispersion_{init}.csv")
+    return dict(coverage=cov, dispersion=disp)
+
+
 def refresh_alternatives(init, *, years=None, outputs="outputs"):
     """The alternative methods, plus the two diagnostics the report cites.
 
@@ -160,10 +180,8 @@ def refresh_alternatives(init, *, years=None, outputs="outputs"):
     cmp_ = pd.concat([iod.arima_vs_model(p, years, init).assign(pole=p) for p in iod.POLES])
     cmp_.to_csv(f"{outputs}/arima_vs_model_{init}.csv")
 
-    cov = iod.interval_coverage(init, years)
-    cov.to_csv(f"{outputs}/interval_coverage_{init}.csv")
-    disp = iod.dispersion(init, years)
-    disp.to_csv(f"{outputs}/dispersion_{init}.csv")
+    diag = refresh_diagnostics(init, years=years, outputs=outputs)
+    cov, disp = diag["coverage"], diag["dispersion"]
 
     dip = iod.arima_forecast_dipole(init, years)
     rows = [dict(pole=p, window=w, **dip[p][w]) for p in iod.POLES for w in iod.WINDOWS]
@@ -198,7 +216,12 @@ def report_rows(init, *, outputs="outputs"):
     print("|---|---|---|---|---|")
     for w in W:
         a, b = wio.loc[w, "valid_from"], wio.loc[w, "valid_to"]
-        vf = f"{pd.Timestamp(a).day} {pd.Timestamp(a):%b} – {pd.Timestamp(b).day} {pd.Timestamp(b):%b}"
+        ta, tb = pd.Timestamp(a), pd.Timestamp(b)
+        # Drop the repeated month when a window sits inside one, which is the
+        # form the reports use. Emitting anything else guarantees this row is
+        # retyped rather than pasted, which is what this helper exists to stop.
+        vf = (f"{ta.day} – {tb.day} {tb:%b}" if ta.month == tb.month
+              else f"{ta.day} {ta:%b} – {tb.day} {tb:%b}")
         print(f"| {LAB[w]} | {vf} "
               f"| {wio.loc[w,'calibrated_C']:.2f} °C ({sgn(wio.loc[w,'anomaly_C'])}) "
               f"| {eio.loc[w,'calibrated_C']:.2f} °C ({sgn(eio.loc[w,'anomaly_C'])}) "
@@ -217,6 +240,12 @@ def report_rows(init, *, outputs="outputs"):
             f"{sgn(i.loc[w,'gain30'])} ({sgn(i.loc[w,'gain30_lo'])}, {sgn(i.loc[w,'gain30_hi'])})"
             for w in W) + " |")
 
+    import os
+    if not os.path.exists(f"{outputs}/arima_vs_model_{init}.csv"):
+        # An issuance that does not report the alternatives should not have to
+        # run them to print its own tables. This raised FileNotFoundError one
+        # function below refresh_diagnostics, which exists for that same reason.
+        return None
     cmp_ = pd.read_csv(f"{outputs}/arima_vs_model_{init}.csv")
     print("\n## ARIMA comparison\n")
     print("| | " + " | ".join(LAB[w] for w in W) + " |")
@@ -229,3 +258,68 @@ def report_rows(init, *, outputs="outputs"):
             cells.append(f"**{m:.3f}** / {a:.3f}" if m < a else f"{m:.3f} / **{a:.3f}**")
         print(f"| **{box}** forecast / ARIMA | " + " | ".join(cells) + " |")
     return None
+
+
+def refresh_history(init, *, outputs="outputs", assets="report/assets"):
+    """The verification record, and the figure comparing every issuance so far.
+
+    Successive issuances forecast overlapping calendar weeks from different lead
+    times, so plotting them against valid date rather than lead puts them on one
+    axis and lets the runs be compared where they overlap.
+    """
+    import glob, os
+    import numpy as np, pandas as pd, matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import iod_pipeline as iod
+
+    init = str(pd.Timestamp(init).date())
+    inits = sorted(os.path.basename(f).split("_")[-1][:10]
+                   for f in glob.glob(f"{outputs}/indices_2026-*.csv"))
+
+    ver = iod.verification_table(inits, outputs=outputs)
+    ver.to_csv(f"{outputs}/verification_{init}.csv", index=False)
+    for bad in ver.attrs.get("skipped", []):
+        print(f"  verification skipped {bad[0]} {bad[1]}: {bad[2][:90]}")
+
+    # One hue, light to dark, because the issuances are ordered in time. Five
+    # arbitrary hues would imply the runs are unrelated categories.
+    ramp = plt.get_cmap("BuPu")(np.linspace(0.42, 0.95, len(inits)))
+    plt.rcParams.update({"font.size": 8.5, "axes.spines.top": False, "axes.spines.right": False})
+    fig, ax = plt.subplots(figsize=(7.2, 2.0))
+
+    WK = ["week1", "week2", "week3", "week4"]
+    for c, i in zip(ramp, inits):
+        d = pd.read_csv(f"{outputs}/dmi_{i}.csv").set_index("window")
+        x, y = [], []
+        for w in WK:
+            a, b = iod.window_valid_dates(i, w)
+            x.append(a + (b - a) / 2)
+            y.append(float(d.loc[w, "dmi_calibrated"]))
+        newest = i == inits[-1]
+        ax.plot(x, y, "o-", color=c, lw=2.2 if newest else 1.4, ms=5.5 if newest else 4,
+                zorder=4 if newest else 2,
+                label=f"{pd.Timestamp(i):%-d %b}" + (" (current)" if newest else ""))
+
+    if len(ver):
+        v = ver[ver.window.isin(WK)].copy()
+        v["mid"] = [pd.Timestamp(a) + (pd.Timestamp(b) - pd.Timestamp(a)) / 2
+                    for a, b in zip(v.valid_from, v.valid_to)]
+        # The same window scored from two issuances gives observations that agree
+        # to about 0.001 C rather than exactly, because each run recovers the
+        # climatology from its own published table. Average them to one point.
+        obs = v.groupby("mid")["dmi_observed"].mean()
+        ax.plot(obs.index, obs.values, "o", color="#1a1a1a", ms=6, zorder=6, label="observed")
+
+    ax.axhline(0, color="#444", lw=0.7)
+    ax.set_ylabel("Dipole index (°C)")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%-d %b"))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=mdates.SU, interval=1))
+    ax.grid(axis="y", alpha=.25)
+    ax.legend(frameon=False, ncol=6, fontsize=7.4, loc="upper center",
+              bbox_to_anchor=(0.5, 1.22), handlelength=1.4, columnspacing=1.1)
+    fig.tight_layout(pad=0.5)
+    out = f"{assets}/fig0_history_{init}.png"
+    fig.savefig(out, dpi=210, bbox_inches="tight"); plt.close(fig)
+    return dict(verification=ver, figure=out)

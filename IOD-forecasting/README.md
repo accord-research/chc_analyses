@@ -67,31 +67,28 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
 
 ## Findings so far
 
-Four issuances (31 Aug, 7, 13, 19 Sep 2026), four completed verification windows.
+Five issuances (31 Aug, 7, 13, 19, 27 Sep 2026), ten completed verification windows covering
+seven distinct calendar weeks.
 
-- **A positive dipole at every horizon in every run**, +0.43 to +1.13 °C, driven throughout by
-  a warm western box 0.70 to 1.07 °C above its 2006–2025 average. The eastern box has stayed
-  between −0.07 and +0.27 °C.
-- **The dipole has run too positive in all four verified windows**, by +0.20 to +0.38 °C. Every
-  error is inside its 80% interval.
-- **The eastern calibration has made the forecast worse in all four**, by 0.14 to 0.29 °C, while
-  the uncorrected model value was within 0.06 °C every time. Since the dipole is west minus
-  east, an over-cooled east inflates it. The eastern shrinkage should be revisited.
-- **The gain over persistence depends on which persistence is used**, and the persistence
-  window is a free parameter, so 7/14/30-day baselines are all reported rather than the
-  flattering one. Against 30-day persistence the eastern gain at weeks 2–4 is positive in
-  eleven of twelve window-runs, with an 80% interval above zero in six. The western gain has had
-  an interval above zero once (31 Aug, week 2). At week 1 the model is less accurate than 7-day
-  persistence in both boxes.
-- **Two alternative methods were tested and neither replaces the standing calibration.** An
-  observed anchor plus model tendency scores worse out of sample at every window, and its
-  tendency coefficient is not distinguishable from zero in the west. An ARIMA(1,0,1) reference
-  on the daily observed series beats the model at week 1 in both boxes and loses from week 2
-  outward. Both use the observed state at issue, which the standing calibration does not; at
-  week 1 that may imply the reported gains over persistence overstate the advantage at short
-  lead.
-- **Near-term values have run above independent estimates.** Direction over the season is not
-  in dispute; the near-term level reads as an upper estimate.
+- **A positive dipole at every horizon in every run**, +0.43 to +1.13 °C, driven throughout by a
+  warm western box. The eastern box has stayed within 0.27 °C of normal.
+- **The dipole has run too positive in eight of the ten verified windows**, range −0.14 to
+  +0.39 °C. Averaging the three weeks that were scored twice gives six of seven positive, mean
+  +0.14 °C. Every error is inside its 80% interval.
+- **The eastern calibration has made the forecast worse in seven of ten**, better in two and
+  indistinguishable in one. The uncorrected eastern value is not uniformly accurate either, its
+  own error reaching 0.25 °C. Four windows carried a stronger version of both patterns than ten
+  do, which is a caution against reading a handful of windows as a settled bias.
+- **The gain over persistence is not separable from noise in the 27 September issuance.** All ten
+  intervals include zero and Williams' p runs 0.26 to 0.81. The interval was corrected that
+  issuance, having previously bracketed an in-sample quantity while the gain beside it was
+  measured out of sample. Counts of qualifying horizons in earlier issuances came from the
+  uncorrected version and may overstate how many were separable from noise.
+- **The eastern shrinkage is an amplitude problem.** Model spread in the east runs 1.16 to 1.26
+  times the observed spread, and least squares sets the slope to correlation times observed over
+  model spread, which is where the 0.71 to 0.73 eastern slopes of this issuance come from.
+- **The 80% intervals are calibrated.** Leave-one-year-out coverage across twenty years and ten
+  box-window combinations is 79.5%, consistent with the 80% target.
 
 ## Process
 

@@ -148,9 +148,15 @@ def fetch_observed_windows(init, years, *, region=REGION, verbose=False):
     Returns a DataArray (year, window, lat, lon) on the OISST grid.
     """
     y0, y1 = int(min(years)), int(max(years))
-    # Windows can run past 31 Dec for a late-year init, so pull one extra year.
+    # Windows can run past 31 Dec for a late-year init, so pull one extra year --
+    # but only when one actually does. Asking for the extra year unconditionally
+    # drags the current calendar year into the request, and that file keeps
+    # growing, so every run re-fetched the whole multi-year span instead of
+    # reusing the cached one. For a September init nothing crosses the boundary.
+    last_end = max(window_valid_dates(init, w, year=y1)[1] for w in WINDOWS)
+    y_last = y1 + 1 if last_end.year > y1 else y1
     obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
-                        hindcast=(y0, y1 + 1), region=region, verbose=verbose)["sst"]
+                        hindcast=(y0, y_last), region=region, verbose=verbose)["sst"]
     per_window = []
     for window in WINDOWS:
         per_year = []
@@ -243,10 +249,10 @@ def loyo_skill(x, y):
         preds[i] = fit["slope"] * x[i] + fit["intercept"]
     ok = np.isfinite(preds) & np.isfinite(y)
     if ok.sum() < 3:
-        return dict(r=np.nan, rmse=np.nan, n=int(ok.sum()))
+        return dict(r=np.nan, rmse=np.nan, n=int(ok.sum()), preds=preds)
     return dict(r=float(np.corrcoef(preds[ok], y[ok])[0, 1]),
                 rmse=float(np.sqrt(np.mean((preds[ok] - y[ok]) ** 2))),
-                n=int(ok.sum()))
+                n=int(ok.sum()), preds=preds)
 
 
 def persistence_predictor(init, years, pole, *, region=REGION, days=30, verbose=False):
@@ -333,11 +339,16 @@ def williams_test(r_my, r_py, r_mp, n):
 def bootstrap_gain_ci(x_model, x_pers, y, *, level=0.80, n_boot=4000, seed=0):
     """Pairs-bootstrap CI for the correlation gain (model - persistence).
 
-    Preferred over an analytic test for dependent correlations: those come in
-    several formula variants that disagree at n=20, and the point here is only
-    whether the gain is separable from sampling noise. Resampling the (model,
-    persistence, observed) triples keeps the dependence between the two
-    predictors intact, which is what makes the comparison hard in the first place.
+    Resampling the (model, persistence, observed) triples keeps the dependence
+    between the two predictors intact, which is what makes the comparison hard in
+    the first place.
+
+    The inputs must be the LEAVE-ONE-YEAR-OUT predictions, not the raw
+    predictors. This previously took the raw predictors and correlated them
+    in-sample, while the gain it was bracketing came from loyo_skill -- so the
+    interval belonged to a different statistic than the point estimate it was
+    printed beside, and in-sample correlations run higher (0.88 against 0.83 in
+    one cell). Both sides are now out-of-sample.
     """
     rng = np.random.default_rng(seed)
     x_model = np.asarray(x_model, float); x_pers = np.asarray(x_pers, float)
@@ -379,10 +390,17 @@ def persistence_sensitivity(init, years, hcst_idx, obs_idx, *, windows=(7, 14, 3
                 row[f"gain{d}"] = m["r"] - p["r"]
                 # significance of the DIFFERENCE, not of either correlation
                 ok = np.isfinite(x_model) & np.isfinite(x_pers) & np.isfinite(y)
-                r_mp = float(np.corrcoef(x_model[ok], x_pers[ok])[0, 1])
+                # Williams needs all three correlations on the same footing. This
+                # took the raw predictors while r_my and r_py came from
+                # loyo_skill, the same in-sample/out-of-sample mix that was fixed
+                # in bootstrap_gain_ci directly below. p is steeply sensitive to
+                # this term, so it moved the reported range from 0.22-0.80 to
+                # 0.26-0.81 without changing any conclusion.
+                mp = np.isfinite(m["preds"]) & np.isfinite(p["preds"])
+                r_mp = float(np.corrcoef(m["preds"][mp], p["preds"][mp])[0, 1])
                 _, pv, _ = williams_test(m["r"], p["r"], r_mp, int(ok.sum()))
                 row[f"p{d}"] = pv
-                lo, hi = bootstrap_gain_ci(x_model, x_pers, y)
+                lo, hi = bootstrap_gain_ci(m["preds"], p["preds"], y)
                 row[f"gain{d}_lo"] = lo
                 row[f"gain{d}_hi"] = hi
             rows.append(row)
@@ -687,6 +705,46 @@ def arima_skill(pole, years, init, *, order=(1, 0, 1), region=REGION,
     return out, df
 
 
+def verification_table(inits, *, outputs="outputs", region=REGION, verbose=False):
+    """Every window of every past issuance that has now completed.
+
+    The verification record was previously assembled by hand from ten separate
+    verify() calls, with nothing to diff the report's table against. This emits
+    it, so the record is reproducible like every other number in the report.
+
+    Windows still running, or whose observations do not yet cover them, are
+    skipped rather than reported short.
+    """
+    rows, skipped = [], []
+    for init in sorted(inits):
+        for w in WINDOWS:
+            try:
+                v = verify(init, w, outputs=outputs, region=region, verbose=verbose)
+            except FileNotFoundError:
+                continue                      # no published table for that init
+            except ValueError as exc:
+                # Raised both for a window that has not finished and, via
+                # _require_full_window, for a stale observed cache. The second is
+                # a data problem, not a window that is simply too young, and it
+                # would otherwise silently shorten a count the report leans on.
+                if "not yet complete" not in str(exc):
+                    skipped.append((init, w, str(exc)))
+                continue
+            a, b = v.attrs["valid"]
+            W, E, D = v.loc["WIO"], v.loc["EIO"], v.loc["DMI"]
+            rows.append(dict(init=init, window=w, valid_from=a, valid_to=b,
+                             dmi_forecast=D["calibrated"], dmi_observed=D["observed"],
+                             dmi_error=D["err_calibrated"], ci80=D["ci80"],
+                             inside=bool(abs(D["err_calibrated"]) <= D["ci80"]),
+                             eio_err_raw=E["err_raw"], eio_err_cal=E["err_calibrated"],
+                             wio_err_cal=W["err_calibrated"]))
+    out = pd.DataFrame(rows)
+    # Carried rather than raised so one bad window does not lose the rest, but
+    # visible so a short record is never mistaken for a complete one.
+    out.attrs["skipped"] = skipped
+    return out
+
+
 def interval_coverage(init, years, *, level=0.80, region=REGION, verbose=False):
     """How often the truth lands inside its own prediction interval.
 
@@ -773,13 +831,14 @@ def verify(init, window, *, outputs="outputs", region=REGION, cache=True, verbos
     start, end = window_valid_dates(init, window)
     if pd.Timestamp(end) >= pd.Timestamp.utcnow().tz_localize(None).normalize():
         raise ValueError(f"{window} of {init} verifies to {end}; not yet complete.")
-    # Same hindcast span the training path uses, so this shares its cached copy.
-    # Asking for the single verifying year instead creates a second cache entry
-    # that no other call refreshes, and a stale one produced exactly the
-    # partly-covered window _require_full_window now rejects.
-    y0 = int(min(BASELINE_START, pd.Timestamp(start).year))
+    # Only the years the window actually spans. This once asked for the whole
+    # training span so it would share that cached copy, because a narrow request
+    # had landed on a stale entry no other call refreshed. _require_full_window
+    # below now catches exactly that -- a stale copy is missing the most recent
+    # days and raises rather than averaging fewer -- so the narrow fetch is safe,
+    # and it avoids asking a loaded server for twenty years to read one week.
     obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
-                        hindcast=(y0, pd.Timestamp(end).year + 1),
+                        hindcast=(pd.Timestamp(start).year, pd.Timestamp(end).year),
                         region=region, cache=cache, verbose=verbose)["sst"]
     sel = obs.sel(time=slice(start, end))
     # OISST trails real time by a day or two, and a cached copy trails further.
