@@ -35,6 +35,12 @@ def main(init):
                              calibrated_C=t.loc[w,"calibrated"],
                              raw_C=t.loc[w,"raw"],
                              anomaly_C=t.loc[w,"calibrated"]-t.loc[w,"obs_clim"],
+                             # Emitted so verify() can read the climatology rather
+                             # than recovering it as calibrated_C - anomaly_C. Two
+                             # early issuances were written rounded to 3 dp, which
+                             # left that subtraction off by up to 1e-3 and made the
+                             # same calendar week score differently from two inits.
+                             obs_clim_C=t.loc[w,"obs_clim"],
                              ci80=t.loc[w,"ci80"], slope=t.loc[w,"slope"],
                              z_vs_training=t.loc[w,"z_vs_training"],
                              loyo_r=sk.loc[w,"model_r"],

@@ -28,12 +28,10 @@ the difference and what remains is the change in amplitude.
 | `make_maps.py` | Map rendering (coastlines, skill masking) shared by the notebook and the report |
 | `IOD_forecast.py` / `.ipynb` | Narrative notebook, percent-format source + executed output |
 | `report/` | PDF outlook, markdown source and per-init figures |
+| `chc-reference-materials/` | Funk's cdsapi download scripts and the October-rains deck that framed the task |
 | `skill/` | The issuance process itself, with the report template and both mandatory audit prompts |
 | `tools/py2nb.py` | Percent-`.py` → executed `.ipynb` (no jupytext in the shared env) |
 | `outputs/` | Per-init CSV/netCDF and figures — regenerable, so gitignored |
-
-> The CHC reference materials that framed this task are not committed here — they are
-> unpublished CHC material and live in the private `experiments` copy of this directory.
 
 ## Running one
 
@@ -67,33 +65,51 @@ cd report && pandoc IOD_outlook_<init>.md -o IOD_outlook_<init>.pdf --pdf-engine
 
 ## Findings so far
 
-Five issuances (31 Aug, 7, 13, 19, 27 Sep 2026), ten completed verification windows covering
-seven distinct calendar weeks.
+Six issuances (31 Aug, 7, 13, 19, 27 Sep, 11 Oct 2026), twenty completed verification windows
+covering fifteen distinct calendar spans.
 
 - **A positive dipole at every horizon in every run**, +0.43 to +1.13 °C, driven throughout by a
   warm western box. The eastern box has stayed within 0.27 °C of normal.
-- **The dipole has run too positive in eight of the ten verified windows**, range −0.14 to
-  +0.39 °C. Averaging the three weeks that were scored twice gives six of seven positive, mean
-  +0.14 °C. Every error is inside its 80% interval.
-- **The eastern calibration has made the forecast worse in seven of ten**, better in two and
-  indistinguishable in one. The uncorrected eastern value is not uniformly accurate either, its
-  own error reaching 0.25 °C. Four windows carried a stronger version of both patterns than ten
-  do, which is a caution against reading a handful of windows as a settled bias.
-- **The gain over persistence is not separable from noise in the 27 September issuance.** All ten
-  intervals include zero and Williams' p runs 0.26 to 0.81. The interval was corrected that
-  issuance, having previously bracketed an in-sample quantity while the gain beside it was
-  measured out of sample. Counts of qualifying horizons in earlier issuances came from the
-  uncorrected version and may overstate how many were separable from noise.
-- **The eastern shrinkage is an amplitude problem.** Model spread in the east runs 1.16 to 1.26
+- **The dipole has run too positive in seventeen of the twenty verified windows**, range −0.12 to
+  +0.39 °C. Averaging the five spans scored twice gives fourteen of fifteen positive, mean
+  +0.18 °C. Every error is inside its 80% interval, where sixteen of twenty would be expected at
+  80%, and the mean absolute error is 0.38 of the interval half-width, so the dipole interval
+  looks too wide rather than the forecast unusually accurate.
+- **The eastern calibration has made the forecast worse in fifteen of twenty**, better in three
+  and indistinguishable within 0.01 °C in two. The uncorrected eastern value is not uniformly
+  accurate either, its own error reaching 0.26 °C.
+- **Which combinations separate from persistence moves between issuances.** On 11 October the 80%
+  interval on the gain over 30-day persistence clears zero at four of ten box and window
+  combinations, all four in the west. On 27 September none of the ten did, and on 13 September
+  four did and all four were in the east. The interval was corrected on 27 September, having
+  previously bracketed an in-sample quantity while the gain beside it was measured out of sample,
+  so counts from earlier issuances are not comparable with these two. Whether those earlier
+  intervals ran narrower cannot be determined, and the mean width recorded was in fact larger at
+  three of the four.
+- **The headline persistence baseline is the weakest of the three tested.** On 11 October 30-day
+  persistence scored below 14-day at all ten combinations and was the lowest of 7/14/30 at nine,
+  so the count of combinations that separate from it is the largest of the three. The sweep is
+  reported for that reason.
+- **The eastern shrinkage is an amplitude problem.** Model spread in the east runs 1.08 to 1.29
   times the observed spread, and least squares sets the slope to correlation times observed over
-  model spread, which is where the 0.71 to 0.73 eastern slopes of this issuance come from.
-- **The 80% intervals are calibrated.** Leave-one-year-out coverage across twenty years and ten
-  box-window combinations is 79.5%, consistent with the 80% target.
+  model spread, which is where the 0.65 to 0.82 eastern slopes of the 11 October issuance come
+  from.
+- **Pole interval coverage is near nominal.** Leave-one-year-out coverage across twenty years and
+  ten box-window combinations is 77.5% against the 80% target. The dipole interval is constructed
+  separately and is not covered by that check.
+- **A cached observed series silently shortened the record.** Until 11 October each verification
+  window was scored against its own cached OISST fetch. That cache stopped at 27 September, which
+  left ten completed windows unscored, and it held pre-revision values that disagreed with a
+  fresh retrieval by 0.095 °C on 14-20 September. All windows are now scored against one series
+  retrieved per run. Ten of the twenty rows still verify inside OISST's two-week revision window,
+  so their errors will move.
 
 ## Process
 
 Issuance follows the `iod-outlook` skill (`ACCORD/.claude/skills/iod-outlook/`): pick an odd
-calendar day with both suites available, run `refresh_outputs.py` and
-`refresh_outputs.refresh_alternatives()`, write the report from the skill's template, then run
+calendar day with both suites available, run `refresh_outputs.py`, then
+`refresh_outputs.refresh_diagnostics()` and `refresh_outputs.refresh_history()`, and
+`refresh_outputs.refresh_alternatives()` only when the experimental methods are reported, write
+the report from the skill's template, then run
 a scientific/code audit and a separate stylistic audit before publishing. Both audits are
 mandatory; each has caught errors that would otherwise have been published.

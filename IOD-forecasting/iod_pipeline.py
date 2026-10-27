@@ -263,12 +263,18 @@ def persistence_predictor(init, years, pole, *, region=REGION, days=30, verbose=
     that only reproduced persistence would score nearly as well. Skill is what
     the forecast adds *over* this.
 
-    ``days`` is not innocuous and the default is deliberately the demanding one.
-    A 14-day window -- the first thing tried here -- is the weakest of 7/14/30 at
-    almost every horizon, i.e. the choice that most flatters the model. Thirty
-    days is the harder and more natural comparison for a product whose flagship
-    window is a 30-day mean, and it is what :func:`persistence_sensitivity`
-    reports across. The window is inclusive of both endpoints.
+    ``days`` is not innocuous, and the default of 30 is the *weakest* of the
+    three baselines rather than the sternest. Measured leave-one-year-out on the
+    2026-10-11 issuance, 30-day persistence scores below 14-day at all ten box
+    and window combinations and is the lowest of 7/14/30 at nine of them (mean
+    correlation 0.72 against 0.79 at 14 days and 0.81 at 7 days), so it is the
+    easiest of the three for the model to beat and the count of combinations that
+    separate from it is correspondingly the largest. An earlier version of this
+    docstring asserted the opposite. It is kept as the default because the
+    flagship window is a 30-day mean, which makes it the natural comparison, not
+    because it is demanding, and :func:`persistence_sensitivity` reports all
+    three so the direction the choice cuts is visible. The window is inclusive of
+    both endpoints.
     """
     y0, y1 = int(min(years)), int(max(years))
     obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
@@ -371,9 +377,11 @@ def bootstrap_gain_ci(x_model, x_pers, y, *, level=0.80, n_boot=4000, seed=0):
 def persistence_sensitivity(init, years, hcst_idx, obs_idx, *, windows=(7, 14, 30), verbose=False):
     """LOYO skill of the model against persistence at several baseline lengths.
 
-    The persistence window is a free parameter, and the headline claim turns on
-    it: at 14 days the model beats persistence everywhere, at 30 days it does not
-    in the west. Reporting the sweep is the honest form of the comparison.
+    The persistence window is a free parameter and the headline count turns on
+    it, so all three are reported. Which way it cuts is not fixed across
+    issuances. On 2026-10-11 the 80% interval on the gain clears zero at four of
+    ten combinations against the 30-day baseline, three against the 7-day and two
+    against the 14-day, and the 30-day baseline is the weakest of the three.
     """
     rows = []
     for pole in POLES:
@@ -705,6 +713,12 @@ def arima_skill(pole, years, init, *, order=(1, 0, 1), region=REGION,
     return out, df
 
 
+def _window_year_span(init, window):
+    """The calendar years a window's valid dates fall in."""
+    start, end = window_valid_dates(init, window)
+    return (pd.Timestamp(start).year, pd.Timestamp(end).year)
+
+
 def verification_table(inits, *, outputs="outputs", region=REGION, verbose=False):
     """Every window of every past issuance that has now completed.
 
@@ -715,18 +729,33 @@ def verification_table(inits, *, outputs="outputs", region=REGION, verbose=False
     Windows still running, or whose observations do not yet cover them, are
     skipped rather than reported short.
     """
+    # One observed series for the whole table, pulled past the cache.
+    #
+    # Two windows of different issuances can cover the same calendar days -- week3
+    # of an init is week2 of the init a week later -- and they must then report
+    # the same observation. Scoring some windows off a cached copy and others off
+    # a fresh one broke exactly that: 14-20 September read 0.799 from the cache
+    # and 0.705 fresh, in the same table. The cached copy also stops at whatever
+    # day the last run pulled, which silently halved this record. So the span is
+    # fetched once, uncached, and every window is scored against it.
+    spans = [_window_year_span(i, w) for i in sorted(inits) for w in WINDOWS]
+    y0 = min(a for a, _ in spans); y1 = max(b for _, b in spans)
+    obs_all = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
+                            hindcast=(y0, y1), region=region, cache=False,
+                            verbose=verbose)["sst"]
+
     rows, skipped = [], []
     for init in sorted(inits):
         for w in WINDOWS:
             try:
-                v = verify(init, w, outputs=outputs, region=region, verbose=verbose)
+                v = verify(init, w, outputs=outputs, region=region,
+                           obs=obs_all, verbose=verbose)
             except FileNotFoundError:
                 continue                      # no published table for that init
             except ValueError as exc:
                 # Raised both for a window that has not finished and, via
-                # _require_full_window, for a stale observed cache. The second is
-                # a data problem, not a window that is simply too young, and it
-                # would otherwise silently shorten a count the report leans on.
+                # _require_full_window, for an observed series that does not yet
+                # cover the window. Only the first is routine.
                 if "not yet complete" not in str(exc):
                     skipped.append((init, w, str(exc)))
                 continue
@@ -810,7 +839,8 @@ def dispersion(init, years, *, region=REGION, verbose=False):
     return pd.DataFrame(rows).set_index(["pole", "window"])
 
 
-def verify(init, window, *, outputs="outputs", region=REGION, cache=True, verbose=False):
+def verify(init, window, *, outputs="outputs", region=REGION, cache=True,
+           obs=None, verbose=False):
     """Score a past issuance against the OISST that has since verified it.
 
     Reads the published tables for `init` rather than recomputing the forecast,
@@ -831,15 +861,20 @@ def verify(init, window, *, outputs="outputs", region=REGION, cache=True, verbos
     start, end = window_valid_dates(init, window)
     if pd.Timestamp(end) >= pd.Timestamp.utcnow().tz_localize(None).normalize():
         raise ValueError(f"{window} of {init} verifies to {end}; not yet complete.")
-    # Only the years the window actually spans. This once asked for the whole
-    # training span so it would share that cached copy, because a narrow request
-    # had landed on a stale entry no other call refreshed. _require_full_window
-    # below now catches exactly that -- a stale copy is missing the most recent
-    # days and raises rather than averaging fewer -- so the narrow fetch is safe,
-    # and it avoids asking a loaded server for twenty years to read one week.
-    obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
-                        hindcast=(pd.Timestamp(start).year, pd.Timestamp(end).year),
-                        region=region, cache=cache, verbose=verbose)["sst"]
+    # Only the years the window actually spans, and only when the caller has not
+    # supplied `obs`. _require_full_window catches a cache that stops short of
+    # the window, but not one that covers it with pre-revision values, which is
+    # what happened on 2026-10-11: a complete cached copy passed the check and
+    # disagreed with a fresh retrieval by 0.095 C on 14-20 September.
+    # verification_table therefore passes one freshly fetched series instead.
+    # `obs` lets the caller hand in an already-fetched series. verification_table
+    # uses it to pay for one fresh pull per run instead of one per window: a
+    # cache=False fetch is not written back to the cache, so retrying each stale
+    # window on its own re-downloaded the same year every time.
+    if obs is None:
+        obs = acmaddl.fetch(product="obs/oisst-v2-daily", variable="sst",
+                            hindcast=(pd.Timestamp(start).year, pd.Timestamp(end).year),
+                            region=region, cache=cache, verbose=verbose)["sst"]
     sel = obs.sel(time=slice(start, end))
     # OISST trails real time by a day or two, and a cached copy trails further.
     # Without this check a partly-covered window is averaged over whatever days
@@ -852,7 +887,12 @@ def verify(init, window, *, outputs="outputs", region=REGION, cache=True, verbos
     rows = []
     for pole, key in (("wio", "WIO"), ("eio", "EIO")):
         r = idx.loc[key]
-        clim = float(r["calibrated_C"]) - float(r["anomaly_C"])   # never rebuilt
+        # Prefer the emitted climatology. Recovering it by subtraction depends on
+        # the printed precision of the published table, and the two issuances
+        # written rounded to 3 dp made one calendar week score 7.6e-4 apart
+        # depending on which init scored it. Still never rebuilt here.
+        clim = (float(r["obs_clim_C"]) if "obs_clim_C" in r.index
+                else float(r["calibrated_C"]) - float(r["anomaly_C"]))
         observed = float(a2s.Index.named(pole).reduce(obs_w))
         rows.append(dict(index=key, calibrated=float(r["calibrated_C"]),
                          raw=float(r["raw_C"]), observed=observed,
